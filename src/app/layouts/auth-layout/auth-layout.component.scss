@@ -1,0 +1,73 @@
+.auth-layout {
+  @apply min-h-screen flex;
+}
+
+/* ===== Left Panel ===== */
+.auth-brand-panel {
+  @apply hidden lg:flex flex-col relative w-1/2 bg-navy-900 border-r border-navy-800 p-12 overflow-hidden;
+}
+
+.brand-bg-pattern {
+  @apply absolute inset-0 opacity-20;
+  background-image: radial-gradient(#3b82f6 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.brand-bg-overlay {
+  @apply absolute inset-0;
+  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.15) 0%, transparent 50%);
+}
+
+.brand-content {
+  @apply relative z-10 flex flex-col h-full bg-transparent;
+}
+
+.brand-logo {
+  @apply flex items-center gap-3 no-underline w-fit;
+  
+  .logo-icon {
+    @apply w-10 h-10 rounded-xl bg-primary-600 text-white flex items-center justify-center shadow-lg;
+    
+    svg { @apply w-6 h-6; }
+  }
+  
+  .logo-text {
+    @apply text-xl font-bold text-white tracking-tight;
+  }
+}
+
+.brand-text-container {
+  @apply mt-auto mb-20;
+}
+
+.brand-title {
+  @apply text-4xl font-extrabold text-white leading-tight mb-4 tracking-tight;
+}
+
+.brand-subtitle {
+  @apply text-lg text-gray-400 font-medium leading-relaxed max-w-lg;
+}
+
+.decorative-metrics {
+  @apply flex flex-wrap gap-4 mt-8;
+}
+
+.metric-pill {
+  @apply inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm font-medium text-gray-300;
+}
+
+.metric-dot {
+  @apply w-2 h-2 rounded-full;
+  
+  &.success { @apply bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]; }
+}
+
+/* ===== Right Panel ===== */
+.auth-form-panel {
+  @apply flex-1 flex flex-col justify-center bg-white relative p-6 sm:p-12 lg:p-20 overflow-y-auto;
+}
+
+.form-container {
+  @apply w-full max-w-[440px] mx-auto animate-fade-in;
+}

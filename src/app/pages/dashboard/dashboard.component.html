@@ -1,0 +1,153 @@
+<!-- ===== DASHBOARD PAGE ===== -->
+<div class="dashboard">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Welcome back! Here's an overview of your performance data.</p>
+    </div>
+    <button class="btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New Scan
+    </button>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Total Scans</span>
+        <div class="stat-card-icon stat-icon-blue">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card-value">1,284</div>
+      <div class="stat-card-change stat-positive">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+        </svg>
+        +12.5% from last month
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Avg. Performance</span>
+        <div class="stat-card-icon stat-icon-emerald">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20V10"/>
+            <path d="M18 20V4"/>
+            <path d="M6 20v-4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card-value">92<span class="stat-unit">/100</span></div>
+      <div class="stat-card-change stat-positive">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+        </svg>
+        +3.2 points
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Issues Found</span>
+        <div class="stat-card-icon stat-icon-amber">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card-value">23</div>
+      <div class="stat-card-change stat-negative">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
+          <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+        </svg>
+        -8 from last month
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Avg. Load Time</span>
+        <div class="stat-card-icon stat-icon-violet">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card-value">1.2<span class="stat-unit">s</span></div>
+      <div class="stat-card-change stat-positive">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+        </svg>
+        -0.3s improvement
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Scans -->
+  <div class="card mt-6">
+    <div class="card-header">
+      <h2 class="card-title">Recent Scans</h2>
+      <a href="#" class="card-link">View all</a>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>URL</th>
+            <th>Performance</th>
+            <th>LCP</th>
+            <th>CLS</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="url-cell">example.com</td>
+            <td><span class="score score-good">95</span></td>
+            <td>1.2s</td>
+            <td>0.05</td>
+            <td><span class="badge badge-success">Passed</span></td>
+            <td class="date-cell">Apr 16, 2026</td>
+          </tr>
+          <tr>
+            <td class="url-cell">demo-app.io/dashboard</td>
+            <td><span class="score score-warning">72</span></td>
+            <td>2.8s</td>
+            <td>0.15</td>
+            <td><span class="badge badge-warning">Warning</span></td>
+            <td class="date-cell">Apr 15, 2026</td>
+          </tr>
+          <tr>
+            <td class="url-cell">shop.example.com</td>
+            <td><span class="score score-good">88</span></td>
+            <td>1.8s</td>
+            <td>0.08</td>
+            <td><span class="badge badge-success">Passed</span></td>
+            <td class="date-cell">Apr 15, 2026</td>
+          </tr>
+          <tr>
+            <td class="url-cell">blog.example.com/posts</td>
+            <td><span class="score score-bad">45</span></td>
+            <td>4.5s</td>
+            <td>0.32</td>
+            <td><span class="badge badge-danger">Failed</span></td>
+            <td class="date-cell">Apr 14, 2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

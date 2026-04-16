@@ -1,0 +1,46 @@
+<div class="auth-layout">
+  <!-- Left Panel: Branding / Visuals -->
+  <div class="auth-brand-panel">
+    <div class="brand-bg-pattern"></div>
+    <div class="brand-content">
+      <a href="/" class="brand-logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <span class="logo-text">Performance Scan</span>
+      </a>
+
+      <div class="brand-text-container">
+        <h1 class="brand-title">Accelerate Your Digital Experience</h1>
+        <p class="brand-subtitle">
+          Join thousands of developers and teams optimizing their web applications with our industry-leading performance analytics platform.
+        </p>
+      </div>
+
+      <!-- Optional decorative elements -->
+      <div class="decorative-metrics">
+        <div class="metric-pill">
+          <span class="metric-dot success"></span>
+          <span>Core Web Vitals Pass</span>
+        </div>
+        <div class="metric-pill">
+          <span class="metric-dot success"></span>
+          <span>Sub-second LCP</span>
+        </div>
+        <div class="metric-pill">
+          <span class="metric-dot success"></span>
+          <span>Zero Layout Shifts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel: Form Area -->
+  <div class="auth-form-panel">
+    <div class="form-container">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

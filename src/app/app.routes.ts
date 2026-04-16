@@ -1,0 +1,43 @@
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import('./pages/landing/landing.component').then(m => m.LandingComponent),
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
+      },
+    ],
+  },
+  {
+    path: 'auth',
+    loadComponent: () =>
+      import('./layouts/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./pages/auth/login/login.component').then(m => m.LoginComponent),
+      },
+      {
+        path: 'register',
+        loadComponent: () =>
+          import('./pages/auth/register/register.component').then(m => m.RegisterComponent),
+      },
+    ],
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent),
+  },
+];

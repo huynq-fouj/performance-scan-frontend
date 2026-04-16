@@ -1,0 +1,264 @@
+.landing-page {
+  @apply min-h-screen bg-white;
+}
+
+/* ===== Navigation ===== */
+.nav {
+  @apply fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100;
+}
+
+.nav-container {
+  @apply max-w-7xl mx-auto px-6 h-16 flex items-center justify-between;
+}
+
+.nav-logo {
+  @apply flex items-center gap-2.5 no-underline;
+}
+
+.logo-icon {
+  @apply w-9 h-9 rounded-lg bg-primary-600 text-white flex items-center justify-center;
+
+  svg {
+    @apply w-5 h-5;
+  }
+}
+
+.logo-icon-sm {
+  @apply w-7 h-7 rounded-md;
+
+  svg {
+    @apply w-4 h-4;
+  }
+}
+
+.logo-text {
+  @apply text-lg font-bold text-gray-900;
+}
+
+.nav-links {
+  @apply flex items-center gap-6;
+}
+
+.nav-link {
+  @apply text-sm font-medium text-gray-600 no-underline
+         hover:text-gray-900 transition-colors duration-200;
+}
+
+/* ===== Hero ===== */
+.hero {
+  @apply relative pt-32 pb-20 overflow-hidden;
+}
+
+.hero-bg-pattern {
+  @apply absolute inset-0;
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.1), transparent);
+}
+
+.hero-container {
+  @apply relative max-w-4xl mx-auto px-6 text-center;
+}
+
+.hero-badge {
+  @apply inline-flex items-center gap-2 px-4 py-1.5 rounded-full
+         bg-primary-50 text-primary-700 text-xs font-semibold tracking-wide mb-8;
+}
+
+.badge-dot {
+  @apply w-1.5 h-1.5 rounded-full bg-primary-500;
+  animation: pulse 2s infinite;
+}
+
+.hero-title {
+  @apply text-5xl sm:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight;
+}
+
+.hero-title-accent {
+  @apply bg-gradient-to-r from-primary-600 to-blue-500 bg-clip-text text-transparent;
+}
+
+.hero-subtitle {
+  @apply text-lg text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed;
+}
+
+.hero-actions {
+  @apply flex flex-wrap items-center justify-center gap-4 mb-16;
+}
+
+.btn-lg {
+  @apply px-8 py-3.5 text-base rounded-xl;
+}
+
+.btn-icon {
+  @apply w-5 h-5 mr-2;
+}
+
+.btn-icon-right {
+  @apply w-4 h-4 ml-2;
+}
+
+.hero-stats {
+  @apply flex items-center justify-center gap-8 px-8 py-5
+         bg-white rounded-2xl shadow-soft border border-gray-100;
+}
+
+.stat-item {
+  @apply flex flex-col items-center;
+}
+
+.stat-value {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.stat-label {
+  @apply text-xs text-gray-500 mt-0.5 font-medium;
+}
+
+.stat-divider {
+  @apply w-px h-10 bg-gray-200;
+}
+
+/* ===== Features ===== */
+.features {
+  @apply py-24 bg-surface-50;
+}
+
+.features-container {
+  @apply max-w-7xl mx-auto px-6;
+}
+
+.section-header {
+  @apply text-center mb-16;
+}
+
+.section-overline {
+  @apply text-xs font-bold uppercase tracking-widest text-primary-600 mb-3 block;
+}
+
+.section-title {
+  @apply text-3xl sm:text-4xl font-bold text-gray-900 mb-4;
+}
+
+.section-subtitle {
+  @apply text-lg text-gray-500 max-w-2xl mx-auto;
+}
+
+.features-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.feature-card {
+  @apply bg-white rounded-2xl p-7 border border-gray-100
+         hover:shadow-elevated hover:-translate-y-1
+         transition-all duration-300 ease-out;
+}
+
+.feature-icon {
+  @apply w-12 h-12 rounded-xl flex items-center justify-center mb-5;
+
+  svg {
+    @apply w-6 h-6;
+  }
+}
+
+.feature-icon-blue {
+  @apply bg-blue-50 text-blue-600;
+}
+
+.feature-icon-emerald {
+  @apply bg-emerald-50 text-emerald-600;
+}
+
+.feature-icon-violet {
+  @apply bg-violet-50 text-violet-600;
+}
+
+.feature-icon-amber {
+  @apply bg-amber-50 text-amber-600;
+}
+
+.feature-icon-rose {
+  @apply bg-rose-50 text-rose-600;
+}
+
+.feature-icon-cyan {
+  @apply bg-cyan-50 text-cyan-600;
+}
+
+.feature-title {
+  @apply text-lg font-semibold text-gray-900 mb-2;
+}
+
+.feature-desc {
+  @apply text-sm text-gray-500 leading-relaxed;
+}
+
+/* ===== About ===== */
+.about {
+  @apply py-24 bg-white;
+}
+
+.about-container {
+  @apply max-w-4xl mx-auto px-6;
+}
+
+.about-content {
+  @apply text-center;
+}
+
+.about-text {
+  @apply text-lg text-gray-500 leading-relaxed mb-8 max-w-2xl mx-auto;
+}
+
+/* ===== Footer ===== */
+.footer {
+  @apply py-8 border-t border-gray-100 bg-white;
+}
+
+.footer-container {
+  @apply max-w-7xl mx-auto px-6;
+}
+
+.footer-content {
+  @apply flex flex-col sm:flex-row items-center justify-between gap-4;
+}
+
+.footer-brand {
+  @apply flex items-center gap-2;
+}
+
+.footer-brand-text {
+  @apply text-sm font-semibold text-gray-900;
+}
+
+.footer-copy {
+  @apply text-sm text-gray-400;
+}
+
+/* ===== Animations ===== */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .hero-title {
+    @apply text-3xl;
+  }
+
+  .hero-stats {
+    @apply flex-col gap-4;
+  }
+
+  .stat-divider {
+    @apply w-12 h-px;
+  }
+
+  .nav-links {
+    @apply gap-3;
+
+    .nav-link {
+      @apply hidden;
+    }
+  }
+}

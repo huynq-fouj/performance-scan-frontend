@@ -1,0 +1,101 @@
+/* Shared styles for Auth components (Login/Register) */
+
+.logo-icon-mobile {
+  @apply w-12 h-12 rounded-xl bg-primary-600 text-white flex items-center justify-center shadow-md;
+  svg { @apply w-7 h-7; }
+}
+
+.auth-header {
+  @apply mb-8 text-center sm:text-left;
+}
+
+.auth-title {
+  @apply text-3xl font-bold text-gray-900 mb-2 tracking-tight;
+}
+
+.auth-subtitle {
+  @apply text-gray-500 font-medium;
+}
+
+.auth-providers {
+  @apply mb-6;
+}
+
+.auth-divider {
+  @apply relative flex items-center justify-center my-6;
+  
+  &::before {
+    content: '';
+    @apply absolute w-full h-px bg-gray-200 left-0 top-1/2 -translate-y-1/2;
+  }
+}
+
+.auth-divider-text {
+  @apply bg-white px-4 text-xs font-semibold text-gray-400 tracking-wider uppercase relative z-10;
+}
+
+.auth-form {
+  @apply space-y-5;
+}
+
+.form-group {
+  @apply flex flex-col gap-1.5;
+}
+
+.form-label {
+  @apply text-sm font-semibold text-gray-700;
+}
+
+.input-with-icon {
+  @apply relative;
+}
+
+.input-icon {
+  @apply absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none;
+}
+
+.form-options {
+  @apply flex items-center justify-between mb-2 mt-4;
+}
+
+.checkbox-container {
+  @apply flex items-center gap-2 cursor-pointer;
+}
+
+.checkbox-input {
+  @apply sr-only;
+  
+  &:checked ~ .checkbox-box {
+    @apply bg-primary-600 border-primary-600;
+    &::after { @apply opacity-100 scale-100; }
+  }
+}
+
+.checkbox-box {
+  @apply relative w-[18px] h-[18px] rounded border border-gray-300 bg-white transition-colors duration-200;
+  
+  &::after {
+    content: '';
+    @apply absolute inset-0 opacity-0 scale-50 transition-all duration-200 transform-gpu;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-size: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+.checkbox-label {
+  @apply text-sm text-gray-600 font-medium;
+}
+
+.forgot-password, .auth-link {
+  @apply text-sm font-semibold text-primary-600 no-underline hover:text-primary-700 transition-colors duration-200;
+}
+
+.auth-footer {
+  @apply mt-8 text-center;
+}
+
+.auth-footer-text {
+  @apply text-sm text-gray-600;
+}
