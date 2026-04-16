@@ -12,7 +12,11 @@
   <p class="auth-subtitle">Start analyzing and optimizing today.</p>
 </div>
 
-<form class="auth-form" (submit)="$event.preventDefault()">
+<form class="auth-form" (submit)="$event.preventDefault(); onSubmit()">
+  <div *ngIf="errorMessage" class="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm font-medium">
+    {{ errorMessage }}
+  </div>
+
   <div class="form-group">
     <label for="name" class="form-label">Full Name</label>
     <div class="input-with-icon">
@@ -22,7 +26,7 @@
           <circle cx="12" cy="7" r="4"/>
         </svg>
       </div>
-      <input type="text" id="name" class="input-field pl-10" placeholder="John Doe" required>
+      <input type="text" id="name" name="fullName" [(ngModel)]="registerForm.fullName" class="input-field pl-10" placeholder="John Doe" required>
     </div>
   </div>
 
@@ -35,7 +39,7 @@
           <polyline points="22,6 12,13 2,6"/>
         </svg>
       </div>
-      <input type="email" id="email" class="input-field pl-10" placeholder="Enter your email" required>
+      <input type="email" id="email" name="email" [(ngModel)]="registerForm.email" class="input-field pl-10" placeholder="Enter your email" required>
     </div>
   </div>
 
@@ -48,7 +52,7 @@
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       </div>
-      <input type="password" id="password" class="input-field pl-10" placeholder="Create a strong password" required>
+      <input type="password" id="password" name="password" [(ngModel)]="registerForm.password" class="input-field pl-10" placeholder="Create a strong password" required>
     </div>
   </div>
 
@@ -62,8 +66,8 @@
     </label>
   </div>
 
-  <button type="submit" class="btn-primary w-full shadow-md hover:shadow-lg">
-    Create Account
+  <button type="submit" [disabled]="isLoading" class="btn-primary w-full shadow-md hover:shadow-lg disabled:opacity-50">
+    {{ isLoading ? 'Creating Account...' : 'Create Account' }}
   </button>
 </form>
 
