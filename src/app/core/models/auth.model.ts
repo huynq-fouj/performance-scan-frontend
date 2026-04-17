@@ -2,7 +2,13 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
+  avatar?: string;
+  role: string;
+  plan: string;
+  isActive: boolean;
+  lastLoginAt?: string;
 }
+
 
 export interface AuthData {
   accessToken: string;

@@ -10,10 +10,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  // Get token from localStorage (SSR-safe: check if localStorage exists)
-  const token = typeof localStorage !== 'undefined'
-    ? localStorage.getItem('access_token')
+  // Get token from storage (SSR-safe: check if window is defined)
+  const token = typeof window !== 'undefined'
+    ? (localStorage.getItem('access_token') || sessionStorage.getItem('access_token'))
     : null;
+
 
   if (token) {
     const clonedReq = req.clone({

@@ -78,16 +78,21 @@
     <!-- User Profile & Logout -->
     <div class="sidebar-footer">
       <div class="user-profile">
-        <div class="user-avatar">
-          <span>U</span>
+        <div class="user-avatar" [class.has-avatar]="user()?.avatar">
+          @if (user()?.avatar) {
+            <img [src]="user()?.avatar" [alt]="user()?.fullName">
+          } @else {
+            <span>{{ user()?.fullName?.charAt(0) || 'U' }}</span>
+          }
         </div>
         @if (!sidebarCollapsed()) {
           <div class="user-info">
-            <span class="user-name">User</span>
-            <span class="user-role">Member</span>
+            <span class="user-name">{{ user()?.fullName || 'Loading...' }}</span>
+            <span class="user-role">{{ user()?.plan || 'Member' }}</span>
           </div>
         }
       </div>
+
       
       <button class="logout-btn" (click)="onLogout()" [attr.title]="sidebarCollapsed() ? 'Logout' : null">
         <div class="logout-icon">

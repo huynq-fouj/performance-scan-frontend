@@ -1,7 +1,8 @@
-import { Component, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
 
 interface NavItem {
   label: string;
@@ -16,13 +17,15 @@ interface NavItem {
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private router = inject(Router);
 
   sidebarCollapsed = signal(false);
   mobileMenuOpen = signal(false);
+  user = this.userService.currentUser;
 
   navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
@@ -30,6 +33,19 @@ export class MainLayoutComponent {
     { label: 'Reports', icon: 'report', route: '/dashboard/reports' },
     { label: 'Settings', icon: 'settings', route: '/dashboard/settings' },
   ];
+
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      this.userService.getOwnerInfo().subscribe({
+        error: (err) => {
+          console.error('Failed to fetch user info', err);
+          if (err.status === 401) {
+            this.onLogout();
+          }
+        }
+      });
+    }
+  }
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update(v => !v);
@@ -45,7 +61,9 @@ export class MainLayoutComponent {
 
   onLogout(): void {
     this.authService.logout();
+    this.userService.clearUser();
     this.router.navigate(['/auth/login']);
   }
 }
+
 
