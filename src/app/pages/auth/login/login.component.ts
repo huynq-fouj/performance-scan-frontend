@@ -15,7 +15,8 @@ import { LoginRequest } from '../../../core/models/auth.model';
 export class LoginComponent {
   loginForm: LoginRequest = {
     email: '',
-    password: ''
+    password: '',
+    remember: false,
   };
   errorMessage = '';
   isLoading = false;

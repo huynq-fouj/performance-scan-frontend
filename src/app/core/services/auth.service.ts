@@ -28,7 +28,7 @@ export class AuthService {
     return this.http.post<ApiResponse<AuthData>>(`${this.apiUrl}/login`, data).pipe(
       tap((res) => {
         if (res.data?.accessToken) {
-          this.setToken(res.data.accessToken);
+          this.setToken(res.data.accessToken, data.remember);
         }
       })
     );
@@ -38,15 +38,20 @@ export class AuthService {
     this.removeToken();
   }
 
-  private setToken(token: string) {
+  private setToken(token: string, remember: boolean = false) {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('access_token', token);
+      this.removeToken(); // Clear previous tokens from both storages
+      if (remember) {
+        localStorage.setItem('access_token', token);
+      } else {
+        sessionStorage.setItem('access_token', token);
+      }
     }
   }
 
   getToken(): string | null {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('access_token');
+      return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
     }
     return null;
   }
@@ -54,6 +59,7 @@ export class AuthService {
   removeToken() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('access_token');
+      sessionStorage.removeItem('access_token');
     }
   }
 }
