@@ -6,6 +6,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { apiInterceptor } from './core/interceptors/api.interceptor';
+import { cacheInterceptor } from './core/interceptors/cache.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,7 +15,8 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideHttpClient(
       withFetch(),
-      withInterceptors([apiInterceptor, authInterceptor]),
+      withInterceptors([apiInterceptor, cacheInterceptor, authInterceptor]),
     ),
   ],
 };
+

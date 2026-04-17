@@ -1,18 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ApiResponse } from '../models/api-response.model';
 import { AuthData, LoginRequest, RegisterRequest } from '../models/auth.model';
+import { CacheService } from './cache.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
+  private cacheService = inject(CacheService);
   private apiUrl = environment.apiUrl + '/auth';
-
-  constructor(private http: HttpClient) {}
 
   register(data: RegisterRequest): Observable<ApiResponse<AuthData>> {
     return this.http.post<ApiResponse<AuthData>>(`${this.apiUrl}/register`, data).pipe(
@@ -36,7 +37,9 @@ export class AuthService {
 
   logout() {
     this.removeToken();
+    this.cacheService.clear();
   }
+
 
   private setToken(token: string, remember: boolean = false) {
     if (typeof window !== 'undefined') {
