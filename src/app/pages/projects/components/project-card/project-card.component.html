@@ -1,0 +1,45 @@
+<div class="project-card">
+  <div class="card-top">
+    <div class="project-info">
+      <h3 class="project-name" [title]="project.name">{{ project.name }}</h3>
+      <a [href]="'https://' + project.url" target="_blank" class="project-url" [title]="project.url">{{ project.url }}</a>
+    </div>
+    
+    <div class="status-badge" [ngClass]="'status-' + project.status">
+      {{ project.status | titlecase }}
+    </div>
+  </div>
+  
+  <p class="project-desc">{{ project.description }}</p>
+  
+  <div class="metrics-grid">
+    <div class="metric-box">
+      <div class="metric-label">Perf Score</div>
+      <div class="metric-value" [ngClass]="getScoreClass(project.score)">
+        {{ project.score }}
+      </div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">Issues</div>
+      <div class="metric-value font-medium text-gray-700">
+        {{ project.issuesCount }}
+      </div>
+    </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="last-scan">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      {{ project.lastScanDate | date:'MMM dd, HH:mm' }}
+    </div>
+    <button class="action-btn" aria-label="View Project">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+  </div>
+</div>

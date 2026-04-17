@@ -1,13 +1,14 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
+import { ProjectCardComponent } from './components/project-card/project-card.component';
 import { ProjectService } from '../../core/services/project.service';
 import { Project } from '../../core/models/project.model';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule, CreateProjectModalComponent],
+  imports: [CommonModule, CreateProjectModalComponent, ProjectCardComponent],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss'
 })
@@ -60,12 +61,6 @@ export class ProjectsComponent implements OnInit {
     this.closeCreateModal();
   }
 
-  getScoreClass(score: number): string {
-    if (score >= 90) return 'text-emerald-600';
-    if (score >= 50) return 'text-amber-600';
-    return 'text-red-500';
-  }
-
   private setMockData() {
     this.projects.set([
       { id: '1', name: 'E-Commerce Platform', description: 'Main shopping portal frontend', status: 'active', url: 'shop.example.com', score: 92, lastScanDate: new Date().toISOString(), issuesCount: 2 },
@@ -73,3 +68,4 @@ export class ProjectsComponent implements OnInit {
     ]);
   }
 }
+

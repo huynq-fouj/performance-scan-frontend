@@ -41,9 +41,9 @@ module.exports = {
         'elevated': '0 10px 40px -10px rgba(0, 0, 0, 0.15)',
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-out',
-        'slide-up': 'slideUp 0.5s ease-out',
-        'slide-in-left': 'slideInLeft 0.3s ease-out',
+        'fade-in': 'fadeIn 0.2s ease-out',
+        'slide-up': 'slideUp 0.25s ease-out',
+        'slide-in-left': 'slideInLeft 0.2s ease-out',
       },
       keyframes: {
         fadeIn: {

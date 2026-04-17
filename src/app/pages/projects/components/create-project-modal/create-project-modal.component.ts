@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ProjectService } from '../../../../core/services/project.service';
-import { Project } from '../../../../core/models/project.model';
+import { Project, CreateProjectRequest } from '../../../../core/models/project.model';
 
 @Component({
   selector: 'app-create-project-modal',
@@ -32,7 +32,8 @@ export class CreateProjectModalComponent {
     }
     
     this.isCreating.set(true);
-    this.projectService.createProject(this.createForm.value as any).subscribe({
+    const payload = this.createForm.value as CreateProjectRequest;
+    this.projectService.createProject(payload).subscribe({
       next: (res) => {
         this.isCreating.set(false);
         this.created.emit();

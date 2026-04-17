@@ -8,3 +8,9 @@ export interface Project {
   url: string;
   issuesCount: number;
 }
+
+export interface CreateProjectRequest {
+  name: string;
+  url: string;
+  description?: string;
+}
