@@ -1,6 +1,7 @@
 import { Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { CacheStorageType } from '../tokens/cache.tokens';
 
 interface CacheEntry {
@@ -18,7 +19,11 @@ export class CacheService {
   // Primary memory cache
   private memoryCache = new Map<string, CacheEntry>();
 
+  // In-flight request tracking (Deduplication)
+  private inFlightRequests = new Map<string, Observable<HttpEvent<any>>>();
+
   // IndexedDB Configuration
+
   private readonly DB_NAME = 'AppCacheDB';
   private readonly STORE_NAME = 'httpCache';
   private readonly DB_VERSION = 1;
@@ -138,6 +143,19 @@ export class CacheService {
     }
   }
 
+  // --- REQUEST DEDUPLICATION (In-Flight) ---
+
+  getInFlight(key: string): Observable<HttpEvent<any>> | undefined {
+    return this.inFlightRequests.get(key);
+  }
+
+  setInFlight(key: string, observable: Observable<HttpEvent<any>>): void {
+    this.inFlightRequests.set(key, observable);
+  }
+
+  deleteInFlight(key: string): void {
+    this.inFlightRequests.delete(key);
+  }
 
   // --- INDEXED DB WRAPPER (Pure JS) ---
 

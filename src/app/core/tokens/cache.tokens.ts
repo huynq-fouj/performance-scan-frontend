@@ -19,7 +19,7 @@ export const BYPASS_CACHE = new HttpContextToken<boolean>(() => false);
  * Time To Live (TTL) for the cached data in milliseconds.
  * Default: 5 minutes (300,000 ms)
  */
-export const CACHE_TTL = new HttpContextToken<number>(() => 300000);
+export const CACHE_TTL = new HttpContextToken<number>(() => 30000);
 
 /**
  * The storage type to use for caching.

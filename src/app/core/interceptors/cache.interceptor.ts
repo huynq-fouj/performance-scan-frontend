@@ -1,7 +1,8 @@
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { of, tap, from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, share, finalize } from 'rxjs/operators';
+
 import { CacheService } from '../services/cache.service';
 import { 
   CACHE_ENABLED, 
@@ -38,22 +39,52 @@ export const cacheInterceptor: HttpInterceptorFn = (req, next) => {
   const cacheKey = customKey || req.urlWithParams;
   const cacheService = inject(CacheService);
 
-  // 3. Logic for CLEAR_CACHE (Delete from ALL storages then proceed without awaiting)
+  // Shared request logic (Deduplication)
+  const sendRequest = () => {
+    // 1. Check if same request is already in progress
+    const inFlight$ = cacheService.getInFlight(cacheKey);
+    if (inFlight$) {
+      return inFlight$;
+    }
+
+    // 2. Start new request and share it
+    const request$ = next(req).pipe(
+      tap(event => {
+        if (event instanceof HttpResponse) {
+          // Store serializable part in cache if enabled
+          if (isEnabled) {
+            const serializableResponse = {
+              body: event.body,
+              headers: event.headers,
+              status: event.status,
+              statusText: event.statusText,
+              url: event.url
+            };
+            cacheService.set(cacheKey, serializableResponse, ttl, storageType);
+          }
+        }
+      }),
+      finalize(() => {
+        // Remove from in-flight when done
+        cacheService.deleteInFlight(cacheKey);
+      }),
+      share() // Share the observable among multiple subscribers
+    );
+
+    // 3. Register as in-flight
+    cacheService.setInFlight(cacheKey, request$);
+    return request$;
+  };
+
+  // 3. Logic for CLEAR_CACHE
   if (clearCache) cacheService.delete(cacheKey);
 
-  if(skipCache) {
-    return next(req).pipe(
-      tap(event => {
-        if (event instanceof HttpResponse && isEnabled) {
-          cacheService.set(cacheKey, event, ttl, storageType);
-        }
-      })
-    );
+  // 4. Logic for BYPASS_CACHE (skipCache)
+  if (skipCache) {
+    return sendRequest();
   }
 
-
-  // 4. Check Cache (Async because of IndexedDB possibility)
-  // Use from(Promise) to integrate with RxJS pipeline
+  // 5. Check Cache (Async because of IndexedDB possibility)
   return from(cacheService.get(cacheKey, storageType)).pipe(
     switchMap(cachedResponse => {
       if (cachedResponse) {
@@ -68,22 +99,9 @@ export const cacheInterceptor: HttpInterceptorFn = (req, next) => {
         return of(response);
       }
 
-      // Cache Miss: Fetch and Store
-      return next(req).pipe(
-        tap(event => {
-          if (event instanceof HttpResponse) {
-            // Note: We only store the serializable parts of the response
-            const serializableResponse = {
-              body: event.body,
-              headers: event.headers,
-              status: event.status,
-              statusText: event.statusText,
-              url: event.url
-            };
-            cacheService.set(cacheKey, serializableResponse, ttl, storageType);
-          }
-        })
-      );
+      // Cache Miss: Fetch using deductive logic
+      return sendRequest();
     })
   );
 };
+
