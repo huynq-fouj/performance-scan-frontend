@@ -1,0 +1,101 @@
+<div class="projects-page animate-fade-in">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Projects</h1>
+      <p class="page-subtitle">Manage and monitor all your web properties in one place.</p>
+    </div>
+    <button class="btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Add Project
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading projects...</p>
+    </div>
+  } @else if (error() && !projects().length) {
+    <div class="error-state">
+      <div class="error-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (projects().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <h3>No projects found</h3>
+      <p>You haven't created any projects yet. Get started by adding your first project.</p>
+      <button class="btn-primary mt-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Create Project
+      </button>
+    </div>
+  } @else {
+    <div class="projects-grid">
+      @for (project of projects(); track project.id) {
+        <div class="project-card">
+          <div class="card-top">
+            <div class="project-info">
+              <h3 class="project-name" [title]="project.name">{{ project.name }}</h3>
+              <a [href]="'https://' + project.url" target="_blank" class="project-url" [title]="project.url">{{ project.url }}</a>
+            </div>
+            
+            <div class="status-badge" [ngClass]="'status-' + project.status">
+              {{ project.status | titlecase }}
+            </div>
+          </div>
+          
+          <p class="project-desc">{{ project.description }}</p>
+          
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <div class="metric-label">Perf Score</div>
+              <div class="metric-value" [ngClass]="getScoreClass(project.score)">
+                {{ project.score }}
+              </div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-label">Issues</div>
+              <div class="metric-value font-medium text-gray-700">
+                {{ project.issuesCount }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <div class="last-scan">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              {{ project.lastScanDate | date:'MMM dd, HH:mm' }}
+            </div>
+            <button class="action-btn" aria-label="View Project">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

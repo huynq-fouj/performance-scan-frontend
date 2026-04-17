@@ -29,6 +29,7 @@ export class MainLayoutComponent implements OnInit {
 
   navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
+    { label: 'Projects', icon: 'project', route: '/dashboard/projects' },
     { label: 'Scans', icon: 'scan', route: '/dashboard/scans' },
     { label: 'Reports', icon: 'report', route: '/dashboard/reports' },
     { label: 'Settings', icon: 'settings', route: '/dashboard/settings' },

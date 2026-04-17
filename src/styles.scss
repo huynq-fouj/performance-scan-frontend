@@ -28,7 +28,7 @@
 /* ===== Component Layer ===== */
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg
+    @apply inline-flex items-center justify-center px-6 py-2 rounded-lg
            bg-primary-600 text-white font-semibold text-sm
            hover:bg-primary-700 active:bg-primary-800
            transition-all duration-200 ease-in-out
