@@ -111,6 +111,24 @@ $transition-speed: 0.25s;
   @apply text-xs text-gray-500 truncate;
 }
 
+.logout-btn {
+  @apply w-full flex items-center gap-3 px-3 py-2.5 mt-2 rounded-lg
+         text-gray-500 hover:bg-red-50 hover:text-red-600
+         transition-all duration-200 border-0 bg-transparent cursor-pointer;
+}
+
+.logout-icon {
+  @apply w-5 h-5 flex-shrink-0;
+
+  svg {
+    @apply w-5 h-5;
+  }
+}
+
+.logout-label {
+  @apply text-sm font-medium whitespace-nowrap;
+}
+
 /* ===== Mobile Overlay ===== */
 .mobile-overlay {
   @apply fixed inset-0 bg-black/50 z-30 lg:hidden;

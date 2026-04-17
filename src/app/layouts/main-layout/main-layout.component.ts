@@ -1,6 +1,7 @@
 import { Component, signal, inject, PLATFORM_ID } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
 
 interface NavItem {
   label: string;
@@ -17,6 +18,8 @@ interface NavItem {
 })
 export class MainLayoutComponent {
   private platformId = inject(PLATFORM_ID);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   sidebarCollapsed = signal(false);
   mobileMenuOpen = signal(false);
@@ -39,4 +42,10 @@ export class MainLayoutComponent {
   closeMobileMenu(): void {
     this.mobileMenuOpen.set(false);
   }
+
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
+  }
 }
+

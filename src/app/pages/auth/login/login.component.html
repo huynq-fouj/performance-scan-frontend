@@ -42,7 +42,16 @@
           <polyline points="22,6 12,13 2,6"/>
         </svg>
       </div>
-      <input type="email" id="email" name="email" [(ngModel)]="loginForm.email" class="input-field pl-10" placeholder="Enter your email" required>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        [(ngModel)]="loginForm.email"
+        [ngModelOptions]="{standalone: true}"
+        class="input-field pl-10"
+        placeholder="Enter your email"
+        required
+      >
     </div>
   </div>
 
@@ -55,13 +64,27 @@
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       </div>
-      <input type="password" id="password" name="password" [(ngModel)]="loginForm.password" class="input-field pl-10" placeholder="••••••••" required>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        [(ngModel)]="loginForm.password"
+        [ngModelOptions]="{standalone: true}"
+        class="input-field pl-10"
+        placeholder="••••••••"
+        required
+      >
     </div>
   </div>
 
   <div class="form-options">
     <label class="checkbox-container">
-      <input type="checkbox" class="checkbox-input" [(ngModel)]="loginForm.remember">
+      <input
+        type="checkbox"
+        class="checkbox-input"
+        [(ngModel)]="loginForm.remember"
+        [ngModelOptions]="{standalone: true}"
+      >
       <span class="checkbox-box"></span>
       <span class="checkbox-label">Remember me</span>
     </label>
