@@ -15,4 +15,8 @@ export class ProjectService {
   getProjects(): Observable<ApiResponse<Project[]>> {
     return this.http.get<ApiResponse<Project[]>>(this.apiUrl);
   }
+
+  createProject(payload: { name: string; url: string; description?: string }): Observable<ApiResponse<Project>> {
+    return this.http.post<ApiResponse<Project>>(this.apiUrl, payload);
+  }
 }

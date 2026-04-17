@@ -1,0 +1,57 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center">
+  <!-- Backdrop -->
+  <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" (click)="close.emit()"></div>
+  
+  <!-- Modal Content -->
+  <div class="bg-white rounded-xl shadow-elevated w-full max-w-lg mx-4 z-10 animate-slide-up overflow-hidden flex flex-col max-h-[90vh]">
+    <!-- Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <h2 class="text-lg font-bold text-gray-900">Create New Project</h2>
+      <button class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100" (click)="close.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body Form -->
+    <form [formGroup]="createForm" (ngSubmit)="submitCreateProject()" class="flex flex-col flex-1 overflow-hidden">
+      <div class="p-6 space-y-4 overflow-y-auto">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Project Name <span class="text-red-500">*</span></label>
+          <input type="text" formControlName="name" class="input-field" placeholder="e.g. My Awesome App" />
+          @if (createForm.get('name')?.touched && createForm.get('name')?.hasError('required')) {
+            <p class="text-xs text-red-500 mt-1">Project name is required.</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Target URL <span class="text-red-500">*</span></label>
+          <input type="text" formControlName="url" class="input-field" placeholder="e.g. example.com" />
+          @if (createForm.get('url')?.touched && createForm.get('url')?.hasError('required')) {
+            <p class="text-xs text-red-500 mt-1">URL is required.</p>
+          } @else if (createForm.get('url')?.touched && createForm.get('url')?.hasError('pattern')) {
+            <p class="text-xs text-red-500 mt-1">Please enter a valid domain or URL.</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea formControlName="description" class="input-field min-h-[100px] resize-y" placeholder="Brief description of the project..."></textarea>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-end gap-3 mt-auto">
+        <button type="button" class="btn-secondary px-4 py-2" (click)="close.emit()">Cancel</button>
+        <button type="submit" class="btn-primary px-4 py-2" [disabled]="createForm.invalid || isCreating()">
+          @if (isCreating()) {
+            <svg class="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" viewBox="0 0 24 24"></svg>
+          }
+          Create Project
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
