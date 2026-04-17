@@ -21,7 +21,7 @@ export class CreateProjectModalComponent {
 
   createForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(100)]],
-    url: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+(\/.*)?$/)]],
+    url: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)?(localhost|(\d{1,3}\.){3}\d{1,3}|([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,})(:\d+)?(\/.*)?$/)]],
     description: ['']
   });
 

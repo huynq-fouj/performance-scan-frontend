@@ -2,7 +2,7 @@
   <div class="card-top">
     <div class="project-info">
       <h3 class="project-name" [title]="project.name">{{ project.name }}</h3>
-      <a [href]="'https://' + project.url" target="_blank" class="project-url" [title]="project.url">{{ project.url }}</a>
+      <a [href]="project.url" target="_blank" class="project-url" [title]="project.url">{{ project.url }}</a>
     </div>
     
     <div class="status-badge" [ngClass]="'status-' + project.status">

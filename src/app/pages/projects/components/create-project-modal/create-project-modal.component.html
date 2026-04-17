@@ -28,7 +28,7 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Target URL <span class="text-red-500">*</span></label>
-          <input type="text" formControlName="url" class="input-field" placeholder="e.g. example.com" />
+          <input type="text" formControlName="url" class="input-field" placeholder="e.g. https://example.com" />
           @if (createForm.get('url')?.touched && createForm.get('url')?.hasError('required')) {
             <p class="text-xs text-red-500 mt-1">URL is required.</p>
           } @else if (createForm.get('url')?.touched && createForm.get('url')?.hasError('pattern')) {

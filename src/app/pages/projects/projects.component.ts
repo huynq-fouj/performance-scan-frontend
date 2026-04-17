@@ -1,9 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
 import { ProjectCardComponent } from './components/project-card/project-card.component';
 import { ProjectService } from '../../core/services/project.service';
 import { Project } from '../../core/models/project.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-projects',
@@ -14,6 +15,7 @@ import { Project } from '../../core/models/project.model';
 })
 export class ProjectsComponent implements OnInit {
   private projectService = inject(ProjectService);
+  private platformId = inject(PLATFORM_ID);
 
   projects = signal<Project[]>([]);
   isLoading = signal<boolean>(true);
@@ -26,20 +28,22 @@ export class ProjectsComponent implements OnInit {
   }
 
   loadProjects() {
+    // Only fetch on client side to show loading state and avoid SSR auth issues
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.isLoading.set(true);
-    this.projectService.getProjects().subscribe({
+    this.projectService.getProjects()
+    .pipe(finalize(() => this.isLoading.set(false)))
+    .subscribe({
       next: (response) => {
-        if (response.status === 'success' && response.data) {
-          this.projects.set(response.data);
-        } else {
-          this.projects.set((response as any) || []);
-        }
-        this.isLoading.set(false);
+        const data = (response.status === 'success' && response.data) ? response.data : (response as any || []);
+        this.projects.set(data);
       },
       error: (err) => {
         console.error('Error loading projects', err);
-        this.setMockData();
-        this.isLoading.set(false);
+        this.error.set('Failed to load projects. Please try again later.');
       }
     });
   }
@@ -59,13 +63,6 @@ export class ProjectsComponent implements OnInit {
       this.loadProjects();
     }
     this.closeCreateModal();
-  }
-
-  private setMockData() {
-    this.projects.set([
-      { id: '1', name: 'E-Commerce Platform', description: 'Main shopping portal frontend', status: 'active', url: 'shop.example.com', score: 92, lastScanDate: new Date().toISOString(), issuesCount: 2 },
-      { id: '2', name: 'Internal Dashboard', description: 'Admin management interface', status: 'warning', url: 'admin.example.com', score: 71, lastScanDate: new Date(Date.now() - 86400000).toISOString(), issuesCount: 15 }
-    ]);
   }
 }
 

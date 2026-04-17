@@ -6,6 +6,9 @@ import { tap } from 'rxjs/operators';
 import { ApiResponse } from '../models/api-response.model';
 import { AuthData, LoginRequest, RegisterRequest } from '../models/auth.model';
 import { CacheService } from './cache.service';
+import { CookieService } from './cookie.service';
+import { PLATFORM_ID, Optional } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +16,11 @@ import { CacheService } from './cache.service';
 export class AuthService {
   private http = inject(HttpClient);
   private cacheService = inject(CacheService);
+  private cookieService = inject(CookieService);
+  private platformId = inject(PLATFORM_ID);
+  
+  // We can inject the Request object here if needed, but for now we'll pass it to getToken if available
+  // In Angular 18, we can also use TRANSFER_STATE or other mechanisms.
   private apiUrl = environment.apiUrl + '/auth';
 
   register(data: RegisterRequest): Observable<ApiResponse<AuthData>> {
@@ -42,8 +50,11 @@ export class AuthService {
 
 
   private setToken(token: string, remember: boolean = false) {
-    if (typeof window !== 'undefined') {
-      this.removeToken(); // Clear previous tokens from both storages
+    // 1. Set cookie for SSR and persistence
+    this.cookieService.setCookie('access_token', token, remember ? 30 : 1);
+    
+    // 2. Set localStorage/sessionStorage as backup/legacy storage for browser
+    if (isPlatformBrowser(this.platformId)) {
       if (remember) {
         localStorage.setItem('access_token', token);
       } else {
@@ -53,14 +64,25 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+    // 1. Try Cookie first (available on both SSR and Browser)
+    let token = this.cookieService.getCookie('access_token');
+    
+    // 2. Fallback to LocalStorage/SessionStorage if on browser
+    if (!token && isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+      
+      // If found in storage but not in cookie, sync it back to cookie for next SSR cycle
+      if (token) {
+        this.cookieService.setCookie('access_token', token, 1);
+      }
     }
-    return null;
+    
+    return token;
   }
 
   removeToken() {
-    if (typeof window !== 'undefined') {
+    this.cookieService.deleteCookie('access_token');
+    if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('access_token');
       sessionStorage.removeItem('access_token');
     }
