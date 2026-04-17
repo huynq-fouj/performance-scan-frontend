@@ -62,5 +62,9 @@ export class AuthService {
       sessionStorage.removeItem('access_token');
     }
   }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
 }
 

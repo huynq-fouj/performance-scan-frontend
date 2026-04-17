@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <div class="form-options mt-4 mb-6">
+  <!-- <div class="form-options mt-4 mb-6">
     <label class="checkbox-container">
       <input type="checkbox" class="checkbox-input" required>
       <span class="checkbox-box w-[18px] h-[18px]"></span>
@@ -64,9 +64,9 @@
         I agree to the <a href="javascript:void(0)" class="auth-link">Terms of Service</a> & <a href="javascript:void(0)" class="auth-link">Privacy Policy</a>
       </span>
     </label>
-  </div>
+  </div> -->
 
-  <button type="submit" [disabled]="isLoading" class="btn-primary w-full shadow-md hover:shadow-lg disabled:opacity-50">
+  <button type="submit" [disabled]="isLoading" class="btn-primary w-full shadow-md hover:shadow-lg disabled:opacity-50 mt-6">
     {{ isLoading ? 'Creating Account...' : 'Create Account' }}
   </button>
 </form>
@@ -75,7 +75,7 @@
   <span class="auth-divider-text">Or</span>
 </div>
 
-<div class="auth-providers">
+<!-- <div class="auth-providers">
   <button class="btn-secondary w-full flex justify-center items-center gap-2 font-medium">
     <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -85,7 +85,7 @@
     </svg>
     Sign up with Google
   </button>
-</div>
+</div> -->
 
 <div class="auth-footer mt-6">
   <p class="auth-footer-text">
