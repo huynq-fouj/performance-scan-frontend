@@ -26,6 +26,9 @@ export class OverviewComponent implements OnInit {
   // Latest scan for detailed metrics
   latestScan = signal<ScanRecord | null>(null);
 
+  // Device selection for new scans
+  selectedDevice = signal<'mobile' | 'desktop'>('desktop');
+
   ngOnInit() {
     this.projectService.currentProject$.pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -50,6 +53,10 @@ export class OverviewComponent implements OnInit {
         this.latestScan.set(null);
       }
     });
+  }
+
+  setDevice(device: 'mobile' | 'desktop') {
+    this.selectedDevice.set(device);
   }
 
   getScoreClass(score: number | undefined | null): string {
@@ -87,7 +94,7 @@ export class OverviewComponent implements OnInit {
     if (!p || this.isScanning()) return;
 
     this.isScanning.set(true);
-    this.scanService.createScan({ projectId: p.id }).subscribe({
+    this.scanService.createScan({ projectId: p.id }, this.selectedDevice()).subscribe({
       next: () => {
         // Parent handle polling, we just wait.
       },

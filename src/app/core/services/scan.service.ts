@@ -30,8 +30,8 @@ export class ScanService {
     return this.http.get<ApiResponse<ScanRecord>>(`${this.apiUrl}/${id}`);
   }
 
-  createScan(payload: CreateScanRequest): Observable<ApiResponse<ScanRecord>> {
-    return this.http.post<ApiResponse<ScanRecord>>(this.apiUrl, payload);
+  createScan(payload: CreateScanRequest, device?: 'mobile' | 'desktop'): Observable<ApiResponse<ScanRecord>> {
+    return this.http.post<ApiResponse<ScanRecord>>(this.apiUrl, { ...payload, device });
   }
 
   cancelScan(id: string): Observable<ApiResponse<ScanRecord>> {

@@ -271,6 +271,23 @@
   }
 }
 
+/* ===== Device Toggle ===== */
+.device-toggle {
+  @apply w-full flex bg-gray-100 p-1 rounded-xl border border-gray-200;
+  
+  .device-btn {
+    @apply flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-bold text-gray-500 transition-all hover:bg-white/50;
+    
+    svg {
+      @apply w-3.5 h-3.5;
+    }
+    
+    &.active {
+      @apply bg-white text-primary-600 shadow-sm border-gray-200 border;
+    }
+  }
+}
+
 /* ===== Loading Skeleton ===== */
 .loading-placeholder {
   @apply mt-6 space-y-6;
