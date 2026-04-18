@@ -29,4 +29,8 @@ export class ScanService {
   createScan(payload: CreateScanRequest): Observable<ApiResponse<ScanRecord>> {
     return this.http.post<ApiResponse<ScanRecord>>(this.apiUrl, payload);
   }
+
+  cancelScan(id: string): Observable<ApiResponse<ScanRecord>> {
+    return this.http.patch<ApiResponse<ScanRecord>>(`${this.apiUrl}/${id}/cancel`, {});
+  }
 }

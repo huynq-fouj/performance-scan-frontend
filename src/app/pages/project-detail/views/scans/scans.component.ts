@@ -116,6 +116,20 @@ export class ScansComponent implements OnInit, OnDestroy {
     }
   }
 
+  cancelScan(id: string) {
+    this.scanService.cancelScan(id).subscribe({
+      next: () => {
+        const p = this.project();
+        if (p) {
+          this.loadScans(p.id);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to cancel scan:', err);
+      }
+    });
+  }
+
   applyFilters() {
     let result = [...this.scans()];
 

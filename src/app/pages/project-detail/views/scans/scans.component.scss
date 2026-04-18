@@ -221,6 +221,16 @@ td {
   }
 }
 
+.stop-btn {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-500 bg-red-50
+         border border-red-100 rounded-lg hover:bg-red-100 hover:border-red-200 hover:text-red-600
+         transition-all;
+
+  svg {
+    @apply w-3.5 h-3.5;
+  }
+}
+
 /* ===== Empty State ===== */
 .empty-state {
   @apply bg-white rounded-b-xl border border-gray-100 flex flex-col items-center justify-center text-center py-16 px-6;

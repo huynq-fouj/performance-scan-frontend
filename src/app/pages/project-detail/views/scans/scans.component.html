@@ -131,12 +131,21 @@
 
                 <!-- Action -->
                 <td class="td-action">
-                  <button class="view-btn" title="View Details">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    Details
-                  </button>
+                  <div class="flex items-center gap-2">
+                    @if (scan.status === 'queued' || scan.status === 'running') {
+                      <button class="stop-btn flex items-center gap-1.5 px-3 py-1.5 rounded-md text-red-600 hover:bg-red-50 transition-colors min-w-[90px]" title="Force Stop" (click)="cancelScan(scan.id)">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"/></svg>
+                        <span class="text-xs font-medium">Stop</span>
+                      </button>
+                    } @else {
+                      <button class="view-btn flex items-center gap-1.5 px-3 py-1.5 min-w-[90px]" title="View Details">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span class="text-xs font-medium">Details</span>
+                      </button>
+                    }
+                  </div>
                 </td>
               </tr>
             }
