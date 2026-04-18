@@ -1,4 +1,4 @@
-<div class="project-card">
+<div class="project-card cursor-pointer" [routerLink]="['/dashboard/projects', project.id]">
   <div class="card-top">
     @if (project.logo) {
       <div class="project-logo">
@@ -12,7 +12,7 @@
     
     <div class="project-info">
       <h3 class="project-name" [title]="project.name">{{ project.name }}</h3>
-      <a [href]="project.url" target="_blank" class="project-url" [title]="project.url">{{ project.url }}</a>
+      <a (click)="$event.stopPropagation()" [href]="project.url" target="_blank" class="project-url" [title]="project.url">{{ project.url }}</a>
     </div>
     
     <div class="status-badge" [ngClass]="'status-' + project.status">

@@ -23,6 +23,42 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/projects/projects.component').then(m => m.ProjectsComponent),
       },
+      {
+        path: 'projects/:id',
+        loadComponent: () =>
+          import('./pages/project-detail/project-detail-layout.component').then(m => m.ProjectDetailLayoutComponent),
+        children: [
+          {
+            path: '',
+            redirectTo: 'overview',
+            pathMatch: 'full'
+          },
+          {
+            path: 'overview',
+            loadComponent: () => import('./pages/project-detail/views/overview/overview.component').then(m => m.OverviewComponent)
+          },
+          {
+            path: 'scans',
+            loadComponent: () => import('./pages/project-detail/views/scans/scans.component').then(m => m.ScansComponent)
+          },
+          {
+            path: 'reports',
+            loadComponent: () => import('./pages/project-detail/views/reports/reports.component').then(m => m.ReportsComponent)
+          },
+          {
+            path: 'compare',
+            loadComponent: () => import('./pages/project-detail/views/compare/compare.component').then(m => m.CompareComponent)
+          },
+          {
+            path: 'alerts',
+            loadComponent: () => import('./pages/project-detail/views/alerts/alerts.component').then(m => m.AlertsComponent)
+          },
+          {
+            path: 'settings',
+            loadComponent: () => import('./pages/project-detail/views/settings/settings.component').then(m => m.SettingsComponent)
+          }
+        ]
+      },
     ],
   },
   {
