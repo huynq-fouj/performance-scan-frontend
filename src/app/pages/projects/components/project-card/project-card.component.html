@@ -2,7 +2,10 @@
   <div class="card-top">
     @if (project.logo) {
       <div class="project-logo">
-        <img [src]="project.logo" [alt]="project.name" (error)="$any($event).target.style.display = 'none'" />
+        <img #cardLogo [src]="project.logo" [alt]="project.name" 
+             (error)="cardLogo.style.display = 'none'" 
+             (load)="cardLogo.style.display = 'block'" />
+        <span *ngIf="cardLogo.style.display === 'none'">{{ project.name.charAt(0).toUpperCase() }}</span>
       </div>
     } @else {
       <div class="project-logo-placeholder">

@@ -34,7 +34,10 @@
           <!-- Logo -->
           <div class="w-12 h-12 rounded-xl flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-100 bg-gray-50 text-primary-600 font-bold text-xl uppercase">
             @if (p.logo) {
-              <img [src]="p.logo" [alt]="p.name" class="w-full h-full object-cover" (error)="$any($event).target.style.display = 'none'" />
+              <img #projectLogo [src]="p.logo" [alt]="p.name" class="w-full h-full object-cover" 
+                   (error)="projectLogo.style.display = 'none'" 
+                   (load)="projectLogo.style.display = 'block'" />
+              <span *ngIf="projectLogo.style.display === 'none'">{{ p.name.charAt(0).toUpperCase() }}</span>
             } @else {
               {{ p.name.charAt(0).toUpperCase() }}
             }
