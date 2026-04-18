@@ -2,6 +2,7 @@ export interface ScanRecord {
   id: string;
   projectId: string;
   status: 'queued' | 'running' | 'success' | 'failed';
+  device?: 'mobile' | 'desktop';
   performanceScore?: number;
   accessibilityScore?: number;
   bestPracticesScore?: number;
@@ -28,6 +29,9 @@ export interface ScanRecord {
   screenshotUrl?: string;
   recommendations: string[];
   errorMessage?: string;
+
+  // Populated project info (for global scans list)
+  project?: { id: string; name: string; url: string };
 
   startedAt?: string | Date;
   completedAt?: string | Date;

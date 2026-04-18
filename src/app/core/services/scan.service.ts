@@ -37,4 +37,17 @@ export class ScanService {
   cancelScan(id: string): Observable<ApiResponse<ScanRecord>> {
     return this.http.patch<ApiResponse<ScanRecord>>(`${this.apiUrl}/${id}/cancel`, {});
   }
+
+  getAllScans(query?: { status?: string; projectId?: string; page?: number; limit?: number; startDate?: string; endDate?: string }): Observable<ApiResponse<ScanRecord[]>> {
+    let params = new HttpParams();
+    if (query) {
+      if (query.status && query.status !== 'all') params = params.set('status', query.status);
+      if (query.projectId) params = params.set('projectId', query.projectId);
+      if (query.page) params = params.set('page', query.page.toString());
+      if (query.limit) params = params.set('limit', query.limit.toString());
+      if (query.startDate) params = params.set('startDate', query.startDate);
+      if (query.endDate) params = params.set('endDate', query.endDate);
+    }
+    return this.http.get<ApiResponse<ScanRecord[]>>(`${this.apiUrl}/all`, { params });
+  }
 }
