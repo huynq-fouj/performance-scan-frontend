@@ -43,15 +43,8 @@ export class ProjectDetailLayoutComponent implements OnInit {
         }
       }),
       filter(params => !!params.get('id') && isPlatformBrowser(this.platformId)),
-      switchMap(params => this.projectService.getProject(params.get('id')!))
-    ).subscribe({
-      next: () => {
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      }
-    });
+      switchMap(params => this.projectService.getProject(params.get('id')!).pipe(finalize(() => this.isLoading.set(false))))
+    ).subscribe();
 
     // 2. Sync local signal with Global State
     this.projectService.currentProject$.pipe(
