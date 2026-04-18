@@ -75,7 +75,6 @@ export class SettingsComponent implements OnInit {
     this.projectService.updateProject(this.projectId, payload).subscribe({
       next: () => {
         this.isSaving.set(false);
-        console.log('Project updated successfully');
       },
       error: (err) => {
         console.error('Error updating project:', err);

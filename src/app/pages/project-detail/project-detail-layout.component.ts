@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from '../../core/services/project.service';
 import { Project } from '../../core/models/project.model';
-import { switchMap, of, tap, filter } from 'rxjs';
+import { switchMap, of, tap, filter, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-project-detail-layout',
@@ -45,10 +45,10 @@ export class ProjectDetailLayoutComponent implements OnInit {
       filter(params => !!params.get('id') && isPlatformBrowser(this.platformId)),
       switchMap(params => this.projectService.getProject(params.get('id')!))
     ).subscribe({
-      next: (res) => {
+      next: () => {
         this.isLoading.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.isLoading.set(false);
       }
     });
@@ -58,7 +58,6 @@ export class ProjectDetailLayoutComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(proj => {
       this.project.set(proj);
-      console.log('Subscribe 1')
     });
   }
 }
