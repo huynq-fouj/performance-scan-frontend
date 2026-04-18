@@ -52,5 +52,10 @@ export class ProjectDetailLayoutComponent implements OnInit {
     ).subscribe(proj => {
       this.project.set(proj);
     });
+
+    // 3. Cleanup on Destroy: Clear the global project state
+    this.destroyRef.onDestroy(() => {
+      this.projectService.setCurrentProject(null);
+    });
   }
 }
