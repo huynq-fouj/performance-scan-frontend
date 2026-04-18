@@ -1,4 +1,4 @@
-import { Component, inject, signal, DestroyRef, OnInit } from '@angular/core';
+import { Component, inject, signal, DestroyRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -14,7 +14,7 @@ import { ScanRecord } from '../../../../core/models/scan.model';
   templateUrl: './scans.component.html',
   styleUrl: './scans.component.scss'
 })
-export class ScansComponent implements OnInit {
+export class ScansComponent implements OnInit, OnDestroy {
   private projectService = inject(ProjectService);
   private scanService = inject(ScanService);
   private destroyRef = inject(DestroyRef);
@@ -28,6 +28,8 @@ export class ScansComponent implements OnInit {
   statusFilter = signal<string>('all');
   dateFrom = signal<string>('');
   dateTo = signal<string>('');
+  
+  private pollInterval: any;
 
   ngOnInit() {
     this.projectService.currentProject$.pipe(
@@ -40,6 +42,10 @@ export class ScansComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.stopPolling();
+  }
+
   loadScans(projectId: string) {
     this.isLoading.set(true);
     this.scanService.getScans(projectId).pipe(
@@ -49,14 +55,53 @@ export class ScansComponent implements OnInit {
         this.scans.set(res.data ?? []);
         this.applyFilters();
         this.isLoading.set(false);
+        this.checkPolling();
       },
       error: (err) => {
         console.error('Error loading scans:', err);
         this.scans.set([]);
         this.filteredScans.set([]);
         this.isLoading.set(false);
+        this.stopPolling();
       }
     });
+  }
+
+  checkPolling() {
+    const hasRunning = this.scans().some(s => s.status === 'queued' || s.status === 'running');
+    if (hasRunning && !this.pollInterval) {
+      this.startPolling();
+    } else if (!hasRunning && this.pollInterval) {
+      // Finished running
+      this.stopPolling();
+      const p = this.project();
+      if (p) {
+        this.projectService.getProject(p.id).subscribe();
+      }
+    }
+  }
+
+  startPolling() {
+    this.pollInterval = setInterval(() => {
+      const p = this.project();
+      if (p) {
+        this.scanService.getScans(p.id).subscribe({
+          next: (res) => {
+            if (!this.pollInterval) return; // In case it was stopped during request
+            this.scans.set(res.data ?? []);
+            this.applyFilters();
+            this.checkPolling();
+          }
+        });
+      }
+    }, 3000);
+  }
+
+  stopPolling() {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+      this.pollInterval = null;
+    }
   }
 
   applyFilters() {
