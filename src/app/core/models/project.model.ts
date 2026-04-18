@@ -8,6 +8,12 @@ export interface Project {
   autoScanFrequency: string;
   lastScanAt?: string | Date;
   lastScore?: number;
+  lastAccessibilityScore?: number;
+  lastBestPracticesScore?: number;
+  lastSeoScore?: number;
+  includeSeo?: boolean;
+  includeAccessibility?: boolean;
+  includeBestPractices?: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
 }
@@ -17,6 +23,9 @@ export interface CreateProjectRequest {
   url: string;
   description?: string;
   logo?: string;
+  includeSeo?: boolean;
+  includeAccessibility?: boolean;
+  includeBestPractices?: boolean;
 }
 
 export interface UpdateProjectRequest extends Partial<CreateProjectRequest> {

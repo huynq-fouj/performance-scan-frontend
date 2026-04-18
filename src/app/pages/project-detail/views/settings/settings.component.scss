@@ -1,9 +1,70 @@
+.settings-container {
+  @apply space-y-6 animate-fade-in;
+}
+
 .input-field {
   @apply w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all outline-none;
 }
 
 textarea.input-field {
-    @apply min-h-[100px];
+  @apply min-h-[100px];
+}
+
+.section-header {
+  @apply p-6 border-b border-gray-50;
+}
+
+.section-info {
+  @apply flex flex-col;
+}
+
+.section-title {
+  @apply text-lg font-bold text-gray-900;
+}
+
+.section-desc {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+/* Premium Toggle Switch */
+.toggle-item {
+  @apply flex items-center justify-between p-4 rounded-xl border border-gray-50 hover:border-primary-100 hover:bg-primary-50/5 transition-all cursor-pointer;
+}
+
+.toggle-label-group {
+  @apply flex flex-col gap-0.5;
+}
+
+.toggle-name {
+  @apply text-sm font-bold text-gray-800;
+}
+
+.toggle-desc {
+  @apply text-[11px] text-gray-400;
+}
+
+.switch {
+  @apply relative inline-block w-11 h-6 shrink-0;
+  
+  input {
+    @apply opacity-0 w-0 h-0;
+    
+    &:checked + .slider {
+      @apply bg-primary-600;
+      
+      &:before {
+        @apply translate-x-5;
+      }
+    }
+  }
+}
+
+.slider {
+  @apply absolute cursor-pointer inset-0 bg-gray-200 transition-all duration-300 rounded-full;
+  
+  &:before {
+    @apply absolute content-[''] h-4 w-4 left-1 bottom-1 bg-white transition-all duration-300 rounded-full shadow-sm;
+  }
 }
 
 .shadow-elevated {

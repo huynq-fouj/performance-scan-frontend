@@ -3,6 +3,9 @@ export interface ScanRecord {
   projectId: string;
   status: 'queued' | 'running' | 'success' | 'failed';
   performanceScore?: number;
+  accessibilityScore?: number;
+  bestPracticesScore?: number;
+  seoScore?: number;
 
   // Core Web Vitals
   fcp?: number;

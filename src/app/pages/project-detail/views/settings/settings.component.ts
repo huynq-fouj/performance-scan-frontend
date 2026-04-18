@@ -37,7 +37,10 @@ export class SettingsComponent implements OnInit {
     logo: ['', { 
       validators: [Validators.pattern(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})(\/[^\s]*)?$/)],
       updateOn: 'blur' 
-    }]
+    }],
+    includeSeo: [true],
+    includeAccessibility: [true],
+    includeBestPractices: [true]
   });
 
   ngOnInit() {
@@ -54,7 +57,10 @@ export class SettingsComponent implements OnInit {
           name: proj.name,
           url: proj.url,
           description: proj.description,
-          logo: proj.logo || ''
+          logo: proj.logo || '',
+          includeSeo: proj.includeSeo ?? true,
+          includeAccessibility: proj.includeAccessibility ?? true,
+          includeBestPractices: proj.includeBestPractices ?? true
         }, { emitEvent: false }); // Prevents potential infinite loop/unnecessary checks
         this.isLoading.set(false);
       } else if (!this.projectService.currentProjectValue) {

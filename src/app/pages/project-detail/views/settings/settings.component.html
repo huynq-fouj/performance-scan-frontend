@@ -1,4 +1,4 @@
-<div class="mt-6 space-y-6">
+<div class="mt-6 space-y-6 pb-12">
   <!-- Loading State -->
   @if (isLoading()) {
     <div class="p-12 bg-white rounded-xl border border-gray-100 shadow-sm flex flex-col items-center justify-center">
@@ -10,60 +10,123 @@
       <p class="mt-4 text-sm font-medium text-gray-500">Loading settings...</p>
     </div>
   } @else {
-    <!-- General Settings -->
-    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden animate-fade-in">
-      <div class="p-6 border-b border-gray-50">
-        <h3 class="text-lg font-bold text-gray-900">General Settings</h3>
-        <p class="text-xs text-gray-500">Manage basic information for your project.</p>
-      </div>
+    
+    <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="space-y-6">
       
-      <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="p-6 space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- General Settings -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden animate-fade-in">
+        <div class="section-header">
+          <h3 class="section-title">General Settings</h3>
+          <p class="section-desc">Manage basic information for your project.</p>
+        </div>
+        
+        <div class="p-6 space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700">Project Name</label>
+              <input type="text" formControlName="name" class="input-field" placeholder="My Website" />
+              @if (settingsForm.get('name')?.touched && settingsForm.get('name')?.invalid) {
+                <p class="text-xs text-red-500 mt-1">Please enter a valid project name.</p>
+              }
+            </div>
+
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700">Logo URL</label>
+              <input type="text" formControlName="logo" class="input-field" placeholder="https://example.com/logo.png" />
+              @if (settingsForm.get('logo')?.touched && settingsForm.get('logo')?.invalid) {
+                <p class="text-xs text-red-500 mt-1">Please enter a valid image URL.</p>
+              }
+            </div>
+          </div>
+
           <div class="space-y-1">
-            <label class="block text-sm font-semibold text-gray-700">Project Name</label>
-            <input type="text" formControlName="name" class="input-field" placeholder="My Website" />
-            @if (settingsForm.get('name')?.touched && settingsForm.get('name')?.invalid) {
-              <p class="text-xs text-red-500 mt-1">Please enter a valid project name.</p>
+            <label class="block text-sm font-semibold text-gray-700">Website URL</label>
+            <input type="text" formControlName="url" class="input-field" placeholder="https://example.com" />
+            @if (settingsForm.get('url')?.touched && settingsForm.get('url')?.invalid) {
+              <p class="text-xs text-red-500 mt-1">Please enter a valid URL.</p>
             }
           </div>
 
           <div class="space-y-1">
-            <label class="block text-sm font-semibold text-gray-700">Logo URL</label>
-            <input type="text" formControlName="logo" class="input-field" placeholder="https://example.com/logo.png" />
-            @if (settingsForm.get('logo')?.touched && settingsForm.get('logo')?.invalid) {
-              <p class="text-xs text-red-500 mt-1">Please enter a valid image URL.</p>
-            }
+            <label class="block text-sm font-semibold text-gray-700">Description</label>
+            <textarea formControlName="description" rows="3" class="input-field resize-none" placeholder="Short description of the site..."></textarea>
           </div>
         </div>
+      </div>
 
-        <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Website URL</label>
-          <input type="text" formControlName="url" class="input-field" placeholder="https://example.com" />
-          @if (settingsForm.get('url')?.touched && settingsForm.get('url')?.invalid) {
-            <p class="text-xs text-red-500 mt-1">Please enter a valid URL.</p>
+      <!-- Categories & Reporting -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden animate-fade-in">
+        <div class="section-header">
+          <h3 class="section-title">Metrics & Reporting</h3>
+          <p class="section-desc">Choose which Lighthouse categories to verify and display.</p>
+        </div>
+        
+        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <!-- SEO Toggle -->
+          <label class="toggle-item">
+            <div class="toggle-label-group">
+              <span class="toggle-name">SEO Analysis</span>
+              <span class="toggle-desc">Search engine visibility</span>
+            </div>
+            <div class="switch">
+              <input type="checkbox" formControlName="includeSeo">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+          <!-- Accessibility Toggle -->
+          <label class="toggle-item">
+            <div class="toggle-label-group">
+              <span class="toggle-name">Accessibility</span>
+              <span class="toggle-desc">Ensure site usage for all</span>
+            </div>
+            <div class="switch">
+              <input type="checkbox" formControlName="includeAccessibility">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+          <!-- Best Practices Toggle -->
+          <label class="toggle-item">
+            <div class="toggle-label-group">
+              <span class="toggle-name">Best Practices</span>
+              <span class="toggle-desc">Modern web standards</span>
+            </div>
+            <div class="switch">
+              <input type="checkbox" formControlName="includeBestPractices">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+        </div>
+        <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-50 flex items-start gap-3">
+          <svg class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p class="text-[11px] text-gray-500 italic">
+            Performance analysis is mandatory and cannot be disabled. Disabling metrics will speed up scan times as Lighthouse will skip those audit categories.
+          </p>
+        </div>
+      </div>
+
+      <!-- Save Bar -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center justify-between animate-fade-in">
+        <p class="text-xs text-gray-400 pl-2">Last updated: {{ project()?.updatedAt | date:'medium' }}</p>
+        <button type="submit" [disabled]="settingsForm.invalid || isSaving()" class="btn-primary min-w-[140px] flex items-center justify-center gap-2">
+          @if (isSaving()) {
+            <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
+            Saving...
+          } @else {
+            Save All Changes
           }
-        </div>
+        </button>
+      </div>
 
-        <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Description</label>
-          <textarea formControlName="description" rows="3" class="input-field resize-none" placeholder="Short description of the site..."></textarea>
-        </div>
-
-        <div class="pt-4 flex justify-end">
-          <button type="submit" [disabled]="settingsForm.invalid || isSaving()" class="btn-primary flex items-center gap-2">
-            @if (isSaving()) {
-              <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
-              Saving...
-            } @else {
-              Save Changes
-            }
-          </button>
-        </div>
-      </form>
-    </div>
+    </form>
 
     <!-- Danger Zone -->
-    <div class="bg-white rounded-xl border border-red-100 shadow-sm overflow-hidden animate-fade-in">
+    <div class="bg-white rounded-xl border border-red-100 shadow-sm overflow-hidden animate-fade-in mt-12">
       <div class="p-6 border-b border-red-50 bg-red-50/10">
         <h3 class="text-lg font-bold text-red-700">Danger Zone</h3>
         <p class="text-xs text-red-600/70">Irreversible actions for this project.</p>
@@ -72,6 +135,7 @@
       <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h4 class="text-sm font-bold text-gray-900">Delete this project</h4>
+          <p class="text-sm text-gray-500 mt-1 uppercase tracking-tight text-[11px] font-bold text-red-400">Permanently remove everything</p>
           <p class="text-sm text-gray-500 mt-1">Once you delete a project, there is no going back. All scan history, reports, and settings will be permanently lost.</p>
         </div>
         <button type="button" (click)="showDeleteModal.set(true)" class="btn-primary bg-red-600 hover:bg-red-700 border-red-600 text-white whitespace-nowrap">
