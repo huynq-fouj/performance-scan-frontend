@@ -1,6 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ProjectService } from '../../core/services/project.service';
+import { Project } from '../../core/models/project.model';
 
 @Component({
   selector: 'app-project-detail-layout',
@@ -11,15 +13,12 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 })
 export class ProjectDetailLayoutComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private projectService = inject(ProjectService);
   
   projectId: string | null = null;
-  // Placeholder project info
-  project = {
-    name: 'Loading...',
-    url: '',
-    logo: '',
-    status: 'active'
-  };
+  isLoading = signal<boolean>(true);
+  project = signal<Project | null>(null);
 
   tabs = [
     { name: 'Overview', path: 'overview' },
@@ -31,15 +30,35 @@ export class ProjectDetailLayoutComponent implements OnInit {
   ];
 
   ngOnInit() {
+    // 1. Listen for route changes
     this.route.paramMap.subscribe(params => {
       this.projectId = params.get('id');
-      // Later: Fetch actual project data using this.projectId
-      this.project = {
-        name: 'Demo Project',
-        url: 'https://example.com',
-        logo: '',
-        status: 'active'
-      };
+      if (this.projectId) {
+        this.fetchProject(this.projectId);
+      } else {
+        this.router.navigate(['/projects']);
+      }
+    });
+
+    // 2. Sync with service state (updates from child views)
+    this.projectService.currentProject$.subscribe(proj => {
+      if (proj) {
+        this.project.set(proj);
+      }
+    });
+  }
+
+  fetchProject(id: string) {
+    this.isLoading.set(true);
+    this.projectService.getProject(id).subscribe({
+      next: (res) => {
+        this.project.set(res.data);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error fetching project:', err);
+        this.isLoading.set(false);
+      }
     });
   }
 }

@@ -1,0 +1,11 @@
+.input-field {
+  @apply w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all outline-none;
+}
+
+textarea.input-field {
+    @apply min-h-[100px];
+}
+
+.shadow-elevated {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}

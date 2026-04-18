@@ -1,15 +1,28 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { HttpInterceptorFn, HttpErrorResponse, HttpContextToken } from '@angular/common/http';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { catchError, NEVER, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
+
+/**
+ * Context token to allow API calls during SSR
+ */
+export const USE_SSR = new HttpContextToken<boolean>(() => false);
 
 /**
  * API interceptor - prepends base API URL to relative requests
  * and sets default headers.
  */
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
+  const platformId = inject(PLATFORM_ID);
+  
+  // Block API calls on server-side unless USE_SSR context is explicitly provided
+  if (!isPlatformBrowser(platformId) && !req.context.get(USE_SSR)) {
+    return NEVER;
+  }
+
   // Only modify relative URLs (not absolute URLs starting with http)
   if (req.url.startsWith('http://') || req.url.startsWith('https://')) {
     return next(req);

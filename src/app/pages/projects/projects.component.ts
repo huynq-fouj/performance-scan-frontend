@@ -28,11 +28,6 @@ export class ProjectsComponent implements OnInit {
   }
 
   loadProjects() {
-    // Only fetch on client side to show loading state and avoid SSR auth issues
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     this.isLoading.set(true);
     this.projectService.getProjects()
     .pipe(finalize(() => this.isLoading.set(false)))

@@ -10,61 +10,92 @@
     </a>
   </div>
 
-  <!-- Project Header -->
-  <div class="bg-white rounded-t-xl border border-gray-100 shadow-sm border-b-0 overflow-hidden">
-    <div class="p-4 sm:px-6 sm:py-5 flex items-center gap-4">
-      <!-- Logo -->
-      <div class="w-12 h-12 rounded-xl flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-100 bg-gray-50 text-primary-600 font-bold text-xl uppercase">
-        @if (project.logo) {
-          <img [src]="project.logo" [alt]="project.name" class="w-full h-full object-cover" (error)="$any($event).target.style.display = 'none'" />
-        } @else {
-          {{ project.name.charAt(0).toUpperCase() }}
-        }
+  @if (isLoading()) {
+    <div class="flex items-center justify-center py-20 bg-white rounded-xl border border-gray-100 shadow-sm transition-all duration-300">
+      <div class="flex flex-col items-center">
+        <svg class="w-10 h-10 text-primary-600 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="2" x2="12" y2="6"></line>
+          <line x1="12" y1="18" x2="12" y2="22"></line>
+          <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+          <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+          <line x1="2" y1="12" x2="6" y2="12"></line>
+          <line x1="18" y1="12" x2="22" y2="12"></line>
+          <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+          <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+        </svg>
+        <p class="mt-4 text-sm font-medium text-gray-500">Loading project details...</p>
       </div>
+    </div>
+  } @else {
+    @if (project(); as p) {
+      <!-- Project Header -->
+      <div class="bg-white rounded-t-xl border border-gray-100 shadow-sm border-b-0 overflow-hidden">
+        <div class="p-4 sm:px-6 sm:py-5 flex items-center gap-4">
+          <!-- Logo -->
+          <div class="w-12 h-12 rounded-xl flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-100 bg-gray-50 text-primary-600 font-bold text-xl uppercase">
+            @if (p.logo) {
+              <img [src]="p.logo" [alt]="p.name" class="w-full h-full object-cover" (error)="$any($event).target.style.display = 'none'" />
+            } @else {
+              {{ p.name.charAt(0).toUpperCase() }}
+            }
+          </div>
 
-      <!-- Info -->
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-3 mb-1">
-          <h1 class="text-xl font-bold text-gray-900 truncate">{{ project.name }}</h1>
-          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700">
-            {{ project.status }}
-          </span>
+          <!-- Info -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-1">
+              <h1 class="text-xl font-bold text-gray-900 truncate">{{ p.name }}</h1>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700">
+                {{ p.status }}
+              </span>
+            </div>
+            <a [href]="p.url" target="_blank" class="text-sm text-primary-600 hover:text-primary-700 font-medium no-underline inline-flex items-center">
+              {{ p.url }}
+              <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </a>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-3 shrink-0">
+            <button class="btn-primary py-1.5 px-3 text-sm">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Run Scan
+            </button>
+          </div>
         </div>
-        <a [href]="project.url" target="_blank" class="text-sm text-primary-600 hover:text-primary-700 font-medium no-underline inline-flex items-center">
-          {{ project.url }}
-          <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-        </a>
+
+        <!-- Tabs Navigation -->
+        <div class="px-5 sm:px-6 bg-white border-b border-gray-100">
+          <nav class="-mb-px flex space-x-6 sm:space-x-8 overflow-x-auto scroolbar-hide" aria-label="Tabs">
+            <!-- Loop over tabs -->
+            @for (tab of tabs; track tab.path) {
+              <a [routerLink]="['./', tab.path]" 
+                 routerLinkActive="active-tab"
+                 class="tab-link outline-none">
+                {{ tab.name }}
+              </a>
+            }
+          </nav>
+        </div>
       </div>
 
-      <!-- Actions -->
-      <div class="flex items-center gap-3 shrink-0">
-        <button class="btn-primary py-1.5 px-3 text-sm">
-          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      <!-- Router Outlet for Tabs -->
+      <div class="mt-4">
+        <router-outlet></router-outlet>
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-red-50 text-center">
+        <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
           </svg>
-          Run Scan
-        </button>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900">Project Not Found</h3>
+        <p class="mt-1 text-sm text-gray-500">The project you are looking for might have been deleted or moved.</p>
+        <a routerLink="/dashboard/projects" class="mt-6 text-primary-600 font-bold hover:underline">Go back to projects</a>
       </div>
-    </div>
-
-    <!-- Tabs Navigation -->
-    <div class="px-5 sm:px-6 bg-white border-b border-gray-100">
-      <nav class="-mb-px flex space-x-6 sm:space-x-8 overflow-x-auto scroolbar-hide" aria-label="Tabs">
-        <!-- Loop over tabs -->
-        @for (tab of tabs; track tab.path) {
-          <a [routerLink]="['./', tab.path]" 
-             routerLinkActive="active-tab"
-             class="tab-link outline-none">
-            {{ tab.name }}
-          </a>
-        }
-      </nav>
-    </div>
-  </div>
-
-  <!-- Router Outlet for Tabs -->
-  <div class="mt-4">
-    <router-outlet></router-outlet>
-  </div>
+    }
+  }
 </div>

@@ -16,3 +16,7 @@ export interface CreateProjectRequest {
   description?: string;
   logo?: string;
 }
+
+export interface UpdateProjectRequest extends Partial<CreateProjectRequest> {
+  isActive?: boolean;
+}

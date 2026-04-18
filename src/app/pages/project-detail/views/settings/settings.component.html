@@ -1,0 +1,120 @@
+<div class="mt-6 space-y-6">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="p-12 bg-white rounded-xl border border-gray-100 shadow-sm flex flex-col items-center justify-center">
+      <svg class="w-8 h-8 text-primary-600 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M12 2v4"></path>
+        <path d="M12 18v4"></path>
+      </svg>
+      <p class="mt-4 text-sm font-medium text-gray-500">Loading settings...</p>
+    </div>
+  } @else {
+    <!-- General Settings -->
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden animate-fade-in">
+      <div class="p-6 border-b border-gray-50">
+        <h3 class="text-lg font-bold text-gray-900">General Settings</h3>
+        <p class="text-xs text-gray-500">Manage basic information for your project.</p>
+      </div>
+      
+      <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-1">
+            <label class="block text-sm font-semibold text-gray-700">Project Name</label>
+            <input type="text" formControlName="name" class="input-field" placeholder="My Website" />
+            @if (settingsForm.get('name')?.touched && settingsForm.get('name')?.invalid) {
+              <p class="text-xs text-red-500 mt-1">Please enter a valid project name.</p>
+            }
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-sm font-semibold text-gray-700">Logo URL</label>
+            <input type="text" formControlName="logo" class="input-field" placeholder="https://example.com/logo.png" />
+            @if (settingsForm.get('logo')?.touched && settingsForm.get('logo')?.invalid) {
+              <p class="text-xs text-red-500 mt-1">Please enter a valid image URL.</p>
+            }
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-sm font-semibold text-gray-700">Website URL</label>
+          <input type="text" formControlName="url" class="input-field" placeholder="https://example.com" />
+          @if (settingsForm.get('url')?.touched && settingsForm.get('url')?.invalid) {
+            <p class="text-xs text-red-500 mt-1">Please enter a valid URL.</p>
+          }
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-sm font-semibold text-gray-700">Description</label>
+          <textarea formControlName="description" rows="3" class="input-field resize-none" placeholder="Short description of the site..."></textarea>
+        </div>
+
+        <div class="pt-4 flex justify-end">
+          <button type="submit" [disabled]="settingsForm.invalid || isSaving()" class="btn-primary flex items-center gap-2">
+            @if (isSaving()) {
+              <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
+              Saving...
+            } @else {
+              Save Changes
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="bg-white rounded-xl border border-red-100 shadow-sm overflow-hidden animate-fade-in">
+      <div class="p-6 border-b border-red-50 bg-red-50/10">
+        <h3 class="text-lg font-bold text-red-700">Danger Zone</h3>
+        <p class="text-xs text-red-600/70">Irreversible actions for this project.</p>
+      </div>
+
+      <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h4 class="text-sm font-bold text-gray-900">Delete this project</h4>
+          <p class="text-sm text-gray-500 mt-1">Once you delete a project, there is no going back. All scan history, reports, and settings will be permanently lost.</p>
+        </div>
+        <button type="button" (click)="showDeleteModal.set(true)" class="btn-primary bg-red-600 hover:bg-red-700 border-red-600 text-white whitespace-nowrap">
+          Delete Project
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal()) {
+  <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-all" (click)="!isDeleting() && showDeleteModal.set(false)"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative bg-white w-full max-w-md rounded-2xl shadow-elevated overflow-hidden animate-slide-up">
+      <div class="p-6 text-center">
+        <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1v3M4 7h16"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Are you sure?</h3>
+        <p class="text-sm text-gray-500 mb-6">
+          This action will permanently delete <span class="font-bold text-gray-700">{{ project()?.name }}</span> and all associated data. This cannot be undone.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button type="button" [disabled]="isDeleting()" (click)="showDeleteModal.set(false)" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors">
+            Cancel
+          </button>
+          <button type="button" [disabled]="isDeleting()" (click)="deleteProject()" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
+            @if (isDeleting()) {
+              <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
+              Deleting...
+            } @else {
+              Yes, Delete
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
