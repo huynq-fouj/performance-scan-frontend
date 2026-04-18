@@ -98,6 +98,10 @@ export class OverviewComponent implements OnInit {
     });
   }
 
+  stopScan() {
+    this.isScanning.set(false);
+  }
+
   getVitalsClass(type: 'lcp' | 'cls' | 'tbt', value: number | undefined | null): string {
     if (value === undefined || value === null) return 'score-na';
     

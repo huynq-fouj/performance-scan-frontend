@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, PLATFORM_ID, signal, DestroyRef, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, signal, DestroyRef, OnDestroy, effect } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -29,6 +29,18 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
   isScanning = this.scanService.isScanning;
   private pollInterval: any;
 
+  constructor() {
+    effect(() => {
+      if (this.isScanning()) {
+        if (!this.pollInterval && this.projectId) {
+          this.startPolling(this.projectId);
+        }
+      } else {
+        this.stopPolling();
+      }
+    });
+  }
+
   tabs = [
     { name: 'Overview', path: 'overview' },
     { name: 'Scans', path: 'scans' },
@@ -37,7 +49,6 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-    // 1. Reactive Data Fetching
     this.route.paramMap.pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(params => {
@@ -45,6 +56,7 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
         this.projectId = id;
         if (id && isPlatformBrowser(this.platformId)) {
           this.isLoading.set(true);
+          this.isScanning.set(false); // Clear previous project's global scanning state
           this.checkInitialScanStatus(id);
         }
       }),
