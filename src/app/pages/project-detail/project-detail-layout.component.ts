@@ -1,8 +1,10 @@
-import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, signal, DestroyRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from '../../core/services/project.service';
 import { Project } from '../../core/models/project.model';
+import { switchMap, of, tap, filter } from 'rxjs';
 
 @Component({
   selector: 'app-project-detail-layout',
@@ -15,6 +17,7 @@ export class ProjectDetailLayoutComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
   private projectService = inject(ProjectService);
+  private destroyRef = inject(DestroyRef);
   
   projectId: string | null = null;
   isLoading = signal<boolean>(true);
@@ -30,35 +33,32 @@ export class ProjectDetailLayoutComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.projectId = params.get('id');
-      if (this.projectId) {
-        this.fetchProject(this.projectId);
-      }
-    });
-
-    this.projectService.currentProject$.subscribe(proj => {
-      if (proj) {
-        this.project.set(proj);
-      }
-    });
-  }
-
-  fetchProject(id: string) {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    this.isLoading.set(true);
-    this.projectService.getProject(id).subscribe({
+    // 1. Reactive Data Fetching (Cancels previous requests automatically)
+    this.route.paramMap.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap(params => {
+        this.projectId = params.get('id');
+        if (this.projectId && isPlatformBrowser(this.platformId)) {
+          this.isLoading.set(true);
+        }
+      }),
+      filter(params => !!params.get('id') && isPlatformBrowser(this.platformId)),
+      switchMap(params => this.projectService.getProject(params.get('id')!))
+    ).subscribe({
       next: (res) => {
-        this.project.set(res.data);
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Error fetching project:', err);
         this.isLoading.set(false);
       }
+    });
+
+    // 2. Sync local signal with Global State
+    this.projectService.currentProject$.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(proj => {
+      this.project.set(proj);
+      console.log('Subscribe 1')
     });
   }
 }

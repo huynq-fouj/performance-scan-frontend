@@ -1,7 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from '../../../../core/services/project.service';
 import { Project, UpdateProjectRequest } from '../../../../core/models/project.model';
 
@@ -17,46 +18,48 @@ export class SettingsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private projectService = inject(ProjectService);
+  private destroyRef = inject(DestroyRef);
 
   projectId: string | null = null;
   project = signal<Project | null>(null);
-  isLoading = signal<boolean>(true);
+  isLoading = signal<boolean>(!this.projectService.currentProjectValue);
   isSaving = signal<boolean>(false);
   isDeleting = signal<boolean>(false);
   showDeleteModal = signal<boolean>(false);
 
   settingsForm = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(100)]],
-    url: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)?(localhost|(\d{1,3}\.){3}\d{1,3}|([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,})(:\d+)?(\/.*)?$/)]],
-    description: [''],
-    logo: ['', [Validators.pattern(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/)]]
+    name: ['', { validators: [Validators.required, Validators.maxLength(100)], updateOn: 'change' }],
+    url: ['', { 
+      validators: [Validators.required, Validators.pattern(/^(https?:\/\/)?([^\s:/]+\.[^\s:/]+)(:\d+)?(\/.*)?$/)],
+      updateOn: 'blur' 
+    }],
+    description: ['', { updateOn: 'blur' }],
+    logo: ['', { 
+      validators: [Validators.pattern(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})(\/[^\s]*)?$/)],
+      updateOn: 'blur' 
+    }]
   });
 
   ngOnInit() {
-    this.route.parent?.paramMap.subscribe(params => {
+    // 1. Get Project ID
+    this.route.parent?.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.projectId = params.get('id');
-      if (this.projectId) {
-        this.fetchProject(this.projectId);
-      }
     });
-  }
 
-  fetchProject(id: string) {
-    this.isLoading.set(true);
-    this.projectService.getProject(id).subscribe({
-      next: (res) => {
-        this.project.set(res.data);
+    // 2. Listen to project data updates
+    this.projectService.currentProject$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(proj => {
+      if (proj) {
+        this.project.set(proj);
         this.settingsForm.patchValue({
-          name: res.data.name,
-          url: res.data.url,
-          description: res.data.description,
-          logo: res.data.logo || ''
-        });
+          name: proj.name,
+          url: proj.url,
+          description: proj.description,
+          logo: proj.logo || ''
+        }, { emitEvent: false }); // Prevents potential infinite loop/unnecessary checks
         this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error fetching project:', err);
-        this.isLoading.set(false);
+      } else if (!this.projectService.currentProjectValue) {
+        // Only show loading if we really don't have data
+        this.isLoading.set(true);
       }
     });
   }

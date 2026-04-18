@@ -45,15 +45,17 @@ export class CreateProjectModalComponent {
         // Fallback for demo purposes if backend fails:
         const payload = this.createForm.value;
         const newProj: Project = {
-           id: Math.random().toString(36).substr(2, 9),
+           id: Math.random().toString(36).substring(2, 9),
            name: payload.name || '',
            url: payload.url || '',
            description: payload.description || '',
            logo: payload.logo || '',
-           status: 'active',
-           score: 100,
-           issuesCount: 0,
-           lastScanDate: new Date().toISOString()
+           isActive: true,
+           autoScanFrequency: 'weekly',
+           lastScore: 0,
+           lastScanAt: undefined,
+           createdAt: new Date(),
+           updatedAt: new Date()
         };
         this.created.emit(newProj);
       }

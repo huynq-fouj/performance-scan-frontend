@@ -15,6 +15,10 @@ export class ProjectService {
   private currentProjectSubject = new BehaviorSubject<Project | null>(null);
   currentProject$ = this.currentProjectSubject.asObservable();
 
+  get currentProjectValue(): Project | null {
+    return this.currentProjectSubject.value;
+  }
+
   getProjects(): Observable<ApiResponse<Project[]>> {
     return this.http.get<ApiResponse<Project[]>>(this.apiUrl);
   }
