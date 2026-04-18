@@ -6,7 +6,7 @@
     <div class="top-row">
 
       <!-- Performance Score Card -->
-      <div class="card score-card">
+      <div class="card score-card border-t-4 transition-colors duration-500" [ngClass]="getScoreClass(p.lastScore).replace('score-', 'border-')">
         <div class="card-header">
           <h3 class="card-title">Performance</h3>
           <span class="badge" [ngClass]="getScoreClass(p.lastScore)">
@@ -91,7 +91,7 @@
                     </div>
                   </div>
                   <!-- Mini Bar -->
-                  <div class="mt-4 h-1.5 w-full bg-gray-50 rounded-full overflow-hidden">
+                  <div class="mt-4 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
                     <div class="h-full transition-all duration-1000" [ngClass]="getScoreClass(p.lastSeoScore).replace('score-', 'bg-')" [style.width.%]="p.lastSeoScore ?? 0"></div>
                   </div>
                 </div>

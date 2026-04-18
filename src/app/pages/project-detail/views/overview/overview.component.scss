@@ -42,6 +42,18 @@
   --score-color: #9ca3af;
 }
 
+/* Background helpers */
+.bg-good { @apply bg-emerald-500; }
+.bg-average { @apply bg-amber-500; }
+.bg-poor { @apply bg-red-500; }
+.bg-na { @apply bg-gray-300; }
+
+/* Border helpers */
+.border-good { @apply border-emerald-500; }
+.border-average { @apply border-amber-500; }
+.border-poor { @apply border-red-500; }
+.border-na { @apply border-gray-300; }
+
 .badge.score-good { @apply bg-emerald-50 text-emerald-700; }
 .badge.score-average { @apply bg-amber-50 text-amber-700; }
 .badge.score-poor { @apply bg-red-50 text-red-600; }
