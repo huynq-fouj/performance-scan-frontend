@@ -106,8 +106,9 @@ export class OverviewComponent implements OnInit {
     if (value === undefined || value === null) return 'score-na';
     
     if (type === 'lcp') {
-      if (value <= 2.5) return 'score-good';
-      if (value <= 4.0) return 'score-average';
+      const seconds = value / 1000;
+      if (seconds <= 2.5) return 'score-good';
+      if (seconds <= 4.0) return 'score-average';
       return 'score-poor';
     }
     if (type === 'cls') {
@@ -128,7 +129,8 @@ export class OverviewComponent implements OnInit {
     
     if (type === 'lcp') {
       // 0-8s scale
-      return Math.min((value / 8) * 100, 100);
+      const seconds = value / 1000;
+      return Math.min((seconds / 8) * 100, 100);
     }
     if (type === 'cls') {
       // 0-0.5 scale

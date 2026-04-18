@@ -174,7 +174,7 @@
             <span class="vital-full-name">Largest Contentful Paint</span>
           </div>
           <div class="vital-value-row">
-            <span class="vital-value" [ngClass]="getVitalsClass('lcp', latestScan()?.lcp)">{{ (latestScan()?.lcp || 0) | number:'1.1-2' }}</span>
+            <span class="vital-value" [ngClass]="getVitalsClass('lcp', latestScan()?.lcp)">{{ ((latestScan()?.lcp || 0) / 1000) | number:'1.1-2' }}</span>
             <span class="vital-unit">s</span>
           </div>
           <div class="vital-bar-track">

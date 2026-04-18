@@ -100,23 +100,23 @@
           <div class="mc-compare">
             <!-- A -->
             <div class="val-group">
-              <span class="val-num">{{ scanA()?.lcp || 0 }}</span>
+              <span class="val-num">{{ ((scanA()?.lcp || 0) / 1000) | number:'1.1-2' }}</span>
               <div class="val-bar-wrapper">
-                <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.lcp, 5)"></div>
+                <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.lcp, 10000)"></div>
               </div>
             </div>
             <!-- B -->
             <div class="val-group">
-              <span class="val-num">{{ scanB()?.lcp || 0 }}</span>
+              <span class="val-num">{{ ((scanB()?.lcp || 0) / 1000) | number:'1.1-2' }}</span>
               <div class="val-bar-wrapper">
-                <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.lcp, 5)"></div>
+                <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.lcp, 10000)"></div>
               </div>
             </div>
           </div>
           <div class="mc-footer">
             @if (calculateDelta(scanA()?.lcp, scanB()?.lcp); as delta) {
               <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
-                {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.1-2' }}s ({{ Math.abs(delta.percent) | number:'1.0-0' }}%)
+                {{ delta.diff > 0 ? '+' : '' }}{{ (delta.diff / 1000) | number:'1.1-2' }}s ({{ Math.abs(delta.percent) | number:'1.0-0' }}%)
               </div>
               <span class="footer-text">{{ delta.isBetter ? 'Faster load time' : 'Slower load time' }}</span>
             }
@@ -131,13 +131,13 @@
           </div>
           <div class="mc-compare">
             <div class="val-group">
-              <span class="val-num">{{ scanA()?.cls || 0 }}</span>
+              <span class="val-num">{{ (scanA()?.cls || 0) | number:'1.1-4' }}</span>
               <div class="val-bar-wrapper">
                 <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.cls, 0.5)"></div>
               </div>
             </div>
             <div class="val-group">
-              <span class="val-num">{{ scanB()?.cls || 0 }}</span>
+              <span class="val-num">{{ (scanB()?.cls || 0) | number:'1.1-4' }}</span>
               <div class="val-bar-wrapper">
                 <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.cls, 0.5)"></div>
               </div>
