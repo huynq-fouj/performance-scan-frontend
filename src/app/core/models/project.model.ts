@@ -1,13 +1,15 @@
 export interface Project {
   id: string;
   name: string;
-  description: string;
-  status: 'active' | 'archived' | 'warning' | 'error';
-  lastScanDate: string;
-  score: number;
   url: string;
-  issuesCount: number;
+  description?: string;
   logo?: string;
+  isActive: boolean;
+  autoScanFrequency: string;
+  lastScanAt?: string | Date;
+  lastScore?: number;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 export interface CreateProjectRequest {

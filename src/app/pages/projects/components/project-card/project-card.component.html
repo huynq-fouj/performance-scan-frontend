@@ -15,24 +15,24 @@
       <a (click)="$event.stopPropagation()" [href]="project.url" target="_blank" class="project-url" [title]="project.url">{{ project.url }}</a>
     </div>
     
-    <div class="status-badge" [ngClass]="'status-' + project.status">
-      {{ project.status | titlecase }}
+    <div class="status-badge" [ngClass]="project.isActive ? 'status-active' : 'status-archived'">
+      {{ project.isActive ? 'Active' : 'Inactive' }}
     </div>
   </div>
   
-  <p class="project-desc">{{ project.description }}</p>
+  <p class="project-desc">{{ project.description || 'No description provided.' }}</p>
   
   <div class="metrics-grid">
     <div class="metric-box">
       <div class="metric-label">Perf Score</div>
-      <div class="metric-value" [ngClass]="getScoreClass(project.score)">
-        {{ project.score }}
+      <div class="metric-value" [ngClass]="getScoreClass(project.lastScore || 0)">
+        {{ project.lastScore !== undefined ? project.lastScore : 'N/A' }}
       </div>
     </div>
     <div class="metric-box">
-      <div class="metric-label">Issues</div>
-      <div class="metric-value font-medium text-gray-700">
-        {{ project.issuesCount }}
+      <div class="metric-label">Frequency</div>
+      <div class="metric-value font-medium text-gray-700 capitalize text-sm">
+        {{ project.autoScanFrequency }}
       </div>
     </div>
   </div>
@@ -43,7 +43,11 @@
         <circle cx="12" cy="12" r="10"/>
         <polyline points="12 6 12 12 16 14"/>
       </svg>
-      {{ project.lastScanDate | date:'MMM dd, HH:mm' }}
+      @if (project.lastScanAt) {
+        {{ project.lastScanAt | date:'MMM dd, HH:mm' }}
+      } @else {
+        No scans yet
+      }
     </div>
     <button class="action-btn" aria-label="View Project">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
