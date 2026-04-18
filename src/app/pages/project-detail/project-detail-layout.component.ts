@@ -26,7 +26,7 @@ export class ProjectDetailLayoutComponent implements OnInit {
   tabs = [
     { name: 'Overview', path: 'overview' },
     { name: 'Scans', path: 'scans' },
-    { name: 'Reports', path: 'reports' },
+    // { name: 'Reports', path: 'reports' },
     { name: 'Compare', path: 'compare' },
     { name: 'Alerts', path: 'alerts' },
     { name: 'Settings', path: 'settings' }

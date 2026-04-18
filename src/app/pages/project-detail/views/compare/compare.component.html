@@ -1,0 +1,300 @@
+<div class="compare-container">
+
+  @if (isLoading()) {
+    <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100 mt-6 animate-pulse">
+      <div class="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+      <div class="flex gap-4">
+        <div class="h-32 bg-gray-100 rounded flex-1"></div>
+        <div class="h-32 bg-gray-100 rounded flex-1"></div>
+      </div>
+    </div>
+  } @else {
+    
+    <!-- Demo Banner -->
+
+    <!-- Top Selection Header -->
+    <div class="compare-header">
+      <div class="header-content">
+        <div>
+          <h3 class="title">Performance Comparison</h3>
+          <p class="subtitle">Compare metrics between any two scan runs</p>
+        </div>
+      </div>
+
+      <div class="scan-selectors">
+        <!-- Scan A -->
+        <div class="selector-group">
+          <label class="selector-label">Base Scan (Before)</label>
+          <select class="scan-select" [ngModel]="scanAId()" (ngModelChange)="onScanAChange($event)">
+            @for (s of scans(); track s.id) {
+              <option [value]="s.id">{{ formatDate(s.startedAt) }} - Score: {{ s.performanceScore }}</option>
+            }
+          </select>
+        </div>
+
+        <button class="swap-btn" (click)="swapScans()" title="Swap Scans">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 3 21 3 21 8"/><line x1="4" y1="14" x2="21" y2="3"/>
+            <polyline points="8 21 3 21 3 16"/><line x1="20" y1="10" x2="3" y2="21"/>
+          </svg>
+        </button>
+
+        <!-- Scan B -->
+        <div class="selector-group">
+          <label class="selector-label">Target Scan (After)</label>
+          <select class="scan-select select-target" [ngModel]="scanBId()" (ngModelChange)="onScanBChange($event)">
+            @for (s of scans(); track s.id) {
+              <option [value]="s.id">{{ formatDate(s.startedAt) }} - Score: {{ s.performanceScore }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    @if (scanA() && scanB()) {
+      
+      <!-- Big Score Summary -->
+      <div class="summary-section">
+        <div class="score-card base-score">
+          <div class="score-label">Base Score</div>
+          <div class="score-circle" [ngClass]="getScoreClass(scanA()?.performanceScore)">
+            {{ scanA()?.performanceScore }}
+          </div>
+        </div>
+
+        <div class="score-delta">
+          <div class="delta-arrow" [class.is-up]="getDeltaScore() >= 0" [class.is-down]="getDeltaScore() < 0">
+            @if (getDeltaScore() >= 0) {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            } @else {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            }
+          </div>
+          <div class="delta-value" [class.text-emerald-600]="getDeltaScore() > 0" [class.text-red-500]="getDeltaScore() < 0" [class.text-gray-400]="getDeltaScore() === 0">
+            {{ getDeltaScore() > 0 ? '+' : '' }}{{ getDeltaScore() }} pts
+          </div>
+          <div class="delta-text">
+            Performance change
+          </div>
+        </div>
+
+        <div class="score-card target-score">
+          <div class="score-label">Target Score</div>
+          <div class="score-circle" [ngClass]="getScoreClass(scanB()?.performanceScore)">
+            {{ scanB()?.performanceScore }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Metrics Grid -->
+      <h4 class="section-title mt-8 mb-4">Core Web Vitals Comparison</h4>
+      <div class="metrics-grid">
+        
+        <!-- LCP -->
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-name">LCP (s)</span>
+            <span class="mc-desc">Largest Contentful Paint</span>
+          </div>
+          <div class="mc-compare">
+            <!-- A -->
+            <div class="val-group">
+              <span class="val-num">{{ scanA()?.lcp || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.lcp, 5)"></div>
+              </div>
+            </div>
+            <!-- B -->
+            <div class="val-group">
+              <span class="val-num">{{ scanB()?.lcp || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.lcp, 5)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mc-footer">
+            @if (calculateDelta(scanA()?.lcp, scanB()?.lcp); as delta) {
+              <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
+                {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.1-2' }}s ({{ Math.abs(delta.percent) | number:'1.0-0' }}%)
+              </div>
+              <span class="footer-text">{{ delta.isBetter ? 'Faster load time' : 'Slower load time' }}</span>
+            }
+          </div>
+        </div>
+
+        <!-- CLS -->
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-name">CLS</span>
+            <span class="mc-desc">Cumulative Layout Shift</span>
+          </div>
+          <div class="mc-compare">
+            <div class="val-group">
+              <span class="val-num">{{ scanA()?.cls || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.cls, 0.5)"></div>
+              </div>
+            </div>
+            <div class="val-group">
+              <span class="val-num">{{ scanB()?.cls || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.cls, 0.5)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mc-footer">
+            @if (calculateDelta(scanA()?.cls, scanB()?.cls); as delta) {
+              <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
+                {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.1-3' }}
+              </div>
+              <span class="footer-text">{{ delta.isBetter ? 'More stable' : 'More shifts' }}</span>
+            }
+          </div>
+        </div>
+
+        <!-- TBT -->
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-name">TBT (ms)</span>
+            <span class="mc-desc">Total Blocking Time</span>
+          </div>
+          <div class="mc-compare">
+            <div class="val-group">
+              <span class="val-num">{{ scanA()?.tbt || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.tbt, 800)"></div>
+              </div>
+            </div>
+            <div class="val-group">
+              <span class="val-num">{{ scanB()?.tbt || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.tbt, 800)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mc-footer">
+            @if (calculateDelta(scanA()?.tbt, scanB()?.tbt); as delta) {
+              <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
+                {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.0-0' }}ms
+              </div>
+              <span class="footer-text">{{ delta.isBetter ? 'Less thread blocking' : 'More UI blocking' }}</span>
+            }
+          </div>
+        </div>
+
+      </div>
+
+      <h4 class="section-title mt-8 mb-4">Payload & Resources</h4>
+      <div class="metrics-grid">
+        
+        <!-- JS Size -->
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-name">JavaScript Size (KB)</span>
+          </div>
+          <div class="mc-compare">
+            <div class="val-group">
+              <span class="val-num text-sm font-semibold w-12">{{ scanA()?.jsSizeKb || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.jsSizeKb, 1000)"></div>
+              </div>
+            </div>
+            <div class="val-group">
+              <span class="val-num text-sm font-semibold w-12">{{ scanB()?.jsSizeKb || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.jsSizeKb, 1000)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mc-footer">
+            @if (calculateDelta(scanA()?.jsSizeKb, scanB()?.jsSizeKb); as delta) {
+              <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
+                {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.0-0' }} KB
+              </div>
+              <span class="footer-text">{{ delta.isBetter ? 'Lighter JS payload' : 'Heavier JS payload' }}</span>
+            }
+          </div>
+        </div>
+
+         <!-- CSS Size -->
+         <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-name">CSS Size (KB)</span>
+          </div>
+          <div class="mc-compare">
+            <div class="val-group">
+              <span class="val-num text-sm font-semibold w-12">{{ scanA()?.cssSizeKb || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.cssSizeKb, 300)"></div>
+              </div>
+            </div>
+            <div class="val-group">
+              <span class="val-num text-sm font-semibold w-12">{{ scanB()?.cssSizeKb || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.cssSizeKb, 300)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mc-footer">
+            @if (calculateDelta(scanA()?.cssSizeKb, scanB()?.cssSizeKb); as delta) {
+              <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
+                {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.0-0' }} KB
+              </div>
+              <span class="footer-text">{{ delta.isBetter ? 'Styles reduced' : 'More CSS added' }}</span>
+            }
+          </div>
+        </div>
+
+        <!-- Requests -->
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-name">Total Requests</span>
+          </div>
+          <div class="mc-compare">
+            <div class="val-group">
+              <span class="val-num text-sm font-semibold w-12">{{ scanA()?.requestCount || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-a" [style.width]="getBarWidth(scanA()?.requestCount, 150)"></div>
+              </div>
+            </div>
+            <div class="val-group">
+              <span class="val-num text-sm font-semibold w-12">{{ scanB()?.requestCount || 0 }}</span>
+              <div class="val-bar-wrapper">
+                <div class="val-bar bar-b" [style.width]="getBarWidth(scanB()?.requestCount, 150)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mc-footer">
+            @if (calculateDelta(scanA()?.requestCount, scanB()?.requestCount); as delta) {
+              <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
+                {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.0-0' }}
+              </div>
+              <span class="footer-text">{{ delta.isBetter ? 'Fewer requests' : 'More HTTP requests' }}</span>
+            }
+          </div>
+        </div>
+
+      </div>
+
+    } @else {
+      <div class="empty-state bg-white rounded-xl border border-gray-100 flex flex-col items-center justify-center text-center py-16 px-6 mt-6 shadow-sm">
+        <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-gray-300">
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+          </svg>
+        </div>
+        <h4 class="text-base font-bold text-gray-900">Not enough data to compare</h4>
+        <p class="text-sm text-gray-400 mt-1 max-w-sm">
+          @if (scans().length === 0) {
+            You haven't run any successful scans yet. Go to the Overview tab to run your first scan.
+          } @else if (scans().length === 1) {
+            You need at least 2 successful scans to compare them. Try running another scan.
+          } @else {
+            Please select both a Base Scan (Before) and a Target Scan (After) to view the comparison.
+          }
+        </p>
+      </div>
+    }
+
+  }
+</div>
