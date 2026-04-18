@@ -50,4 +50,8 @@ export class ScanService {
     }
     return this.http.get<ApiResponse<ScanRecord[]>>(`${this.apiUrl}/all`, { params });
   }
+
+  deleteScan(id: string): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/${id}/delete`, {});
+  }
 }

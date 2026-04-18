@@ -182,4 +182,19 @@ export class GlobalScansComponent implements OnInit {
       next: () => this.loadScans()
     });
   }
+
+  deleteScan(id: string) {
+    if (!confirm('Are you sure you want to delete this scan record? This action cannot be undone.')) {
+      return;
+    }
+
+    this.scanService.deleteScan(id).subscribe({
+      next: () => {
+        this.loadScans();
+      },
+      error: (err) => {
+        console.error('Failed to delete scan:', err);
+      }
+    });
+  }
 }

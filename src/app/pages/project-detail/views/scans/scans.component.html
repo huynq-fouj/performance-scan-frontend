@@ -143,6 +143,13 @@
                         <span class="text-xs font-medium">Details</span>
                       </button>
                     }
+                    @if (scan.status === 'success' || scan.status === 'failed') {
+                      <button class="delete-btn-mini" title="Delete Scan" (click)="deleteScan(scan.id); $event.stopPropagation()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                          <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75V4H5a1.5 1.5 0 00-1.5 1.5V6a1 1 0 001 1h11a1 1 0 001-1V5.5A1.5 1.5 0 0015 4h-1V3.75A2.75 2.75 0 0011.25 1h-2.5zM5 8h10l-.842 8.356A2.75 2.75 0 0111.415 19H8.585a2.75 2.75 0 01-2.743-2.644L5 8zM9 10.5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5a.75.75 0 01.75-.75zM12.5 11.25a.75.75 0 01-1.5 0v3.5a.75.75 0 011.5 0v-3.5z" clip-rule="evenodd" />
+                        </svg>
+                      </button>
+                    }
                   </div>
                 </td>
               </tr>

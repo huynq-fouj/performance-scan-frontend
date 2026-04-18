@@ -151,6 +151,21 @@ export class ScansComponent implements OnInit, OnDestroy {
     });
   }
 
+  deleteScan(id: string) {
+    if (!confirm('Are you sure you want to delete this scan record? This action cannot be undone.')) {
+      return;
+    }
+
+    this.scanService.deleteScan(id).subscribe({
+      next: () => {
+        this.loadScans();
+      },
+      error: (err) => {
+        console.error('Failed to delete scan:', err);
+      }
+    });
+  }
+
   onStatusFilterChange(value: string) {
     this.statusFilter.set(value);
     this.currentPage.set(1);
