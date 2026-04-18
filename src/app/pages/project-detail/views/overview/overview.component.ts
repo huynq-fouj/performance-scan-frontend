@@ -164,4 +164,17 @@ export class OverviewComponent implements OnInit {
     if (diffDays < 30) return `${diffDays}d ago`;
     return then.toLocaleDateString();
   }
+
+  getWeightedPoints(type: 'fcp' | 'si' | 'lcp' | 'tbt' | 'cls', score: number | undefined | null): string {
+    if (score === undefined || score === null) return '0';
+    const weights = {
+      fcp: 0.1,
+      si: 0.1,
+      lcp: 0.25,
+      tbt: 0.3,
+      cls: 0.25
+    };
+    const points = (score / 100) * (weights[type] * 100);
+    return points > 0 ? `+${points.toFixed(1)}` : '0';
+  }
 }
