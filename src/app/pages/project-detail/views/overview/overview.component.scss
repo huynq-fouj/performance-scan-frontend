@@ -1,0 +1,302 @@
+/* ============================
+   Overview Component Styles
+   ============================ */
+
+.overview-container {
+  @apply mt-6 space-y-6 animate-fade-in;
+}
+
+/* ===== Card Base ===== */
+.card {
+  @apply bg-white rounded-xl border border-gray-100 overflow-hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  @apply px-6 pt-5 pb-3 flex items-center justify-between;
+}
+
+.card-title {
+  @apply text-sm font-bold text-gray-900 uppercase tracking-wider;
+}
+
+/* ===== Badges ===== */
+.badge {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider;
+}
+
+.badge-info {
+  @apply bg-primary-50 text-primary-700;
+}
+
+.score-good { 
+  --score-color: #059669;
+}
+.score-average { 
+  --score-color: #d97706;
+}
+.score-poor { 
+  --score-color: #dc2626;
+}
+.score-na { 
+  --score-color: #9ca3af;
+}
+
+.badge.score-good { @apply bg-emerald-50 text-emerald-700; }
+.badge.score-average { @apply bg-amber-50 text-amber-700; }
+.badge.score-poor { @apply bg-red-50 text-red-600; }
+.badge.score-na { @apply bg-gray-100 text-gray-500; }
+
+/* ===== Top Row Layout ===== */
+.top-row {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
+}
+
+/* ===== Score Card ===== */
+.score-card {
+  @apply flex flex-col items-center;
+}
+
+.score-ring-wrapper {
+  @apply flex items-center justify-center py-4;
+}
+
+.score-ring {
+  @apply relative w-36 h-36;
+}
+
+.score-svg {
+  @apply w-full h-full;
+}
+
+.score-bg-circle {
+  stroke: #f1f5f9;
+}
+
+.score-fg-circle {
+  stroke: var(--score-color);
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.score-text {
+  @apply absolute inset-0 flex flex-col items-center justify-center;
+}
+
+.score-number {
+  @apply text-3xl font-black;
+  color: var(--score-color);
+}
+
+.score-unit {
+  @apply text-xs font-medium text-gray-400 -mt-0.5;
+}
+
+.score-subtitle {
+  @apply text-xs text-gray-400 font-medium pb-5;
+}
+
+/* ===== Status Card ===== */
+.status-details {
+  @apply px-6 pb-5 space-y-4;
+}
+
+.status-row {
+  @apply flex items-center gap-3 p-3 rounded-xl bg-gray-50/80;
+}
+
+.status-indicator {
+  @apply w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0;
+}
+
+.status-dot {
+  @apply w-3 h-3 rounded-full;
+}
+
+.status-healthy .status-dot { @apply bg-emerald-500; animation: pulse-green 2s infinite; }
+.status-warning .status-dot { @apply bg-amber-500; animation: pulse-amber 2s infinite; }
+.status-critical .status-dot { @apply bg-red-500; animation: pulse-red 2s infinite; }
+.status-pending .status-dot { @apply bg-blue-400; animation: pulse-blue 2s infinite; }
+.status-inactive .status-dot { @apply bg-gray-400; }
+
+.status-healthy { @apply bg-emerald-50; }
+.status-warning { @apply bg-amber-50; }
+.status-critical { @apply bg-red-50; }
+.status-pending { @apply bg-blue-50; }
+.status-inactive { @apply bg-gray-100; }
+
+.status-label {
+  @apply text-sm font-bold text-gray-900;
+}
+
+.status-sublabel {
+  @apply text-xs text-gray-400;
+}
+
+/* ===== Info Rows ===== */
+.info-row {
+  @apply flex items-start gap-3;
+}
+
+.info-icon {
+  @apply w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 flex-shrink-0;
+
+  svg {
+    @apply w-4 h-4;
+  }
+}
+
+.info-content {
+  @apply min-w-0 flex-1;
+}
+
+.info-label {
+  @apply text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5;
+}
+
+.info-value {
+  @apply text-sm font-medium text-gray-700 truncate;
+}
+
+.info-link {
+  @apply text-primary-600 hover:text-primary-700 no-underline inline-flex items-center gap-1 transition-colors;
+}
+
+.external-icon {
+  @apply w-3 h-3 flex-shrink-0;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* ===== Action Card ===== */
+.action-content {
+  @apply px-6 pb-6 flex flex-col items-center text-center;
+}
+
+.scan-illustration {
+  @apply w-16 h-16 rounded-2xl bg-primary-50 flex items-center justify-center mb-4;
+
+  svg {
+    @apply w-8 h-8 text-primary-600;
+  }
+}
+
+.action-desc {
+  @apply text-sm text-gray-500 mb-5 max-w-[240px];
+}
+
+.scan-btn {
+  @apply w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-200
+         flex items-center justify-center gap-2 text-sm
+         disabled:opacity-60 disabled:cursor-not-allowed;
+
+  svg {
+    @apply w-4 h-4;
+  }
+}
+
+.spin-icon {
+  @apply w-4 h-4 animate-spin;
+}
+
+/* ===== Web Vitals Card ===== */
+.vitals-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-100;
+}
+
+.vital-item {
+  @apply p-6;
+}
+
+.vital-item + .vital-item {
+  @apply border-t md:border-t-0 md:border-l border-gray-100;
+}
+
+.vital-header {
+  @apply flex items-baseline gap-2 mb-3;
+}
+
+.vital-name {
+  @apply text-sm font-black text-gray-900;
+}
+
+.vital-full-name {
+  @apply text-[11px] text-gray-400 font-medium;
+}
+
+.vital-value-row {
+  @apply flex items-baseline gap-0.5 mb-3;
+}
+
+.vital-value {
+  @apply text-3xl font-black;
+  color: var(--score-color);
+}
+
+.vital-unit {
+  @apply text-sm font-semibold text-gray-400;
+}
+
+.vital-bar-track {
+  @apply w-full h-1.5 rounded-full bg-gray-100 mb-3 overflow-hidden;
+}
+
+.vital-bar {
+  @apply h-full rounded-full transition-all duration-700;
+  background-color: var(--score-color);
+}
+
+.vital-desc {
+  @apply text-xs text-gray-400 leading-relaxed;
+}
+
+.vitals-empty {
+  @apply px-6 pb-6 pt-2;
+
+  p {
+    @apply text-sm text-gray-400 text-center bg-gray-50/80 rounded-xl py-4 px-6;
+  }
+}
+
+/* ===== Loading Skeleton ===== */
+.loading-placeholder {
+  @apply mt-6 space-y-6;
+}
+
+.skeleton {
+  @apply bg-gray-100 rounded-xl animate-pulse;
+}
+
+.skeleton-lg {
+  @apply h-64;
+}
+
+.skeleton-md {
+  @apply h-48;
+}
+
+.skeleton-row {
+  @apply grid grid-cols-2 gap-6;
+}
+
+/* ===== Animations ===== */
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); }
+}
+
+@keyframes pulse-amber {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(217, 119, 6, 0); }
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+}
+
+@keyframes pulse-blue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+}

@@ -1,0 +1,231 @@
+<div class="overview-container">
+
+  @if (project(); as p) {
+
+    <!-- Top Row: Score Ring + Site Status + Scan Action -->
+    <div class="top-row">
+
+      <!-- Performance Score Card -->
+      <div class="card score-card">
+        <div class="card-header">
+          <h3 class="card-title">Performance Score</h3>
+          <span class="badge" [ngClass]="getScoreClass(p.lastScore)">
+            {{ getScoreLabel(p.lastScore) }}
+          </span>
+        </div>
+        <div class="score-ring-wrapper">
+          <div class="score-ring" [ngClass]="getScoreClass(p.lastScore)">
+            <svg viewBox="0 0 120 120" class="score-svg">
+              <circle cx="60" cy="60" r="54" fill="none" stroke-width="8" class="score-bg-circle"/>
+              <circle cx="60" cy="60" r="54" fill="none" stroke-width="8" class="score-fg-circle"
+                      [attr.stroke-dasharray]="339.292"
+                      [attr.stroke-dashoffset]="339.292 - (339.292 * (p.lastScore ?? 0)) / 100"
+                      stroke-linecap="round"
+                      transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="score-text">
+              <span class="score-number">{{ p.lastScore ?? '—' }}</span>
+              <span class="score-unit" *ngIf="p.lastScore !== undefined">/100</span>
+            </div>
+          </div>
+        </div>
+        <p class="score-subtitle">
+          @if (p.lastScanAt) {
+            Last tested {{ getTimeSince(p.lastScanAt) }}
+          } @else {
+            No scans yet
+          }
+        </p>
+      </div>
+
+      <!-- Site Status Card -->
+      <div class="card status-card">
+        <div class="card-header">
+          <h3 class="card-title">Site Status</h3>
+        </div>
+        <div class="status-details">
+          <!-- Status Indicator -->
+          <div class="status-row">
+            <div class="status-indicator" [ngClass]="getStatusInfo(p).class">
+              <div class="status-dot"></div>
+            </div>
+            <div>
+              <p class="status-label">{{ getStatusInfo(p).label }}</p>
+              <p class="status-sublabel">{{ p.isActive ? 'Monitoring active' : 'Monitoring paused' }}</p>
+            </div>
+          </div>
+
+          <!-- URL -->
+          <div class="info-row">
+            <span class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+            </span>
+            <div class="info-content">
+              <p class="info-label">Website URL</p>
+              <a [href]="p.url" target="_blank" class="info-value info-link">
+                {{ p.url }}
+                <svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Scan Frequency -->
+          <div class="info-row">
+            <span class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </span>
+            <div class="info-content">
+              <p class="info-label">Scan Frequency</p>
+              <p class="info-value capitalize">{{ p.autoScanFrequency }}</p>
+            </div>
+          </div>
+
+          <!-- Last Scan -->
+          <div class="info-row">
+            <span class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </span>
+            <div class="info-content">
+              <p class="info-label">Last Scan</p>
+              <p class="info-value">
+                @if (p.lastScanAt) {
+                  {{ p.lastScanAt | date:'MMM dd, yyyy HH:mm' }}
+                } @else {
+                  Never scanned
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scan Action Card -->
+      <div class="card action-card">
+        <div class="card-header">
+          <h3 class="card-title">Quick Actions</h3>
+        </div>
+        <div class="action-content">
+          <div class="scan-illustration">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <p class="action-desc">Run a performance audit against your site using Lighthouse.</p>
+          <button class="scan-btn" (click)="runScan()" [disabled]="isScanning()">
+            @if (isScanning()) {
+              <svg class="spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="2" x2="12" y2="6"/>
+                <line x1="12" y1="18" x2="12" y2="22"/>
+                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+                <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+                <line x1="2" y1="12" x2="6" y2="12"/>
+                <line x1="18" y1="12" x2="22" y2="12"/>
+                <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+                <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+              </svg>
+              Scanning...
+            } @else {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Scan Now
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Web Vitals Row -->
+    <div class="card vitals-card">
+      <div class="card-header">
+        <h3 class="card-title">Core Web Vitals</h3>
+        <span class="badge badge-info">Latest Results</span>
+      </div>
+
+      <div class="vitals-grid">
+        <!-- LCP -->
+        <div class="vital-item">
+          <div class="vital-header">
+            <span class="vital-name">LCP</span>
+            <span class="vital-full-name">Largest Contentful Paint</span>
+          </div>
+          <div class="vital-value-row">
+            @if (p.lastScanAt) {
+              <span class="vital-value score-na">—</span>
+              <span class="vital-unit">s</span>
+            } @else {
+              <span class="vital-value score-na">—</span>
+            }
+          </div>
+          <div class="vital-bar-track">
+            <div class="vital-bar score-na" style="width: 0%"></div>
+          </div>
+          <p class="vital-desc">Time until the largest element is rendered. Target: &lt; 2.5s</p>
+        </div>
+
+        <!-- CLS -->
+        <div class="vital-item">
+          <div class="vital-header">
+            <span class="vital-name">CLS</span>
+            <span class="vital-full-name">Cumulative Layout Shift</span>
+          </div>
+          <div class="vital-value-row">
+            @if (p.lastScanAt) {
+              <span class="vital-value score-na">—</span>
+            } @else {
+              <span class="vital-value score-na">—</span>
+            }
+          </div>
+          <div class="vital-bar-track">
+            <div class="vital-bar score-na" style="width: 0%"></div>
+          </div>
+          <p class="vital-desc">Measures visual stability. Target: &lt; 0.1</p>
+        </div>
+
+        <!-- TBT -->
+        <div class="vital-item">
+          <div class="vital-header">
+            <span class="vital-name">TBT</span>
+            <span class="vital-full-name">Total Blocking Time</span>
+          </div>
+          <div class="vital-value-row">
+            @if (p.lastScanAt) {
+              <span class="vital-value score-na">—</span>
+              <span class="vital-unit">ms</span>
+            } @else {
+              <span class="vital-value score-na">—</span>
+            }
+          </div>
+          <div class="vital-bar-track">
+            <div class="vital-bar score-na" style="width: 0%"></div>
+          </div>
+          <p class="vital-desc">Sum of blocking time for long tasks. Target: &lt; 200ms</p>
+        </div>
+      </div>
+
+      @if (!p.lastScanAt) {
+        <div class="vitals-empty">
+          <p>No scan data available yet. Run your first scan to see Web Vitals metrics.</p>
+        </div>
+      }
+    </div>
+
+  } @else {
+    <!-- Loading Placeholder -->
+    <div class="loading-placeholder">
+      <div class="skeleton skeleton-lg"></div>
+      <div class="skeleton-row">
+        <div class="skeleton skeleton-md"></div>
+        <div class="skeleton skeleton-md"></div>
+      </div>
+    </div>
+  }
+
+</div>
