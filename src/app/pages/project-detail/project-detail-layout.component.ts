@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from '../../core/services/project.service';
 import { ScanService } from '../../core/services/scan.service';
 import { Project } from '../../core/models/project.model';
-import { switchMap, tap, filter, finalize } from 'rxjs';
+import { switchMap, tap, filter, finalize, map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-project-detail-layout',
@@ -27,6 +27,7 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
   
   // Expose the global isScanning state from ScanService
   isScanning = this.scanService.isScanning;
+  private activeScanId = signal<string | null>(null);
   private pollInterval: any;
 
   constructor() {
@@ -57,6 +58,7 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
         if (id && isPlatformBrowser(this.platformId)) {
           this.isLoading.set(true);
           this.isScanning.set(false); // Clear previous project's global scanning state
+          this.activeScanId.set(null);
           this.checkInitialScanStatus(id);
         }
       }),
@@ -83,12 +85,14 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
   }
 
   checkInitialScanStatus(projectId: string) {
-    this.scanService.getScans(projectId).subscribe(res => {
+    // Just check the most recent scan
+    this.scanService.getScans(projectId, { limit: 1 }).subscribe(res => {
       const scans = res.data;
       if (scans && scans.length > 0) {
         const latest = scans[0];
         if (latest.status === 'queued' || latest.status === 'running') {
           this.isScanning.set(true);
+          this.activeScanId.set(latest.id);
           this.startPolling(projectId);
         }
       }
@@ -98,16 +102,31 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
   startPolling(projectId: string) {
     this.stopPolling();
     this.pollInterval = setInterval(() => {
-      this.scanService.getScans(projectId).subscribe(res => {
-        const scans = res.data;
-        if (scans && scans.length > 0) {
-          const latest = scans[0];
-          if (latest.status === 'success' || latest.status === 'failed') {
+      const scanId = this.activeScanId();
+      
+      const obs$ = (scanId 
+        ? this.scanService.getScan(scanId).pipe(map(res => ({ ...res, data: [res.data] })))
+        : this.scanService.getScans(projectId, { limit: 1 })) as Observable<any>;
+
+      obs$.subscribe((res: any) => {
+        const scan = Array.isArray(res.data) ? res.data[0] : res.data;
+        if (scan) {
+          if (scan.status === 'success' || scan.status === 'failed') {
             this.isScanning.set(false);
+            this.activeScanId.set(null);
             this.stopPolling();
             // Refresh project data to reflect new scores
             this.projectService.getProject(projectId).subscribe();
+          } else {
+            // If we didn't have an ID (e.g. from checkInitialScanStatus refresh), sync it now
+            if (!this.activeScanId()) {
+              this.activeScanId.set(scan.id);
+            }
           }
+        } else if (!scanId) {
+          // No scans at all
+          this.isScanning.set(false);
+          this.stopPolling();
         }
       });
     }, 3000);
@@ -126,7 +145,10 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
 
     this.isScanning.set(true);
     this.scanService.createScan({ projectId: p.id }).subscribe({
-      next: () => {
+      next: (res) => {
+        if (res.data) {
+          this.activeScanId.set(res.data.id);
+        }
         this.startPolling(p.id);
       },
       error: (err) => {

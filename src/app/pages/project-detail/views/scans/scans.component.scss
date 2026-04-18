@@ -231,6 +231,35 @@ td {
   }
 }
 
+/* ===== Pagination Footer ===== */
+.pagination-footer {
+  @apply px-6 py-4 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4;
+}
+
+.pagination-info {
+  @apply text-sm text-gray-500;
+}
+
+.pagination-actions {
+  @apply flex items-center gap-4;
+}
+
+.pagination-btn {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-bold text-gray-700 bg-white 
+         border-2 border-gray-900 rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
+         hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]
+         disabled:opacity-40 disabled:pointer-events-none disabled:shadow-none
+         transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+
+  svg {
+    @apply w-4 h-4;
+  }
+}
+
+.page-indicator {
+  @apply text-sm font-bold text-gray-900 px-3 py-1 bg-gray-50 rounded-md border border-gray-100;
+}
+
 /* ===== Empty State ===== */
 .empty-state {
   @apply bg-white rounded-b-xl border border-gray-100 flex flex-col items-center justify-center text-center py-16 px-6;

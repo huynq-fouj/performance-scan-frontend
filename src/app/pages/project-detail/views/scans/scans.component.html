@@ -7,7 +7,7 @@
       <p class="scans-subtitle">All performance audits for this project.</p>
     </div>
     <div class="scans-count" *ngIf="!isLoading()">
-      {{ filteredScans().length }} scan{{ filteredScans().length !== 1 ? 's' : '' }}
+      {{ totalCount() }} scan{{ totalCount() !== 1 ? 's' : '' }}
     </div>
   </div>
 
@@ -64,7 +64,7 @@
   } @else {
 
     <!-- Empty State -->
-    @if (filteredScans().length === 0) {
+    @if (scans().length === 0) {
       <div class="empty-state">
         <div class="empty-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -95,7 +95,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (scan of filteredScans(); track scan.id) {
+            @for (scan of scans(); track scan.id) {
               <tr class="scan-row">
                 <!-- Date -->
                 <td class="td-date">
@@ -127,19 +127,17 @@
                   {{ formatDuration(scan) }}
                 </td>
 
-
-
                 <!-- Action -->
                 <td class="td-action">
                   <div class="flex items-center gap-2">
                     @if (scan.status === 'queued' || scan.status === 'running') {
-                      <button class="stop-btn flex items-center gap-1.5 px-3 py-1.5 rounded-md text-red-600 hover:bg-red-50 transition-colors min-w-[90px]" title="Force Stop" (click)="cancelScan(scan.id)">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"/></svg>
-                        <span class="text-xs font-medium">Stop</span>
+                      <button class="stop-btn min-w-[90px]" title="Force Stop" (click)="cancelScan(scan.id)">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"/></svg>
+                        <span>Stop</span>
                       </button>
                     } @else {
-                      <button class="view-btn flex items-center gap-1.5 px-3 py-1.5 min-w-[90px]" title="View Details">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <button class="view-btn min-w-[90px]" title="View Details">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                         </svg>
                         <span class="text-xs font-medium">Details</span>
@@ -151,6 +149,30 @@
             }
           </tbody>
         </table>
+
+        <!-- Pagination Footer -->
+        <div class="pagination-footer">
+          <div class="pagination-info">
+            Showing <span class="font-bold text-gray-900">{{ startIndex }}</span> to <span class="font-bold text-gray-900">{{ endIndex }}</span> of <span class="font-bold text-gray-900">{{ totalCount() }}</span> scans
+          </div>
+          <div class="pagination-actions">
+            <button class="pagination-btn" [disabled]="currentPage() === 1" (click)="prevPage()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              Prev
+            </button>
+            <div class="page-indicator">
+              Page {{ currentPage() }} of {{ totalPages || 1 }}
+            </div>
+            <button class="pagination-btn" [disabled]="currentPage() >= totalPages" (click)="nextPage()">
+              Next
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     }
   }

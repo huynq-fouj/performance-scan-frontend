@@ -14,10 +14,14 @@ export class ScanService {
 
   isScanning = signal<boolean>(false);
 
-  getScans(projectId: string, status?: string): Observable<ApiResponse<ScanRecord[]>> {
+  getScans(projectId: string, query?: { status?: string; page?: number; limit?: number; startDate?: string; endDate?: string }): Observable<ApiResponse<ScanRecord[]>> {
     let params = new HttpParams();
-    if (status && status !== 'all') {
-      params = params.set('status', status);
+    if (query) {
+      if (query.status && query.status !== 'all') params = params.set('status', query.status);
+      if (query.page) params = params.set('page', query.page.toString());
+      if (query.limit) params = params.set('limit', query.limit.toString());
+      if (query.startDate) params = params.set('startDate', query.startDate);
+      if (query.endDate) params = params.set('endDate', query.endDate);
     }
     return this.http.get<ApiResponse<ScanRecord[]>>(`${this.apiUrl}/project/${projectId}`, { params });
   }

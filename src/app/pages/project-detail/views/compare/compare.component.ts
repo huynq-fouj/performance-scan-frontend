@@ -47,7 +47,7 @@ export class CompareComponent implements OnInit {
 
   loadScans(projectId: string) {
     this.isLoading.set(true);
-    this.scanService.getScans(projectId, 'success').pipe(
+    this.scanService.getScans(projectId, { status: 'success' }).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (res) => {
