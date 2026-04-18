@@ -103,6 +103,35 @@
   @apply text-xs font-medium text-gray-400 -mt-0.5;
 }
 
+.score-summary-extra {
+  @apply grid grid-cols-5 py-3 mt-2 border-y border-gray-50 bg-gray-50/20 w-full;
+  
+  .extra-item {
+    @apply flex flex-col items-center gap-0.5 px-1;
+    
+    &:not(:last-child) {
+      @apply border-r border-gray-100;
+    }
+    
+    .extra-label {
+      @apply text-[8px] font-black text-gray-400 uppercase tracking-widest;
+    }
+    
+    .extra-value {
+      @apply text-xs font-black leading-tight;
+      
+      &.score-good { color: #059669; }
+      &.score-average { color: #d97706; }
+      &.score-poor { color: #dc2626; }
+      &.score-na { @apply text-gray-400; }
+    }
+
+    .extra-val-raw {
+      @apply text-[8px] font-medium text-gray-400 leading-tight;
+    }
+  }
+}
+
 .score-subtitle {
   @apply text-xs text-gray-400 font-medium pb-5;
 }
@@ -273,17 +302,21 @@
 
 /* ===== Device Toggle ===== */
 .device-toggle {
-  @apply w-full flex bg-gray-100 p-1 rounded-xl border border-gray-200;
+  @apply w-full flex bg-gray-50 p-1 rounded-xl border border-gray-100;
   
   .device-btn {
-    @apply flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-bold text-gray-500 transition-all hover:bg-white/50;
+    @apply flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-semibold text-gray-400 transition-all;
     
     svg {
       @apply w-3.5 h-3.5;
     }
     
+    &:hover:not(.active) {
+      @apply text-gray-600 bg-white/50;
+    }
+    
     &.active {
-      @apply bg-white text-primary-600 shadow-sm border-gray-200 border;
+      @apply bg-white text-primary-600 shadow-sm border border-gray-100;
     }
   }
 }

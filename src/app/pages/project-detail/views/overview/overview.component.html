@@ -29,6 +29,35 @@
             </div>
           </div>
         </div>
+
+        <div class="score-summary-extra">
+          <div class="extra-item" title="First Contentful Paint">
+            <span class="extra-label">FCP</span>
+            <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.fcpScore)">{{ latestScan()?.fcpScore ?? '—' }}</span>
+            <span class="extra-val-raw">{{ latestScan()?.fcp ? ((latestScan()?.fcp || 0) / 1000 | number:'1.1-1') + 's' : '' }}</span>
+          </div>
+          <div class="extra-item" title="Speed Index">
+            <span class="extra-label">SI</span>
+            <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.speedIndexScore)">{{ latestScan()?.speedIndexScore ?? '—' }}</span>
+            <span class="extra-val-raw">{{ latestScan()?.speedIndex ? ((latestScan()?.speedIndex || 0) / 1000 | number:'1.1-1') + 's' : '' }}</span>
+          </div>
+          <div class="extra-item" title="Largest Contentful Paint">
+            <span class="extra-label">LCP</span>
+            <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.lcpScore)">{{ latestScan()?.lcpScore ?? '—' }}</span>
+            <span class="extra-val-raw">{{ latestScan()?.lcp ? ((latestScan()?.lcp || 0) / 1000 | number:'1.1-1') + 's' : '' }}</span>
+          </div>
+          <div class="extra-item" title="Total Blocking Time">
+            <span class="extra-label">TBT</span>
+            <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.tbtScore)">{{ latestScan()?.tbtScore ?? '—' }}</span>
+            <span class="extra-val-raw">{{ latestScan()?.tbt ? (latestScan()?.tbt | number:'1.0-0') + 'ms' : '' }}</span>
+          </div>
+          <div class="extra-item" title="Cumulative Layout Shift">
+            <span class="extra-label">CLS</span>
+            <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.clsScore)">{{ latestScan()?.clsScore ?? '—' }}</span>
+            <span class="extra-val-raw">{{ latestScan()?.cls !== undefined ? (latestScan()?.cls | number:'1.1-2') : '' }}</span>
+          </div>
+        </div>
+
         <p class="score-subtitle">
           @if (p.lastScanAt) {
             Last tested {{ getTimeSince(p.lastScanAt) }}

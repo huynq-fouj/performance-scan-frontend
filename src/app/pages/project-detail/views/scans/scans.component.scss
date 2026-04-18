@@ -245,11 +245,9 @@ td {
 }
 
 .pagination-btn {
-  @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-bold text-gray-700 bg-white 
-         border-2 border-gray-900 rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
-         hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]
-         disabled:opacity-40 disabled:pointer-events-none disabled:shadow-none
-         transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+  @apply inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-gray-700 bg-white 
+         border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300
+         disabled:opacity-40 disabled:pointer-events-none transition-all active:bg-gray-100;
 
   svg {
     @apply w-4 h-4;
@@ -257,7 +255,7 @@ td {
 }
 
 .page-indicator {
-  @apply text-sm font-bold text-gray-900 px-3 py-1 bg-gray-50 rounded-md border border-gray-100;
+  @apply text-sm font-semibold text-gray-900 px-3 py-1 bg-gray-50 rounded-md border border-gray-100;
 }
 
 /* ===== Empty State ===== */
