@@ -58,9 +58,9 @@ export class SettingsComponent implements OnInit {
           url: proj.url,
           description: proj.description,
           logo: proj.logo || '',
-          includeSeo: proj.includeSeo ?? true,
-          includeAccessibility: proj.includeAccessibility ?? true,
-          includeBestPractices: proj.includeBestPractices ?? true
+          includeSeo: proj.includeSeo ?? false,
+          includeAccessibility: proj.includeAccessibility ?? false,
+          includeBestPractices: proj.includeBestPractices ?? false
         }, { emitEvent: false }); // Prevents potential infinite loop/unnecessary checks
         this.isLoading.set(false);
       } else if (!this.projectService.currentProjectValue) {

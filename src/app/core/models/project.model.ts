@@ -11,6 +11,7 @@ export interface Project {
   lastAccessibilityScore?: number;
   lastBestPracticesScore?: number;
   lastSeoScore?: number;
+  lastScreenshot?: string;
   includeSeo?: boolean;
   includeAccessibility?: boolean;
   includeBestPractices?: boolean;
