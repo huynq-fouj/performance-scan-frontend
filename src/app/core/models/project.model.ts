@@ -15,6 +15,7 @@ export interface Project {
   includeSeo?: boolean;
   includeAccessibility?: boolean;
   includeBestPractices?: boolean;
+  storageItems?: { key: string; value: string }[];
   createdAt: string | Date;
   updatedAt: string | Date;
 }
@@ -31,4 +32,5 @@ export interface CreateProjectRequest {
 
 export interface UpdateProjectRequest extends Partial<CreateProjectRequest> {
   isActive?: boolean;
+  storageItems?: { key: string; value: string }[];
 }

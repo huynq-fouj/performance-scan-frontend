@@ -70,3 +70,34 @@ textarea.input-field {
 .shadow-elevated {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
+
+/* ===== Browser Storage Items ===== */
+.storage-row {
+  @apply flex items-end gap-3 p-3 rounded-xl bg-gray-50/50 border border-gray-100;
+}
+
+.storage-field {
+  @apply flex flex-col gap-1 min-w-[180px];
+}
+
+.storage-label {
+  @apply text-[10px] font-bold text-gray-400 uppercase tracking-wider;
+}
+
+.storage-remove-btn {
+  @apply flex items-center justify-center w-9 h-9 rounded-lg text-red-400 hover:text-red-600
+         hover:bg-red-50 transition-all cursor-pointer shrink-0 mb-0.5;
+}
+
+.storage-empty {
+  @apply text-center py-6;
+
+  p {
+    @apply text-xs text-gray-400 italic;
+  }
+}
+
+.storage-add-btn {
+  @apply inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-primary-600
+         bg-primary-50 rounded-lg border border-primary-100 hover:bg-primary-100 transition-all cursor-pointer;
+}

@@ -110,6 +110,64 @@
         </div>
       </div>
 
+      <!-- Browser Storage -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden animate-fade-in">
+        <div class="section-header">
+          <h3 class="section-title">Browser Storage</h3>
+          <p class="section-desc">Set localStorage values to inject before each scan (e.g., auth tokens, feature flags).</p>
+        </div>
+
+        <div class="p-6 space-y-3">
+          @for (item of storageItems(); track $index; let i = $index) {
+            <div class="storage-row">
+              <div class="storage-field">
+                <label class="storage-label">Key</label>
+                <input type="text"
+                  class="input-field"
+                  [value]="item.key"
+                  (input)="updateStorageItem(i, 'key', $any($event.target).value)"
+                  placeholder="e.g. access_token" />
+              </div>
+              <div class="storage-field flex-1">
+                <label class="storage-label">Value</label>
+                <input type="text"
+                  class="input-field"
+                  [value]="item.value"
+                  (input)="updateStorageItem(i, 'value', $any($event.target).value)"
+                  placeholder="e.g. eyJhbGciOiJIUz..." />
+              </div>
+              <button type="button" class="storage-remove-btn" (click)="removeStorageItem(i)" title="Remove">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                  <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                </svg>
+              </button>
+            </div>
+          }
+
+          @if (storageItems().length === 0) {
+            <div class="storage-empty">
+              <p>No storage items configured. Click "Add Item" to inject values into the browser before scanning.</p>
+            </div>
+          }
+
+          <button type="button" class="storage-add-btn" (click)="addStorageItem()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+              <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+            </svg>
+            Add Item
+          </button>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-50 flex items-start gap-3">
+          <svg class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p class="text-[11px] text-gray-500 italic">
+            These key-value pairs are injected into the browser's localStorage before Lighthouse runs. Useful for authentication tokens, dark mode preferences, or feature flags that affect page rendering.
+          </p>
+        </div>
+      </div>
+
       <!-- Save Bar -->
       <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center justify-between animate-fade-in">
         <p class="text-xs text-gray-400 pl-2">Last updated: {{ project()?.updatedAt | date:'medium' }}</p>

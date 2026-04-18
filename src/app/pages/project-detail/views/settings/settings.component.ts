@@ -27,6 +27,8 @@ export class SettingsComponent implements OnInit {
   isDeleting = signal<boolean>(false);
   showDeleteModal = signal<boolean>(false);
 
+  storageItems = signal<{ key: string; value: string }[]>([]);
+
   settingsForm = this.fb.group({
     name: ['', { validators: [Validators.required, Validators.maxLength(100)], updateOn: 'change' }],
     url: ['', { 
@@ -63,6 +65,7 @@ export class SettingsComponent implements OnInit {
           includeBestPractices: proj.includeBestPractices ?? false
         }, { emitEvent: false }); // Prevents potential infinite loop/unnecessary checks
         this.isLoading.set(false);
+        this.storageItems.set([...(proj.storageItems || [])]);
       } else if (!this.projectService.currentProjectValue) {
         // Only show loading if we really don't have data
         this.isLoading.set(true);
@@ -77,7 +80,10 @@ export class SettingsComponent implements OnInit {
     }
 
     this.isSaving.set(true);
-    const payload = this.settingsForm.value as UpdateProjectRequest;
+    const payload: any = {
+      ...this.settingsForm.value,
+      storageItems: this.storageItems(),
+    };
     this.projectService.updateProject(this.projectId, payload).subscribe({
       next: () => {
         this.isSaving.set(false);
@@ -104,5 +110,19 @@ export class SettingsComponent implements OnInit {
         this.isDeleting.set(false);
       }
     });
+  }
+
+  addStorageItem() {
+    this.storageItems.update(items => [...items, { key: '', value: '' }]);
+  }
+
+  removeStorageItem(index: number) {
+    this.storageItems.update(items => items.filter((_, i) => i !== index));
+  }
+
+  updateStorageItem(index: number, field: 'key' | 'value', value: string) {
+    this.storageItems.update(items =>
+      items.map((item, i) => i === index ? { ...item, [field]: value } : item)
+    );
   }
 }
