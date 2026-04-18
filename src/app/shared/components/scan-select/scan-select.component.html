@@ -1,0 +1,41 @@
+<div class="custom-select-wrapper" [class.is-open]="isOpen()">
+  <button 
+    type="button" 
+    class="custom-select-trigger" 
+    [class.select-target]="isTarget"
+    (click)="toggle()" 
+    [disabled]="isDisabled() || scans.length === 0">
+    
+    @if (scans.length === 0) {
+      <span class="placeholder">No scans available</span>
+    } @else if (selectedScan()) {
+      <div class="selected-scan">
+        <span class="scan-date">{{ formatDate(selectedScan()?.startedAt) }}</span>
+        <span class="scan-score-badge" [ngClass]="getScoreClass(selectedScan()?.performanceScore)">{{ selectedScan()?.performanceScore }}</span>
+      </div>
+    } @else {
+      <span class="placeholder">{{ placeholder }}</span>
+    }
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+  </button>
+
+  @if (isOpen() && scans.length > 0) {
+    <div class="custom-select-dropdown">
+      @for (s of scans; track s.id) {
+        <button 
+          type="button" 
+          class="custom-option" 
+          [class.is-selected]="s.id === value()" 
+          (click)="selectOption(s.id)">
+          <div class="option-content">
+            <span class="scan-date">{{ formatDate(s.startedAt) }}</span>
+            <span class="scan-score-badge" [ngClass]="getScoreClass(s.performanceScore)">{{ s.performanceScore }}</span>
+          </div>
+          @if (s.id === value()) {
+            <svg class="check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" /></svg>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>

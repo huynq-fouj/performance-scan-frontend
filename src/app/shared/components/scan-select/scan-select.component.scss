@@ -1,0 +1,73 @@
+.custom-select-wrapper {
+  @apply relative w-full;
+}
+
+.custom-select-trigger {
+  @apply w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700
+         flex items-center justify-between hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500/10 transition-all;
+
+  &.select-target {
+    @apply border-primary-200 bg-primary-50/20 hover:bg-primary-50/40;
+  }
+
+  &:disabled {
+    @apply opacity-60 cursor-not-allowed bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-50;
+    .chevron { display: none; }
+  }
+
+  .chevron {
+    @apply w-5 h-5 text-gray-400 transition-transform duration-200 flex-shrink-0;
+  }
+
+  .placeholder {
+    @apply text-gray-400;
+  }
+}
+
+.custom-select-wrapper.is-open .chevron {
+  @apply transform rotate-180;
+}
+
+.custom-select-wrapper.is-open .custom-select-trigger {
+  @apply border-primary-400 ring-2 ring-primary-500/10;
+}
+
+.selected-scan {
+  @apply flex items-center justify-between gap-3 w-full pr-2;
+}
+
+.scan-date {
+  @apply text-sm text-gray-700 font-medium whitespace-nowrap;
+}
+
+.scan-score-badge {
+  @apply px-2.5 py-0.5 rounded-md text-xs font-bold whitespace-nowrap border border-transparent;
+}
+
+.score-good { @apply bg-emerald-50 text-emerald-700; }
+.score-average { @apply bg-amber-50 text-amber-700; }
+.score-poor { @apply bg-red-50 text-red-600; }
+.score-na { @apply bg-gray-50 text-gray-400; }
+
+.custom-select-dropdown {
+  @apply absolute z-50 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden flex flex-col;
+  max-height: 240px;
+  overflow-y: auto;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-option {
+  @apply w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 focus:bg-gray-50 outline-none border-b border-gray-50 last:border-0 transition-colors;
+
+  &.is-selected {
+    @apply bg-primary-50/50;
+  }
+
+  .option-content {
+    @apply flex items-center justify-between w-full pr-4;
+  }
+
+  .check-icon {
+    @apply w-5 h-5 text-primary-600 flex-shrink-0;
+  }
+}
