@@ -32,35 +32,35 @@
 
         <div class="score-summary-extra">
           <div class="extra-item" title="First Contentful Paint (Weight: 10%)">
-            <span class="extra-label">FCP</span>
+            <span class="extra-label" [ngClass]="getScoreClass(latestScan()?.fcpScore)">FCP</span>
             <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.fcpScore)">
               {{ getWeightedPoints('fcp', latestScan()?.fcpScore) }}
             </span>
             <span class="extra-val-raw">{{ latestScan()?.fcpScore ?? '—' }}/100</span>
           </div>
           <div class="extra-item" title="Speed Index (Weight: 10%)">
-            <span class="extra-label">SI</span>
+            <span class="extra-label" [ngClass]="getScoreClass(latestScan()?.speedIndexScore)">SI</span>
             <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.speedIndexScore)">
               {{ getWeightedPoints('si', latestScan()?.speedIndexScore) }}
             </span>
             <span class="extra-val-raw">{{ latestScan()?.speedIndexScore ?? '—' }}/100</span>
           </div>
           <div class="extra-item" title="Largest Contentful Paint (Weight: 25%)">
-            <span class="extra-label">LCP</span>
+            <span class="extra-label" [ngClass]="getScoreClass(latestScan()?.lcpScore)">LCP</span>
             <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.lcpScore)">
               {{ getWeightedPoints('lcp', latestScan()?.lcpScore) }}
             </span>
             <span class="extra-val-raw">{{ latestScan()?.lcpScore ?? '—' }}/100</span>
           </div>
           <div class="extra-item" title="Total Blocking Time (Weight: 30%)">
-            <span class="extra-label">TBT</span>
+            <span class="extra-label" [ngClass]="getScoreClass(latestScan()?.tbtScore)">TBT</span>
             <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.tbtScore)">
               {{ getWeightedPoints('tbt', latestScan()?.tbtScore) }}
             </span>
             <span class="extra-val-raw">{{ latestScan()?.tbtScore ?? '—' }}/100</span>
           </div>
           <div class="extra-item" title="Cumulative Layout Shift (Weight: 25%)">
-            <span class="extra-label">CLS</span>
+            <span class="extra-label" [ngClass]="getScoreClass(latestScan()?.clsScore)">CLS</span>
             <span class="extra-value" [ngClass]="getScoreClass(latestScan()?.clsScore)">
               {{ getWeightedPoints('cls', latestScan()?.clsScore) }}
             </span>
@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <p class="score-subtitle">
+        <p class="score-subtitle mt-2">
           @if (p.lastScanAt) {
             Last tested {{ getTimeSince(p.lastScanAt) }}
           } @else {
