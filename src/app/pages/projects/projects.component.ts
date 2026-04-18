@@ -28,6 +28,10 @@ export class ProjectsComponent implements OnInit {
   }
 
   loadProjects() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.isLoading.set(true);
     this.projectService.getProjects()
     .pipe(finalize(() => this.isLoading.set(false)))

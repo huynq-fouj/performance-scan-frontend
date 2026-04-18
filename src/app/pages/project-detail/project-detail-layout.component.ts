@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProjectService } from '../../core/services/project.service';
 import { Project } from '../../core/models/project.model';
@@ -13,7 +13,7 @@ import { Project } from '../../core/models/project.model';
 })
 export class ProjectDetailLayoutComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
   private projectService = inject(ProjectService);
   
   projectId: string | null = null;
@@ -30,17 +30,13 @@ export class ProjectDetailLayoutComponent implements OnInit {
   ];
 
   ngOnInit() {
-    // 1. Listen for route changes
     this.route.paramMap.subscribe(params => {
       this.projectId = params.get('id');
       if (this.projectId) {
         this.fetchProject(this.projectId);
-      } else {
-        this.router.navigate(['/projects']);
       }
     });
 
-    // 2. Sync with service state (updates from child views)
     this.projectService.currentProject$.subscribe(proj => {
       if (proj) {
         this.project.set(proj);
@@ -49,6 +45,10 @@ export class ProjectDetailLayoutComponent implements OnInit {
   }
 
   fetchProject(id: string) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.isLoading.set(true);
     this.projectService.getProject(id).subscribe({
       next: (res) => {
