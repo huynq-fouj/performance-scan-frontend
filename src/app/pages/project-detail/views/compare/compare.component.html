@@ -23,16 +23,16 @@
 
       <div class="scan-selectors">
         <!-- Scan A -->
-        <div class="selector-group">
+        <div class="selector-group relative">
           <label class="selector-label">Base Scan (Before)</label>
-          <select class="scan-select" [ngModel]="scanAId()" (ngModelChange)="onScanAChange($event)">
-            @for (s of scans(); track s.id) {
-              <option [value]="s.id">{{ formatDate(s.startedAt) }} - Score: {{ s.performanceScore }}</option>
-            }
-          </select>
+          <app-scan-select 
+            [scans]="scans()" 
+            [ngModel]="scanAId()" 
+            (ngModelChange)="onScanAChange($event)">
+          </app-scan-select>
         </div>
 
-        <button class="swap-btn" (click)="swapScans()" title="Swap Scans">
+        <button class="swap-btn" (click)="swapScans()" title="Swap Scans" [disabled]="scans().length < 2">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="16 3 21 3 21 8"/><line x1="4" y1="14" x2="21" y2="3"/>
             <polyline points="8 21 3 21 3 16"/><line x1="20" y1="10" x2="3" y2="21"/>
@@ -40,13 +40,14 @@
         </button>
 
         <!-- Scan B -->
-        <div class="selector-group">
-          <label class="selector-label">Target Scan (After)</label>
-          <select class="scan-select select-target" [ngModel]="scanBId()" (ngModelChange)="onScanBChange($event)">
-            @for (s of scans(); track s.id) {
-              <option [value]="s.id">{{ formatDate(s.startedAt) }} - Score: {{ s.performanceScore }}</option>
-            }
-          </select>
+        <div class="selector-group relative">
+          <label class="selector-label text-primary-700">Target Scan (After)</label>
+          <app-scan-select 
+            [scans]="scans()" 
+            [ngModel]="scanBId()" 
+            (ngModelChange)="onScanBChange($event)"
+            [isTarget]="true">
+          </app-scan-select>
         </div>
       </div>
     </div>

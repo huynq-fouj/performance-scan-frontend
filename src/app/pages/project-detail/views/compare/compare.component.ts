@@ -2,15 +2,16 @@ import { Component, inject, signal, computed, OnInit, DestroyRef } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ProjectService } from '../../../../core/services/project.service';
-import { ScanService } from '../../../../core/services/scan.service';
-import { Project } from '../../../../core/models/project.model';
-import { ScanRecord } from '../../../../core/models/scan.model';
+import { ProjectService } from 'app/core/services/project.service';
+import { ScanService } from 'app/core/services/scan.service';
+import { Project } from 'app/core/models/project.model';
+import { ScanRecord } from 'app/core/models/scan.model';
+import { ScanSelectComponent } from 'app/shared/components/scan-select/scan-select.component';
 
 @Component({
   selector: 'app-project-compare',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ScanSelectComponent],
   templateUrl: './compare.component.html',
   styleUrl: './compare.component.scss'
 })

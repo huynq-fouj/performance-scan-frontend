@@ -15,6 +15,10 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
+    "baseUrl": "./",
+    "paths": {
+      "app/*": ["src/app/*"]
+    },
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
