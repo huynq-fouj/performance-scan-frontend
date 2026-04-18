@@ -17,7 +17,7 @@
 
 /* Header & Scan Selection */
 .compare-header {
-  @apply flex flex-col xl:flex-row items-center justify-between bg-white rounded-xl border border-gray-100 p-6 gap-6;
+  @apply flex flex-col xl:flex-row items-center justify-between bg-white rounded-xl border border-gray-100 p-6 gap-6 relative z-20;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
 }
 
@@ -34,7 +34,7 @@
 }
 
 .scan-selectors {
-  @apply flex items-end gap-3 w-full xl:w-auto overflow-x-auto pb-1 xl:pb-0;
+  @apply flex items-end gap-3 w-full xl:w-auto flex-wrap sm:flex-nowrap relative z-20;
 }
 
 .selector-group {

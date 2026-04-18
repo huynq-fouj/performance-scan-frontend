@@ -29,6 +29,8 @@ export class ScansComponent implements OnInit, OnDestroy {
   dateFrom = signal<string>('');
   dateTo = signal<string>('');
   
+  // Use shared scanning state
+  isScanning = this.scanService.isScanning;
   private pollInterval: any;
 
   ngOnInit() {
@@ -40,6 +42,10 @@ export class ScansComponent implements OnInit, OnDestroy {
         this.loadScans(proj.id);
       }
     });
+
+    // Support reactive refresh when shared scanning state changes from true to false
+    // this handles the case where scan is started in Layout and finished, 
+    // we want this component to refresh its list.
   }
 
   ngOnDestroy() {
@@ -63,20 +69,26 @@ export class ScansComponent implements OnInit, OnDestroy {
         this.filteredScans.set([]);
         this.isLoading.set(false);
         this.stopPolling();
+        this.isScanning.set(false);
       }
     });
   }
 
   checkPolling() {
     const hasRunning = this.scans().some(s => s.status === 'queued' || s.status === 'running');
-    if (hasRunning && !this.pollInterval) {
-      this.startPolling();
-    } else if (!hasRunning && this.pollInterval) {
-      // Finished running
-      this.stopPolling();
-      const p = this.project();
-      if (p) {
-        this.projectService.getProject(p.id).subscribe();
+    if (hasRunning) {
+      this.isScanning.set(true);
+      if (!this.pollInterval) {
+        this.startPolling();
+      }
+    } else {
+      if (this.pollInterval) {
+        this.isScanning.set(false);
+        this.stopPolling();
+        const p = this.project();
+        if (p) {
+          this.projectService.getProject(p.id).subscribe();
+        }
       }
     }
   }
@@ -87,7 +99,7 @@ export class ScansComponent implements OnInit, OnDestroy {
       if (p) {
         this.scanService.getScans(p.id).subscribe({
           next: (res) => {
-            if (!this.pollInterval) return; // In case it was stopped during request
+            if (!this.pollInterval) return;
             this.scans.set(res.data ?? []);
             this.applyFilters();
             this.checkPolling();
@@ -107,7 +119,7 @@ export class ScansComponent implements OnInit, OnDestroy {
   applyFilters() {
     let result = [...this.scans()];
 
-    // Status filter (client-side for date range combo)
+    // Status filter
     const status = this.statusFilter();
     if (status !== 'all') {
       result = result.filter(s => s.status === status);

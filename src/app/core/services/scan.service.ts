@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -11,6 +11,8 @@ import { ApiResponse } from '../models/api-response.model';
 export class ScanService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl + '/scans';
+
+  isScanning = signal<boolean>(false);
 
   getScans(projectId: string, status?: string): Observable<ApiResponse<ScanRecord[]>> {
     let params = new HttpParams();
