@@ -1,0 +1,148 @@
+<div class="scans-container">
+
+  <!-- Header -->
+  <div class="scans-header">
+    <div>
+      <h3 class="scans-title">Scan History</h3>
+      <p class="scans-subtitle">All performance audits for this project.</p>
+    </div>
+    <div class="scans-count" *ngIf="!isLoading()">
+      {{ filteredScans().length }} scan{{ filteredScans().length !== 1 ? 's' : '' }}
+    </div>
+  </div>
+
+  <!-- Filters Bar -->
+  <div class="filters-bar">
+    <div class="filters-group">
+      <!-- Status Filter -->
+      <div class="filter-item">
+        <label class="filter-label">Status</label>
+        <div class="filter-pills">
+          <button class="pill" [class.active]="statusFilter() === 'all'" (click)="onStatusFilterChange('all')">All</button>
+          <button class="pill pill-success" [class.active]="statusFilter() === 'success'" (click)="onStatusFilterChange('success')">
+            <span class="pill-dot dot-success"></span>Success
+          </button>
+          <button class="pill pill-failed" [class.active]="statusFilter() === 'failed'" (click)="onStatusFilterChange('failed')">
+            <span class="pill-dot dot-failed"></span>Failed
+          </button>
+        </div>
+      </div>
+
+      <!-- Date Range -->
+      <div class="filter-item">
+        <label class="filter-label">Date Range</label>
+        <div class="date-inputs">
+          <input type="date" class="date-input" [ngModel]="dateFrom()" (ngModelChange)="onDateFromChange($event)" placeholder="From" />
+          <span class="date-separator">→</span>
+          <input type="date" class="date-input" [ngModel]="dateTo()" (ngModelChange)="onDateToChange($event)" placeholder="To" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Clear Filters -->
+    @if (hasActiveFilters()) {
+      <button class="clear-filters-btn" (click)="clearFilters()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Clear Filters
+      </button>
+    }
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]">
+        <div class="skeleton skeleton-cell-lg"></div>
+        <div class="skeleton skeleton-cell-sm"></div>
+        <div class="skeleton skeleton-cell-sm"></div>
+        <div class="skeleton skeleton-cell-sm"></div>
+        <div class="skeleton skeleton-cell-sm"></div>
+      </div>
+    </div>
+  } @else {
+
+    <!-- Empty State -->
+    @if (filteredScans().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        @if (hasActiveFilters()) {
+          <h4 class="empty-title">No matching scans</h4>
+          <p class="empty-desc">No scans match the current filters. Try adjusting your criteria.</p>
+          <button class="clear-filters-btn mt-4" (click)="clearFilters()">Clear Filters</button>
+        } @else {
+          <h4 class="empty-title">No scans yet</h4>
+          <p class="empty-desc">Run your first performance scan from the Overview tab to start tracking scores.</p>
+        }
+      </div>
+    } @else {
+
+      <!-- Scans Table -->
+      <div class="table-wrapper">
+        <table class="scans-table">
+          <thead>
+            <tr>
+              <th class="th-date">Date & Time</th>
+              <th class="th-score">Score</th>
+              <th class="th-status">Status</th>
+              <th class="th-duration">Duration</th>
+              <th class="th-action"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (scan of filteredScans(); track scan.id) {
+              <tr class="scan-row">
+                <!-- Date -->
+                <td class="td-date">
+                  <div class="date-primary">{{ scan.startedAt | date:'MMM dd, yyyy' }}</div>
+                  <div class="date-secondary">{{ scan.startedAt | date:'HH:mm:ss' }}</div>
+                </td>
+
+                <!-- Score -->
+                <td class="td-score">
+                  @if (scan.status === 'success' && scan.performanceScore !== undefined) {
+                    <div class="score-badge" [ngClass]="getScoreClass(scan.performanceScore)">
+                      {{ scan.performanceScore }}
+                    </div>
+                  } @else {
+                    <div class="score-badge score-na">—</div>
+                  }
+                </td>
+
+                <!-- Status -->
+                <td class="td-status">
+                  <span class="status-chip" [ngClass]="'chip-' + scan.status">
+                    <span class="chip-dot"></span>
+                    {{ scan.status === 'success' ? 'Success' : scan.status === 'running' ? 'Running' : scan.status === 'queued' ? 'Queued' : 'Failed' }}
+                  </span>
+                </td>
+
+                <!-- Duration -->
+                <td class="td-duration">
+                  {{ formatDuration(scan) }}
+                </td>
+
+
+
+                <!-- Action -->
+                <td class="td-action">
+                  <button class="view-btn" title="View Details">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    Details
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</div>
