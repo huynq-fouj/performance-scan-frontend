@@ -7,10 +7,12 @@ export interface Project {
   score: number;
   url: string;
   issuesCount: number;
+  logo?: string;
 }
 
 export interface CreateProjectRequest {
   name: string;
   url: string;
   description?: string;
+  logo?: string;
 }

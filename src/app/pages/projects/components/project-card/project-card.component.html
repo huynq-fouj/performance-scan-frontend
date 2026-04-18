@@ -1,5 +1,15 @@
 <div class="project-card">
   <div class="card-top">
+    @if (project.logo) {
+      <div class="project-logo">
+        <img [src]="project.logo" [alt]="project.name" (error)="$any($event).target.style.display = 'none'" />
+      </div>
+    } @else {
+      <div class="project-logo-placeholder">
+        {{ project.name.charAt(0).toUpperCase() }}
+      </div>
+    }
+    
     <div class="project-info">
       <h3 class="project-name" [title]="project.name">{{ project.name }}</h3>
       <a [href]="project.url" target="_blank" class="project-url" [title]="project.url">{{ project.url }}</a>

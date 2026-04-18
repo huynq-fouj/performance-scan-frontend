@@ -37,6 +37,14 @@
         </div>
 
         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Logo URL (Optional)</label>
+          <input type="text" formControlName="logo" class="input-field" placeholder="e.g. https://example.com/logo.png" />
+          @if (createForm.get('logo')?.touched && createForm.get('logo')?.hasError('pattern')) {
+            <p class="text-xs text-red-500 mt-1">Please enter a valid image URL.</p>
+          }
+        </div>
+
+        <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea formControlName="description" class="input-field min-h-[100px] resize-y" placeholder="Brief description of the project..."></textarea>
         </div>

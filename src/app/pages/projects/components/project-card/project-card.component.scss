@@ -13,6 +13,19 @@
   @apply flex items-start justify-between gap-4 mb-3;
 }
 
+.project-logo, .project-logo-placeholder {
+  @apply w-12 h-12 rounded-xl flex-shrink-0 overflow-hidden flex items-center justify-center
+         border border-gray-100 bg-gray-50 text-primary-600 font-bold text-xl uppercase;
+  
+  img {
+    @apply w-full h-full object-cover;
+  }
+}
+
+.project-logo-placeholder {
+  @apply bg-primary-50;
+}
+
 .project-info {
   @apply min-w-0 flex-1;
 }

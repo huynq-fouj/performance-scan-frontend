@@ -22,7 +22,8 @@ export class CreateProjectModalComponent {
   createForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(100)]],
     url: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)?(localhost|(\d{1,3}\.){3}\d{1,3}|([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,})(:\d+)?(\/.*)?$/)]],
-    description: ['']
+    description: [''],
+    logo: ['', [Validators.pattern(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/)]]
   });
 
   submitCreateProject() {
@@ -48,6 +49,7 @@ export class CreateProjectModalComponent {
            name: payload.name || '',
            url: payload.url || '',
            description: payload.description || '',
+           logo: payload.logo || '',
            status: 'active',
            score: 100,
            issuesCount: 0,
