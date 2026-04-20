@@ -167,7 +167,22 @@
 
             <!-- Action Card Mini -->
             <div class="card flex-[1.5] p-3 flex flex-col items-center min-h-[80px] gap-3">
-              <button class="w-full flex items-center justify-center gap-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-all shadow-sm active:scale-95 disabled:opacity-50 py-2.5" (click)="runScan()" [disabled]="isScanning()">
+              <!-- Hidden File Input for Import -->
+              <input type="file" #fileInput class="hidden" accept=".json" (change)="onFileSelected($event)">
+
+              <button class="w-full flex items-center justify-center gap-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-all shadow-sm active:scale-95 disabled:opacity-50 py-2.5" (click)="triggerImport(fileInput)" [disabled]="isScanning() || isImporting()">
+                @if (isImporting()) {
+                  <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+                  <span class="text-[13px] font-bold">Importing...</span>
+                } @else {
+                  <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="text-[13px] font-bold">Import JSON</span>
+                }
+              </button>
+
+              <button class="w-full flex items-center justify-center gap-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-all shadow-sm active:scale-95 disabled:opacity-50 py-2.5" (click)="runScan()" [disabled]="isScanning() || isImporting()">
                 @if (isScanning()) {
                   <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
                   <span class="text-[13px] font-bold">Scanning...</span>

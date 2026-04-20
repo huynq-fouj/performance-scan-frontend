@@ -22,6 +22,7 @@ export class OverviewComponent implements OnInit {
   
   // Use shared scanning state
   isScanning = this.scanService.isScanning;
+  isImporting = signal<boolean>(false);
   
   // Latest scan for detailed metrics
   latestScan = signal<ScanRecord | null>(null);
@@ -103,6 +104,47 @@ export class OverviewComponent implements OnInit {
         this.isScanning.set(false);
       }
     });
+  }
+
+  triggerImport(fileInput: HTMLInputElement) {
+    if (this.isImporting() || this.isScanning()) return;
+    fileInput.click();
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const p = this.project();
+    if (!p) return;
+
+    this.isImporting.set(true);
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      try {
+        const jsonData = JSON.parse(e.target.result);
+        this.scanService.importScan(p.id, jsonData).subscribe({
+          next: () => {
+            this.isImporting.set(false);
+            this.loadLatestScan(p.id);
+            // Optionally show success toast
+            alert('Lighthouse report imported successfully!');
+          },
+          error: (err) => {
+            console.error('Failed to import JSON:', err);
+            this.isImporting.set(false);
+            alert('Failed to import Lighthouse report. Please check the file format.');
+          }
+        });
+      } catch (err) {
+        console.error('Failed to parse JSON:', err);
+        this.isImporting.set(false);
+        alert('Invalid JSON file.');
+      }
+    };
+    reader.readAsText(file);
+    // Reset input so the same file can be selected again
+    event.target.value = '';
   }
 
   stopScan() {

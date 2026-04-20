@@ -54,4 +54,8 @@ export class ScanService {
   deleteScan(id: string): Observable<ApiResponse<void>> {
     return this.http.post<ApiResponse<void>>(`${this.apiUrl}/${id}/delete`, {});
   }
+
+  importScan(projectId: string, jsonData: any): Observable<ApiResponse<ScanRecord>> {
+    return this.http.post<ApiResponse<ScanRecord>>(`${this.apiUrl}/project/${projectId}/import`, jsonData);
+  }
 }
