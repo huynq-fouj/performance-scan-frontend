@@ -17,24 +17,21 @@
       <!-- Status Filter  -->
       <div class="filter-item">
         <label class="filter-label">Status</label>
-        <select class="filter-select" [ngModel]="statusFilter()" (ngModelChange)="onStatusChange($event)">
-          <option value="all">All Status</option>
-          <option value="success">Success</option>
-          <option value="failed">Failed</option>
-          <option value="running">Running</option>
-          <option value="queued">Queued</option>
-        </select>
+        <app-custom-select 
+          [options]="statusOptions" 
+          [ngModel]="statusFilter()" 
+          (ngModelChange)="onStatusChange($event)">
+        </app-custom-select>
       </div>
 
       <!-- Project Filter -->
       <div class="filter-item">
         <label class="filter-label">Project</label>
-        <select class="filter-select" [ngModel]="projectFilter()" (ngModelChange)="onProjectChange($event)">
-          <option value="all">All Projects</option>
-          @for (p of projects(); track p.id) {
-            <option [value]="p.id">{{ p.name }}</option>
-          }
-        </select>
+        <app-custom-select 
+          [options]="projectOptions()" 
+          [ngModel]="projectFilter()" 
+          (ngModelChange)="onProjectChange($event)">
+        </app-custom-select>
       </div>
 
       <!-- Date From -->

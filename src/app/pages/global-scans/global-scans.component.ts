@@ -1,5 +1,5 @@
-import { Component, inject, signal, DestroyRef, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, computed, DestroyRef, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -8,10 +8,12 @@ import { ProjectService } from '../../core/services/project.service';
 import { ScanRecord } from '../../core/models/scan.model';
 import { Project } from '../../core/models/project.model';
 
+import { CustomSelectComponent } from '../../shared/components/custom-select/custom-select.component';
+
 @Component({
   selector: 'app-global-scans',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CustomSelectComponent],
   templateUrl: './global-scans.component.html',
   styleUrl: './global-scans.component.scss'
 })
@@ -20,6 +22,7 @@ export class GlobalScansComponent implements OnInit {
   private projectService = inject(ProjectService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   scans = signal<ScanRecord[]>([]);
   projects = signal<Project[]>([]);
@@ -31,9 +34,24 @@ export class GlobalScansComponent implements OnInit {
   dateFrom = signal<string>('');
   dateTo = signal<string>('');
 
+  // Dropdown options
+  statusOptions = [
+    { label: 'All Status', value: 'all' },
+    { label: 'Success', value: 'success' },
+    { label: 'Failed', value: 'failed' },
+    { label: 'Running', value: 'running' },
+    { label: 'Queued', value: 'queued' }
+  ];
+
+  projectOptions = computed(() => {
+    const defaultOption = { label: 'All Projects', value: 'all' };
+    const pOptions = this.projects().map(p => ({ label: p.name, value: p.id }));
+    return [defaultOption, ...pOptions];
+  });
+
   // Pagination
   currentPage = signal<number>(1);
-  pageSize = signal<number>(15);
+  pageSize = signal<number>(10);
   totalCount = signal<number>(0);
 
   ngOnInit() {
@@ -42,6 +60,10 @@ export class GlobalScansComponent implements OnInit {
   }
 
   loadProjects() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.projectService.getProjects().pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
@@ -52,6 +74,10 @@ export class GlobalScansComponent implements OnInit {
   }
 
   loadScans() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.isLoading.set(true);
     this.scanService.getAllScans({
       status: this.statusFilter(),
