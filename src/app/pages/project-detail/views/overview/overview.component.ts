@@ -134,7 +134,8 @@ export class OverviewComponent implements OnInit {
           error: (err) => {
             console.error('Failed to import JSON:', err);
             this.isImporting.set(false);
-            this.toast.error('Failed to import Lighthouse report. Please check the file format.');
+            const errorMsg = err.error?.message || 'Failed to import Lighthouse report. Please check the file format.';
+            this.toast.error(errorMsg);
           }
         });
       } catch (err) {
