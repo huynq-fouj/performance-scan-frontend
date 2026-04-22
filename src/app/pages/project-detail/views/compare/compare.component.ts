@@ -1,11 +1,11 @@
-import { Component, inject, signal, computed, OnInit, DestroyRef } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, DestroyRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from 'app/core/services/project.service';
 import { ScanService } from 'app/core/services/scan.service';
 import { Project } from 'app/core/models/project.model';
-import { ScanRecord } from 'app/core/models/scan.model';
+import { ScanRecord, ScanCompareResponse } from 'app/core/models/scan.model';
 import { ScanSelectComponent } from 'app/shared/components/scan-select/scan-select.component';
 
 @Component({
@@ -31,8 +31,30 @@ export class CompareComponent implements OnInit {
   scanBId = signal<string | null>(null);
 
   // Computeds for the selected scans
-  scanA = computed(() => this.scans().find(s => s.id === this.scanAId()) || null);
-  scanB = computed(() => this.scans().find(s => s.id === this.scanBId()) || null);
+  scanA = computed(() => this.compareResult()?.scanA || null);
+  scanB = computed(() => this.compareResult()?.scanB || null);
+  
+  compareResult = signal<ScanCompareResponse | null>(null);
+
+  constructor() {
+    effect(() => {
+      const aId = this.scanAId();
+      const bId = this.scanBId();
+      if (aId && bId) {
+        if (aId === bId) {
+          this.compareResult.set(null);
+          return;
+        }
+        // Could optimize by bypassing isLoading flash if caching, but we'll show it
+        this.scanService.compareScans(aId, bId).subscribe({
+          next: (res) => {
+            if (res.data) this.compareResult.set(res.data);
+          },
+          error: (err) => console.error('Compare Error:', err)
+        });
+      }
+    });
+  }
 
   ngOnInit() {
     this.projectService.currentProject$.pipe(
@@ -91,25 +113,6 @@ export class CompareComponent implements OnInit {
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
-  // --- Delta Calculation Helpers ---
-
-  getDeltaScore(): number {
-    const a = this.scanA()?.performanceScore || 0;
-    const b = this.scanB()?.performanceScore || 0;
-    return b - a;
-  }
-
-  calculateDelta(valA: number | undefined, valB: number | undefined): { diff: number; percent: number; isBetter: boolean; type: 'lower-is-better' | 'higher-is-better' } {
-    const a = valA || 0;
-    const b = valB || 0;
-    const diff = b - a;
-    const percent = a !== 0 ? (diff / a) * 100 : 0;
-    
-    // Most metrics (LCP, CLS, TBT, Bundle size) are lower-is-better
-    const isBetter = diff <= 0;
-    
-    return { diff, percent, isBetter, type: 'lower-is-better' };
-  }
 
   // UI Helpers
 

@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { ScanRecord, CreateScanRequest } from '../models/scan.model';
+import { ScanRecord, CreateScanRequest, ScanCompareResponse } from '../models/scan.model';
 import { ApiResponse } from '../models/api-response.model';
 
 @Injectable({
@@ -28,6 +28,10 @@ export class ScanService {
 
   getScan(id: string): Observable<ApiResponse<ScanRecord>> {
     return this.http.get<ApiResponse<ScanRecord>>(`${this.apiUrl}/${id}`);
+  }
+
+  compareScans(scanAId: string, scanBId: string): Observable<ApiResponse<ScanCompareResponse>> {
+    return this.http.get<ApiResponse<ScanCompareResponse>>(`${this.apiUrl}/compare/${scanAId}/${scanBId}`);
   }
 
   createScan(payload: CreateScanRequest, device: 'mobile' | 'desktop' = 'desktop'): Observable<ApiResponse<ScanRecord>> {

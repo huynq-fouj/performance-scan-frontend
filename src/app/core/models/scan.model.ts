@@ -17,6 +17,27 @@ export interface ThirdPartyDomain {
   transferSizeKb: number;
 }
 
+export interface DeltaMetric {
+  diff: number;
+  percent: number;
+  isBetter: boolean;
+}
+
+export interface ScanCompareResponse {
+  scanA: ScanRecord;
+  scanB: ScanRecord;
+  deltas: {
+    performanceScore: DeltaMetric;
+    lcp: DeltaMetric;
+    cls: DeltaMetric;
+    tbt: DeltaMetric;
+    jsSizeKb: DeltaMetric;
+    cssSizeKb: DeltaMetric;
+    requestCount: DeltaMetric;
+  };
+  summary: string;
+}
+
 export interface AngularInsights {
   isAngular: boolean;
   version?: string;

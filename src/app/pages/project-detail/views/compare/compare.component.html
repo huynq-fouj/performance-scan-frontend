@@ -55,37 +55,50 @@
     @if (scanA() && scanB()) {
       
       <!-- Big Score Summary -->
-      <div class="summary-section">
-        <div class="score-card base-score">
-          <div class="score-label">Base Score</div>
-          <div class="score-circle" [ngClass]="getScoreClass(scanA()?.performanceScore)">
-            {{ scanA()?.performanceScore }}
+      @if (compareResult()) {
+        <div class="summary-section">
+          <div class="score-card base-score">
+            <div class="score-label">Base Score</div>
+            <div class="score-circle" [ngClass]="getScoreClass(scanA()?.performanceScore)">
+              {{ scanA()?.performanceScore }}
+            </div>
+          </div>
+
+          <div class="score-delta">
+            <div class="delta-arrow" [class.is-up]="compareResult()?.deltas?.performanceScore?.diff! >= 0" [class.is-down]="compareResult()?.deltas?.performanceScore?.diff! < 0">
+              @if (compareResult()?.deltas?.performanceScore?.diff! >= 0) {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+              } @else {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              }
+            </div>
+            <div class="delta-value" [class.text-emerald-600]="compareResult()?.deltas?.performanceScore?.diff! > 0" [class.text-red-500]="compareResult()?.deltas?.performanceScore?.diff! < 0" [class.text-gray-400]="compareResult()?.deltas?.performanceScore?.diff === 0">
+              {{ compareResult()?.deltas?.performanceScore?.diff! > 0 ? '+' : '' }}{{ compareResult()?.deltas?.performanceScore?.diff }} pts
+            </div>
+            <div class="delta-text">
+              Performance change
+            </div>
+          </div>
+
+          <div class="score-card target-score">
+            <div class="score-label">Target Score</div>
+            <div class="score-circle" [ngClass]="getScoreClass(scanB()?.performanceScore)">
+              {{ scanB()?.performanceScore }}
+            </div>
           </div>
         </div>
 
-        <div class="score-delta">
-          <div class="delta-arrow" [class.is-up]="getDeltaScore() >= 0" [class.is-down]="getDeltaScore() < 0">
-            @if (getDeltaScore() >= 0) {
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-            } @else {
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-            }
-          </div>
-          <div class="delta-value" [class.text-emerald-600]="getDeltaScore() > 0" [class.text-red-500]="getDeltaScore() < 0" [class.text-gray-400]="getDeltaScore() === 0">
-            {{ getDeltaScore() > 0 ? '+' : '' }}{{ getDeltaScore() }} pts
-          </div>
-          <div class="delta-text">
-            Performance change
+        <div class="mt-4 p-4 rounded-xl bg-blue-50 border border-blue-100 flex items-start gap-3 text-blue-800">
+          <svg class="w-5 h-5 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            <circle cx="12" cy="12" r="10"></circle>
+          </svg>
+          <div>
+            <h5 class="font-bold mb-1">Improvement Summary</h5>
+            <p class="text-sm font-medium opacity-90">{{ compareResult()?.summary }}</p>
           </div>
         </div>
-
-        <div class="score-card target-score">
-          <div class="score-label">Target Score</div>
-          <div class="score-circle" [ngClass]="getScoreClass(scanB()?.performanceScore)">
-            {{ scanB()?.performanceScore }}
-          </div>
-        </div>
-      </div>
 
       <!-- Detail Metrics Grid -->
       <h4 class="section-title mt-8 mb-4">Core Web Vitals Comparison</h4>
@@ -114,7 +127,7 @@
             </div>
           </div>
           <div class="mc-footer">
-            @if (calculateDelta(scanA()?.lcp, scanB()?.lcp); as delta) {
+            @if (compareResult()?.deltas?.lcp; as delta) {
               <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
                 {{ delta.diff > 0 ? '+' : '' }}{{ (delta.diff / 1000) | number:'1.1-2' }}s ({{ Math.abs(delta.percent) | number:'1.0-0' }}%)
               </div>
@@ -144,7 +157,7 @@
             </div>
           </div>
           <div class="mc-footer">
-            @if (calculateDelta(scanA()?.cls, scanB()?.cls); as delta) {
+            @if (compareResult()?.deltas?.cls; as delta) {
               <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
                 {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.1-3' }}
               </div>
@@ -174,7 +187,7 @@
             </div>
           </div>
           <div class="mc-footer">
-            @if (calculateDelta(scanA()?.tbt, scanB()?.tbt); as delta) {
+            @if (compareResult()?.deltas?.tbt; as delta) {
               <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
                 {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.0-0' }}ms
               </div>
@@ -208,7 +221,7 @@
             </div>
           </div>
           <div class="mc-footer">
-            @if (calculateDelta(scanA()?.jsSizeKb, scanB()?.jsSizeKb); as delta) {
+            @if (compareResult()?.deltas?.jsSizeKb; as delta) {
               <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
                 {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.0-0' }} KB
               </div>
@@ -237,7 +250,7 @@
             </div>
           </div>
           <div class="mc-footer">
-            @if (calculateDelta(scanA()?.cssSizeKb, scanB()?.cssSizeKb); as delta) {
+            @if (compareResult()?.deltas?.cssSizeKb; as delta) {
               <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
                 {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.0-0' }} KB
               </div>
@@ -266,7 +279,7 @@
             </div>
           </div>
           <div class="mc-footer">
-            @if (calculateDelta(scanA()?.requestCount, scanB()?.requestCount); as delta) {
+            @if (compareResult()?.deltas?.requestCount; as delta) {
               <div class="badge-delta" [class.good]="delta.isBetter" [class.bad]="!delta.isBetter && delta.diff !== 0">
                 {{ delta.diff > 0 ? '+' : '' }}{{ delta.diff | number:'1.0-0' }}
               </div>
@@ -276,7 +289,7 @@
         </div>
 
       </div>
-
+      }
     } @else {
       <div class="empty-state bg-white rounded-xl border border-gray-100 flex flex-col items-center justify-center text-center py-16 px-6 mt-6 shadow-sm">
         <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
