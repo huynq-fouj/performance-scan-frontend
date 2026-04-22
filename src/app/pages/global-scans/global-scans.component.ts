@@ -9,11 +9,12 @@ import { ScanRecord } from '../../core/models/scan.model';
 import { Project } from '../../core/models/project.model';
 
 import { CustomSelectComponent } from '../../shared/components/custom-select/custom-select.component';
+import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-global-scans',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomSelectComponent],
+  imports: [CommonModule, FormsModule, CustomSelectComponent, ConfirmModalComponent],
   templateUrl: './global-scans.component.html',
   styleUrl: './global-scans.component.scss'
 })
@@ -53,6 +54,11 @@ export class GlobalScansComponent implements OnInit {
   currentPage = signal<number>(1);
   pageSize = signal<number>(10);
   totalCount = signal<number>(0);
+
+  // Delete confirmation modal
+  showDeleteModal = signal(false);
+  deletingScanId = signal<string | null>(null);
+  isDeleting = signal(false);
 
   ngOnInit() {
     this.loadProjects();
@@ -210,17 +216,32 @@ export class GlobalScansComponent implements OnInit {
   }
 
   deleteScan(id: string) {
-    if (!confirm('Are you sure you want to delete this scan record? This action cannot be undone.')) {
-      return;
-    }
+    this.deletingScanId.set(id);
+    this.showDeleteModal.set(true);
+  }
 
+  confirmDelete() {
+    const id = this.deletingScanId();
+    if (!id) return;
+
+    this.isDeleting.set(true);
     this.scanService.deleteScan(id).subscribe({
       next: () => {
+        this.isDeleting.set(false);
+        this.showDeleteModal.set(false);
+        this.deletingScanId.set(null);
         this.loadScans();
       },
       error: (err) => {
         console.error('Failed to delete scan:', err);
+        this.isDeleting.set(false);
+        this.showDeleteModal.set(false);
       }
     });
+  }
+
+  cancelDelete() {
+    this.showDeleteModal.set(false);
+    this.deletingScanId.set(null);
   }
 }

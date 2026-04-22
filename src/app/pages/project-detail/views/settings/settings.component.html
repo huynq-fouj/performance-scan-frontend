@@ -204,39 +204,13 @@
   }
 </div>
 
-<!-- Delete Confirmation Modal -->
-@if (showDeleteModal()) {
-  <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
-    <!-- Backdrop -->
-    <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-all" (click)="!isDeleting() && showDeleteModal.set(false)"></div>
-    
-    <!-- Modal Content -->
-    <div class="relative bg-white w-full max-w-md rounded-2xl shadow-elevated overflow-hidden animate-slide-up">
-      <div class="p-6 text-center">
-        <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1v3M4 7h16"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 mb-2">Are you sure?</h3>
-        <p class="text-sm text-gray-500 mb-6">
-          This action will permanently delete <span class="font-bold text-gray-700">{{ project()?.name }}</span> and all associated data. This cannot be undone.
-        </p>
-
-        <div class="flex flex-col sm:flex-row gap-3">
-          <button type="button" [disabled]="isDeleting()" (click)="showDeleteModal.set(false)" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors">
-            Cancel
-          </button>
-          <button type="button" [disabled]="isDeleting()" (click)="deleteProject()" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
-            @if (isDeleting()) {
-              <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
-              Deleting...
-            } @else {
-              Yes, Delete
-            }
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-}
+<app-confirm-modal
+  [visible]="showDeleteModal()"
+  title="Delete Project"
+  [message]="'This action will permanently delete ' + project()?.name + ' and all associated data. This cannot be undone.'"
+  confirmText="Yes, Delete"
+  type="danger"
+  [loading]="isDeleting()"
+  (confirmed)="deleteProject()"
+  (cancelled)="cancelDelete()">
+</app-confirm-modal>

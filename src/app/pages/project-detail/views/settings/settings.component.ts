@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from '../../../../core/services/project.service';
 import { Project, UpdateProjectRequest } from '../../../../core/models/project.model';
+import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-project-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmModalComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss'
 })
@@ -108,8 +109,13 @@ export class SettingsComponent implements OnInit {
       error: (err) => {
         console.error('Error deleting project:', err);
         this.isDeleting.set(false);
+        this.showDeleteModal.set(false);
       }
     });
+  }
+
+  cancelDelete() {
+    this.showDeleteModal.set(false);
   }
 
   addStorageItem() {
