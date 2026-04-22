@@ -12,6 +12,11 @@ export interface ScanRecommendation {
   priority: 'High' | 'Medium' | 'Low';
 }
 
+export interface ThirdPartyDomain {
+  domain: string;
+  transferSizeKb: number;
+}
+
 export interface ScanRecord {
   id: string;
   projectId: string;
@@ -38,7 +43,11 @@ export interface ScanRecord {
   // Asset metrics
   jsSizeKb?: number;
   cssSizeKb?: number;
+  imageSizeKb?: number;
+  fontSizeKb?: number;
+  otherSizeKb?: number;
   requestCount?: number;
+  thirdPartyDomains?: ThirdPartyDomain[];
 
   screenshotUrl?: string;
   issues?: ScanIssue[];

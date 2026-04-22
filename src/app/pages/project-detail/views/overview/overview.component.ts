@@ -1,5 +1,7 @@
 import { Component, inject, signal, DestroyRef, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from '../../../../core/services/project.service';
 import { ScanService } from '../../../../core/services/scan.service';
@@ -10,7 +12,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 @Component({
   selector: 'app-project-overview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BaseChartDirective],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.scss'
 })
@@ -26,10 +28,11 @@ export class OverviewComponent implements OnInit {
   isScanning = this.scanService.isScanning;
   isImporting = signal<boolean>(false);
   
-  // Latest scan for detailed metrics
   latestScan = signal<ScanRecord | null>(null);
+  historyScans = signal<ScanRecord[]>([]);
 
-  // Device selection for new scans
+  // Trend Settings
+  trendRange = signal<7 | 30>(7);
   selectedDevice = signal<'mobile' | 'desktop'>('desktop');
 
   // Issues and Recommendations UI state
@@ -40,6 +43,83 @@ export class OverviewComponent implements OnInit {
     const scan = this.latestScan();
     if (!scan || !scan.recommendations) return [];
     return scan.recommendations.filter(r => r.priority === this.activeRecTab());
+  });
+
+  // ---- CHARTS CONFIGURATION ---- //
+  public trendLineChartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    elements: {
+      line: { tension: 0.3 }
+    },
+    plugins: {
+      legend: { display: false }
+    },
+    scales: { x: { display: false } }
+  };
+  
+  public assetPieChartOptions: ChartOptions<'doughnut'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right' }
+    }
+  };
+
+  trendScoreData = computed<ChartConfiguration<'line'>['data']>(() => {
+    const scans = this.historyScans().slice(0, this.trendRange()).reverse();
+    return {
+      labels: scans.map(s => new Date(s.completedAt || s.createdAt).toLocaleDateString()),
+      datasets: [
+        {
+          data: scans.map(s => s.performanceScore || 0),
+          label: 'Performance Score',
+          borderColor: '#4f46e5',
+          backgroundColor: 'rgba(79, 70, 229, 0.2)',
+          fill: true
+        }
+      ]
+    };
+  });
+
+  trendMetricsData = computed<ChartConfiguration<'line'>['data']>(() => {
+    const scans = this.historyScans().slice(0, this.trendRange()).reverse();
+    return {
+      labels: scans.map(s => new Date(s.completedAt || s.createdAt).toLocaleDateString()),
+      datasets: [
+        {
+          data: scans.map(s => (s.lcp || 0) / 1000),
+          label: 'LCP (s)',
+          borderColor: '#ea580c',
+        },
+        {
+          data: scans.map(s => s.cls || 0),
+          label: 'CLS',
+          borderColor: '#16a34a',
+        }
+      ]
+    };
+  });
+
+  assetBreakdownData = computed<ChartConfiguration<'doughnut'>['data']>(() => {
+    const scan = this.latestScan();
+    if (!scan) return { labels: [], datasets: [] };
+    return {
+      labels: ['JavaScript', 'CSS', 'Images', 'Fonts', 'Other'],
+      datasets: [
+        {
+          data: [
+            scan.jsSizeKb || 0,
+            scan.cssSizeKb || 0,
+            scan.imageSizeKb || 0,
+            scan.fontSizeKb || 0,
+            scan.otherSizeKb || 0
+          ],
+          backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#6b7280'],
+          hoverOffset: 4
+        }
+      ]
+    };
   });
 
   ngOnInit() {
@@ -57,15 +137,22 @@ export class OverviewComponent implements OnInit {
   }
 
   loadLatestScan(projectId: string) {
-    this.scanService.getScans(projectId).subscribe(res => {
+    this.scanService.getScans(projectId, { page: 1, limit: 30 }).subscribe(res => {
       if (res.data && res.data.length > 0) {
-        // Find latest success scan
+        // Find latest success scan for detailed display
         const successScan = res.data.find(s => s.status === 'success');
         this.latestScan.set(successScan || res.data[0]);
+        // Keep all success scans for history
+        this.historyScans.set(res.data.filter(s => s.status === 'success'));
       } else {
         this.latestScan.set(null);
+        this.historyScans.set([]);
       }
     });
+  }
+
+  setTrendRange(days: 7 | 30) {
+    this.trendRange.set(days);
   }
 
   setDevice(device: 'mobile' | 'desktop') {

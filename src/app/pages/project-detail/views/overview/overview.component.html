@@ -300,7 +300,87 @@
       }
     </div>
 
+    <!-- History & Trend -->
+    @if (historyScans().length) {
+      <div class="card mt-6">
+        <div class="card-header pb-4 border-b border-gray-100 flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+             <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
+               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-5 5"/></svg>
+             </div>
+             <div>
+               <h3 class="font-bold text-lg text-gray-800">History & Trend</h3>
+               <p class="text-sm text-gray-500">Track performance over time</p>
+             </div>
+          </div>
+          <div class="flex bg-gray-100 p-1 rounded-lg">
+            <button class="px-4 py-1.5 rounded-md text-sm font-semibold transition-colors" [class.bg-white]="trendRange() === 7" [class.shadow-sm]="trendRange() === 7" [class.text-gray-800]="trendRange() === 7" [class.text-gray-500]="trendRange() !== 7" (click)="setTrendRange(7)">Last 7 Scans</button>
+            <button class="px-4 py-1.5 rounded-md text-sm font-semibold transition-colors" [class.bg-white]="trendRange() === 30" [class.shadow-sm]="trendRange() === 30" [class.text-gray-800]="trendRange() === 30" [class.text-gray-500]="trendRange() !== 30" (click)="setTrendRange(30)">Last 30 Scans</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <div class="relative h-[250px] border border-gray-100 rounded-xl p-4">
+            <h4 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wider">Score Trend</h4>
+            <canvas baseChart [data]="trendScoreData()" [options]="trendLineChartOptions" type="line"></canvas>
+          </div>
+          <div class="relative h-[250px] border border-gray-100 rounded-xl p-4">
+            <h4 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wider">LCP & CLS Trend</h4>
+            <canvas baseChart [data]="trendMetricsData()" [options]="trendLineChartOptions" type="line"></canvas>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Technical Breakdown -->
+    @if (latestScan()?.thirdPartyDomains?.length || latestScan()?.jsSizeKb) {
+      <div class="card mt-6">
+        <div class="card-header pb-4 border-b border-gray-100 flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+             <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
+               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+             </div>
+             <div>
+               <h3 class="font-bold text-lg text-gray-800">Technical Breakdown</h3>
+               <p class="text-sm text-gray-500">Asset sizes and third-party scripts</p>
+             </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 border-b border-gray-100 pb-6">
+           <div class="col-span-1 border border-gray-100 rounded-xl p-4 flex flex-col items-center justify-center relative h-[250px]">
+             <canvas baseChart [data]="assetBreakdownData()" [options]="assetPieChartOptions" type="doughnut"></canvas>
+           </div>
+           <div class="col-span-2">
+             <h4 class="text-sm font-bold text-gray-500 mb-4 uppercase tracking-wider">Top Third-Party Requests</h4>
+             <div class="overflow-x-auto">
+               <table class="w-full text-sm text-left">
+                 <thead class="text-xs text-gray-500 bg-gray-50 rounded-lg">
+                   <tr>
+                     <th class="px-4 py-2 font-semibold">Domain</th>
+                     <th class="px-4 py-2 font-semibold text-right">Transfer Size</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   @for (domain of latestScan()?.thirdPartyDomains; track domain.domain) {
+                     <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                       <td class="px-4 py-3 font-medium text-gray-800">{{ domain.domain }}</td>
+                       <td class="px-4 py-3 text-right text-gray-600">
+                         <span class="bg-gray-100 px-2 py-1 rounded text-xs font-semibold">{{ domain.transferSizeKb | number }} KB</span>
+                       </td>
+                     </tr>
+                   }
+                   @if (!latestScan()?.thirdPartyDomains?.length) {
+                     <tr><td colspan="2" class="text-center py-4 text-gray-500">No external third-party requests found.</td></tr>
+                   }
+                 </tbody>
+               </table>
+             </div>
+           </div>
+        </div>
+      </div>
+    }
+
     <!-- Top Issues Found -->
+
     @if (latestScan()?.issues?.length) {
       <div class="card mt-6 border-l-4 border-red-500">
         <div class="card-header pb-4 border-b border-gray-100 flex-wrap gap-4">

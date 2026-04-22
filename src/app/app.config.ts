@@ -2,6 +2,7 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 import { provideHotToastConfig } from '@ngxpert/hot-toast';
 
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
       duration: 3000,
       position: 'top-right'
     }),
+    provideCharts(withDefaultRegisterables()),
   ],
 };
 
