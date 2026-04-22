@@ -300,6 +300,108 @@
       }
     </div>
 
+    <!-- Angular Insights -->
+    @if (latestScan()?.angularInsights?.isAngular) {
+      <div class="card mt-6 border-l-4 border-red-600 bg-gradient-to-r from-red-50 to-white">
+        <div class="card-header pb-4 border-b border-red-100 flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+             <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+               <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                 <path d="M12,2L1.08,5.92L2.73,16.59L12,22L21.27,16.59L22.92,5.92L12,2M12,4.86L19.26,7.39L18.06,15.29L12,18.78L5.94,15.29L4.74,7.39L12,4.86M12,6.58L7.61,16H9.72L10.59,14H13.41L14.28,16H16.39L12,6.58M12,9L12.92,12.5H11.08L12,9Z"/>
+               </svg>
+             </div>
+             <div>
+               <h3 class="font-bold text-xl text-red-800">Angular Insights</h3>
+               <p class="text-sm text-red-600/80">Specifically tailored detection for your Angular App</p>
+             </div>
+          </div>
+          <div class="bg-red-600 text-white px-3 py-1.5 rounded-lg shadow-sm font-bold tracking-wider text-sm">
+            Angular v{{ latestScan()?.angularInsights?.version || 'Unknown' }}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          
+          <!-- SSR Card -->
+          <div class="bg-white p-4 rounded-xl border border-red-50 shadow-sm flex flex-col justify-between h-full">
+            <div class="flex items-center gap-2 mb-2">
+              @if (latestScan()?.angularInsights?.ssrEnabled) {
+                <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+              } @else {
+                <div class="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </div>
+              }
+              <h4 class="font-bold text-gray-800">Angular SSR</h4>
+            </div>
+            <p class="text-xs text-gray-500 mt-1 flex-1">
+               {{ latestScan()?.angularInsights?.ssrEnabled ? 'Server-Side Rendering detected. Great for SEO & FCP.' : 'CSR detected. Enable Angular Universal / SSR to boost metrics.' }}
+            </p>
+          </div>
+
+          <!-- Lazy Routes Card -->
+          <div class="bg-white p-4 rounded-xl border border-red-50 shadow-sm flex flex-col justify-between h-full">
+            <div class="flex items-center gap-2 mb-2">
+              @if (latestScan()?.angularInsights?.hasLazyRoutes) {
+                <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+              } @else {
+                <div class="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+              }
+              <h4 class="font-bold text-gray-800">Lazy Loading</h4>
+            </div>
+            <p class="text-xs text-gray-500 mt-1 flex-1">
+               {{ latestScan()?.angularInsights?.hasLazyRoutes ? 'Lazy chunk scripts detected.' : 'Appears to be a monolithic bundle. Implement loadChildren().' }}
+            </p>
+          </div>
+
+          <!-- Zone.js Card -->
+          <div class="bg-white p-4 rounded-xl border border-red-50 shadow-sm flex flex-col justify-between h-full">
+            <div class="flex items-center gap-2 mb-2">
+              @if (!latestScan()?.angularInsights?.zoneJsPresent) {
+                <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+              } @else {
+                <div class="w-5 h-5 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center shrink-0">
+                   <span class="text-[10px] font-bold">Z</span>
+                </div>
+              }
+              <h4 class="font-bold text-gray-800">Zone.js</h4>
+            </div>
+            <p class="text-xs text-gray-500 mt-1 flex-1">
+               {{ latestScan()?.angularInsights?.zoneJsPresent ? 'Zone.js is present. Consider moving to Zoneless (v18+) for better perf.' : 'Zoneless app detected! Amazing.' }}
+            </p>
+          </div>
+
+          <!-- Vendor Health Card -->
+          <div class="bg-white p-4 rounded-xl border border-red-50 shadow-sm flex flex-col justify-between h-full">
+            <div class="flex items-center gap-2 mb-2">
+              @if (!latestScan()?.angularInsights?.heavyVendor) {
+                <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+              } @else {
+                <div class="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </div>
+              }
+              <h4 class="font-bold text-gray-800">Vendor Health</h4>
+            </div>
+            <p class="text-xs text-gray-500 mt-1 flex-1">
+               {{ latestScan()?.angularInsights?.heavyVendor ? 'Heavy JS chunk (>500KB) detected. Consider pruning third-party deps.' : 'No excessive JS vendors detected.' }}
+            </p>
+          </div>
+
+        </div>
+      </div>
+    }
+
     <!-- History & Trend -->
     @if (historyScans().length) {
       <div class="card mt-6">

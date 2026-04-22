@@ -17,6 +17,15 @@ export interface ThirdPartyDomain {
   transferSizeKb: number;
 }
 
+export interface AngularInsights {
+  isAngular: boolean;
+  version?: string;
+  hasLazyRoutes?: boolean;
+  heavyVendor?: boolean;
+  ssrEnabled?: boolean;
+  zoneJsPresent?: boolean;
+}
+
 export interface ScanRecord {
   id: string;
   projectId: string;
@@ -48,6 +57,7 @@ export interface ScanRecord {
   otherSizeKb?: number;
   requestCount?: number;
   thirdPartyDomains?: ThirdPartyDomain[];
+  angularInsights?: AngularInsights;
 
   screenshotUrl?: string;
   issues?: ScanIssue[];
