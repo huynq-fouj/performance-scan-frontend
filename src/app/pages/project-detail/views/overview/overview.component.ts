@@ -5,6 +5,7 @@ import { ProjectService } from '../../../../core/services/project.service';
 import { ScanService } from '../../../../core/services/scan.service';
 import { Project } from '../../../../core/models/project.model';
 import { ScanRecord } from '../../../../core/models/scan.model';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
   selector: 'app-project-overview',
@@ -17,6 +18,7 @@ export class OverviewComponent implements OnInit {
   private projectService = inject(ProjectService);
   private scanService = inject(ScanService);
   private destroyRef = inject(DestroyRef);
+  private toast = inject(HotToastService);
 
   project = signal<Project | null>(null);
   
@@ -127,19 +129,18 @@ export class OverviewComponent implements OnInit {
           next: () => {
             this.isImporting.set(false);
             this.loadLatestScan(p.id);
-            // Optionally show success toast
-            alert('Lighthouse report imported successfully!');
+            this.toast.success('Lighthouse report imported successfully!');
           },
           error: (err) => {
             console.error('Failed to import JSON:', err);
             this.isImporting.set(false);
-            alert('Failed to import Lighthouse report. Please check the file format.');
+            this.toast.error('Failed to import Lighthouse report. Please check the file format.');
           }
         });
       } catch (err) {
         console.error('Failed to parse JSON:', err);
         this.isImporting.set(false);
-        alert('Invalid JSON file.');
+        this.toast.error('Invalid JSON file.');
       }
     };
     reader.readAsText(file);
