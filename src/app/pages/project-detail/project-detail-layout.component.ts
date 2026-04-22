@@ -46,6 +46,7 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
     { name: 'Overview', path: 'overview' },
     { name: 'Scans', path: 'scans' },
     { name: 'Compare', path: 'compare' },
+    { name: 'Reports', path: 'reports' },
     { name: 'Settings', path: 'settings' }
   ];
 

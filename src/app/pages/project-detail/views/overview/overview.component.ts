@@ -245,7 +245,7 @@ export class OverviewComponent implements OnInit {
         this.scanService.importScan(p.id, jsonData).subscribe({
           next: () => {
             this.isImporting.set(false);
-            this.loadLatestScan(p.id, true);
+            setTimeout(() => this.loadLatestScan(p.id, true), 300);
             this.toast.success('Lighthouse report imported successfully!');
           },
           error: (err) => {
