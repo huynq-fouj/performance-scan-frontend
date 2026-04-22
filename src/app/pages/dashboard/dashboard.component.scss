@@ -17,7 +17,7 @@
 
 /* ===== Stats Grid ===== */
 .stats-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5;
+  @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4;
 }
 
 .stat-card {
@@ -30,7 +30,7 @@
 }
 
 .stat-card-label {
-  @apply text-sm text-gray-500 font-medium;
+  @apply text-xs text-gray-400 font-medium uppercase tracking-wider;
 }
 
 .stat-card-icon {
@@ -41,59 +41,72 @@
   }
 }
 
-.stat-icon-blue {
-  @apply bg-blue-50 text-blue-600;
-}
-
-.stat-icon-emerald {
-  @apply bg-emerald-50 text-emerald-600;
-}
-
-.stat-icon-amber {
-  @apply bg-amber-50 text-amber-600;
-}
-
-.stat-icon-violet {
-  @apply bg-violet-50 text-violet-600;
-}
+.stat-icon-blue { @apply bg-blue-50 text-blue-600; }
+.stat-icon-emerald { @apply bg-emerald-50 text-emerald-600; }
+.stat-icon-amber { @apply bg-amber-50 text-amber-600; }
+.stat-icon-red { @apply bg-red-50 text-red-500; }
+.stat-icon-violet { @apply bg-violet-50 text-violet-600; }
 
 .stat-card-value {
-  @apply text-3xl font-bold text-gray-900 mb-2;
+  @apply text-3xl font-bold text-gray-900;
 }
 
-.stat-unit {
-  @apply text-lg font-medium text-gray-400;
+/* ===== Quick Actions ===== */
+.btn-primary {
+  @apply inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-semibold
+         bg-primary-600 text-white hover:bg-primary-700
+         transition-colors shadow-sm;
 }
 
-.stat-card-change {
-  @apply flex items-center gap-1.5 text-xs font-medium;
-}
-
-.stat-positive {
-  @apply text-emerald-600;
-}
-
-.stat-negative {
-  @apply text-red-500;
+.btn-outline {
+  @apply inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-semibold
+         border border-gray-200 text-gray-700 bg-white hover:bg-gray-50
+         transition-colors;
 }
 
 /* ===== Card ===== */
+.card {
+  @apply bg-white rounded-xl border border-gray-100 p-6 shadow-sm;
+}
+
 .card-header {
-  @apply flex items-center justify-between mb-5;
+  @apply flex items-center justify-between mb-4;
 }
 
 .card-title {
-  @apply text-base font-semibold text-gray-900;
+  @apply text-base font-bold text-gray-900 flex items-center;
 }
 
-.card-link {
-  @apply text-sm text-primary-600 font-medium no-underline
-         hover:text-primary-700 transition-colors duration-200;
+/* ===== Main Grid (Health + Alerts) ===== */
+.main-grid {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
 }
 
-/* ===== Table ===== */
+.health-list-card {
+  @apply lg:col-span-2;
+}
+
+/* ===== Filter Tabs ===== */
+.filter-tabs {
+  @apply flex gap-1.5 bg-gray-50 p-1 rounded-lg;
+}
+
+.filter-tab {
+  @apply px-3 py-1.5 text-xs font-medium text-gray-500 rounded-md
+         transition-all duration-200 cursor-pointer;
+
+  &.active {
+    @apply bg-white text-primary-700 shadow-sm font-semibold;
+  }
+
+  &:hover:not(.active) {
+    @apply text-gray-700;
+  }
+}
+
+/* ===== Data Table ===== */
 .table-wrapper {
-  @apply overflow-x-auto -mx-6 px-6;
+  @apply overflow-x-auto;
 }
 
 .data-table {
@@ -106,58 +119,130 @@
   }
 
   td {
-    @apply py-3.5 border-b border-gray-50 text-gray-600;
+    @apply py-3 border-b border-gray-50 text-gray-600;
   }
 
   tr:last-child td {
     @apply border-0;
   }
-
-  tr:hover td {
-    @apply bg-surface-50/50;
-  }
 }
 
-.url-cell {
-  @apply font-medium text-gray-900;
+/* Score Pill */
+.score-pill {
+  @apply inline-flex items-center justify-center min-w-[36px] h-8 px-2
+         rounded-lg text-xs font-bold;
 }
 
-.date-cell {
-  @apply text-gray-400;
+.score-good { @apply bg-emerald-50 text-emerald-700; }
+.score-average { @apply bg-amber-50 text-amber-700; }
+.score-poor { @apply bg-red-50 text-red-600; }
+
+/* Status Badge */
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold;
 }
 
-/* ===== Score ===== */
-.score {
-  @apply inline-flex items-center justify-center w-9 h-9 rounded-lg
-         text-xs font-bold;
+.status-healthy { @apply bg-emerald-50 text-emerald-700; }
+.status-warning { @apply bg-amber-50 text-amber-700; }
+.status-critical { @apply bg-red-50 text-red-600; }
+
+/* Trend Indicator */
+.trend-indicator {
+  @apply inline-flex items-center justify-center w-7 h-7 rounded-full
+         text-sm font-bold;
 }
 
-.score-good {
-  @apply bg-emerald-50 text-emerald-700;
+.trend-up { @apply bg-emerald-50 text-emerald-600; }
+.trend-down { @apply bg-red-50 text-red-500; }
+.trend-flat { @apply bg-gray-100 text-gray-400; }
+
+/* ===== Alerts ===== */
+.alert-count {
+  @apply inline-flex items-center justify-center min-w-[22px] h-[22px]
+         px-1.5 rounded-full bg-red-500 text-white text-xs font-bold;
 }
 
-.score-warning {
-  @apply bg-amber-50 text-amber-700;
+.empty-alerts {
+  @apply flex flex-col items-center justify-center py-10 text-center;
 }
 
-.score-bad {
-  @apply bg-red-50 text-red-600;
+.alerts-list {
+  @apply space-y-1 max-h-[320px] overflow-y-auto;
 }
 
-/* ===== Badge ===== */
-.badge {
-  @apply inline-flex items-center px-2.5 py-1 rounded-full
-         text-xs font-semibold;
+.alert-item {
+  @apply flex items-start gap-3 p-3 rounded-lg cursor-pointer
+         transition-colors hover:bg-gray-50;
 }
 
-.badge-success {
-  @apply bg-emerald-50 text-emerald-700;
+.alert-dot {
+  @apply w-2.5 h-2.5 rounded-full mt-1.5 shrink-0;
 }
 
-.badge-warning {
-  @apply bg-amber-50 text-amber-700;
+.severity-critical .alert-dot { @apply bg-red-500; }
+.severity-high .alert-dot { @apply bg-orange-400; }
+.severity-medium .alert-dot { @apply bg-amber-400; }
+
+.alert-body {
+  @apply flex flex-col flex-1 min-w-0;
 }
 
-.badge-danger {
-  @apply bg-red-50 text-red-600;
+.alert-project {
+  @apply text-sm font-semibold text-gray-900 truncate;
+}
+
+.alert-message {
+  @apply text-xs text-gray-500 mt-0.5 truncate;
+}
+
+.alert-time {
+  @apply text-xs text-gray-400 shrink-0 whitespace-nowrap;
+}
+
+/* ===== Bottom Grid (Trends + Activity) ===== */
+.bottom-grid {
+  @apply grid grid-cols-1 lg:grid-cols-5 gap-6;
+}
+
+.trend-card {
+  @apply lg:col-span-3;
+}
+
+.activity-card {
+  @apply lg:col-span-2;
+}
+
+.chart-container {
+  @apply relative w-full;
+  height: 220px;
+}
+
+/* ===== Activity Timeline ===== */
+.activity-timeline {
+  @apply space-y-0 max-h-[280px] overflow-y-auto;
+}
+
+.timeline-item {
+  @apply flex items-start gap-3 py-3 border-b border-gray-50 last:border-0
+         cursor-pointer hover:bg-gray-50/50 rounded-lg px-2 transition-colors;
+}
+
+.timeline-dot {
+  @apply w-2 h-2 rounded-full bg-primary-400 mt-1.5 shrink-0;
+}
+
+.timeline-content {
+  @apply flex flex-col flex-1 min-w-0;
+}
+
+.timeline-project {
+  @apply text-sm font-semibold text-gray-800 truncate;
+}
+
+.timeline-action {
+  @apply text-xs text-gray-500 mt-0.5;
+}
+
+.timeline-time {
+  @apply text-xs text-gray-400 shrink-0 whitespace-nowrap;
 }

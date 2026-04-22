@@ -1,153 +1,236 @@
 <!-- ===== DASHBOARD PAGE ===== -->
 <div class="dashboard">
+
+  @if (isLoading()) {
+    <div class="animate-pulse space-y-6">
+      <div class="h-10 bg-gray-200 rounded w-1/3"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        @for (_ of [1,2,3,4,5]; track $index) {
+          <div class="h-28 bg-gray-100 rounded-xl"></div>
+        }
+      </div>
+      <div class="h-64 bg-gray-100 rounded-xl"></div>
+    </div>
+  } @else if (summary()) {
+
   <!-- Page Header -->
   <div class="page-header">
     <div>
       <h1 class="page-title">Dashboard</h1>
-      <p class="page-subtitle">Welcome back! Here's an overview of your performance data.</p>
+      <p class="page-subtitle">Welcome back! Here's your portfolio health at a glance.</p>
     </div>
-    <button class="btn-primary">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2">
-        <line x1="12" y1="5" x2="12" y2="19"/>
-        <line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-      New Scan
-    </button>
+    <div class="flex items-center gap-3">
+      <button class="btn-outline" (click)="goToProjects()">
+        <svg class="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        View Critical
+      </button>
+      <button class="btn-primary" (click)="goToProjects()">
+        <svg class="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add Project
+      </button>
+    </div>
   </div>
 
-  <!-- Stats Grid -->
+  <!-- ========== 1. Portfolio Summary ========== -->
   <div class="stats-grid">
+    <!-- Total Projects -->
     <div class="stat-card">
       <div class="stat-card-header">
-        <span class="stat-card-label">Total Scans</span>
+        <span class="stat-card-label">Total Projects</span>
         <div class="stat-card-icon stat-icon-blue">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
         </div>
       </div>
-      <div class="stat-card-value">1,284</div>
-      <div class="stat-card-change stat-positive">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
-          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-        </svg>
-        +12.5% from last month
-      </div>
+      <div class="stat-card-value">{{ summary()!.portfolio.totalProjects }}</div>
     </div>
-
+    <!-- Healthy -->
     <div class="stat-card">
       <div class="stat-card-header">
-        <span class="stat-card-label">Avg. Performance</span>
+        <span class="stat-card-label">Healthy</span>
         <div class="stat-card-icon stat-icon-emerald">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 20V10"/>
-            <path d="M18 20V4"/>
-            <path d="M6 20v-4"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
       </div>
-      <div class="stat-card-value">92<span class="stat-unit">/100</span></div>
-      <div class="stat-card-change stat-positive">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
-          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-        </svg>
-        +3.2 points
-      </div>
+      <div class="stat-card-value text-emerald-600">{{ summary()!.portfolio.healthyProjects }}</div>
     </div>
-
+    <!-- Warning -->
     <div class="stat-card">
       <div class="stat-card-header">
-        <span class="stat-card-label">Issues Found</span>
+        <span class="stat-card-label">Warning</span>
         <div class="stat-card-icon stat-icon-amber">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-            <line x1="12" y1="9" x2="12" y2="13"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         </div>
       </div>
-      <div class="stat-card-value">23</div>
-      <div class="stat-card-change stat-negative">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
-          <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
-        </svg>
-        -8 from last month
-      </div>
+      <div class="stat-card-value text-amber-500">{{ summary()!.portfolio.warningProjects }}</div>
     </div>
-
+    <!-- Critical -->
     <div class="stat-card">
       <div class="stat-card-header">
-        <span class="stat-card-label">Avg. Load Time</span>
-        <div class="stat-card-icon stat-icon-violet">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>
+        <span class="stat-card-label">Critical</span>
+        <div class="stat-card-icon stat-icon-red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
         </div>
       </div>
-      <div class="stat-card-value">1.2<span class="stat-unit">s</span></div>
-      <div class="stat-card-change stat-positive">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
-          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-        </svg>
-        -0.3s improvement
+      <div class="stat-card-value text-red-500">{{ summary()!.portfolio.criticalProjects }}</div>
+    </div>
+    <!-- Scans This Month -->
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Scans This Month</span>
+        <div class="stat-card-icon stat-icon-violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
       </div>
+      <div class="stat-card-value">{{ summary()!.portfolio.scansThisMonth }}</div>
     </div>
   </div>
 
-  <!-- Recent Scans -->
-  <div class="card mt-6">
-    <div class="card-header">
-      <h2 class="card-title">Recent Scans</h2>
-      <a href="#" class="card-link">View all</a>
+  <!-- ========== MAIN GRID: Health List + Alerts ========== -->
+  <div class="main-grid mt-6">
+
+    <!-- ========== 2. Project Health List ========== -->
+    <div class="card health-list-card">
+      <div class="card-header">
+        <h2 class="card-title">Project Health</h2>
+      </div>
+      <!-- Filters -->
+      <div class="filter-tabs mb-4">
+        <button class="filter-tab" [class.active]="healthFilter() === 'all'" (click)="setFilter('all')">All</button>
+        <button class="filter-tab" [class.active]="healthFilter() === 'critical'" (click)="setFilter('critical')">Critical</button>
+        <button class="filter-tab" [class.active]="healthFilter() === 'needs-scan'" (click)="setFilter('needs-scan')">Needs Scan</button>
+        <button class="filter-tab" [class.active]="healthFilter() === 'improving'" (click)="setFilter('improving')">Improving</button>
+      </div>
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Score</th>
+              <th>Status</th>
+              <th>Last Scan</th>
+              <th>Trend</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of filteredProjects; track p.id) {
+              <tr class="cursor-pointer hover:bg-gray-50/80 transition-colors" (click)="goToProject(p.id)">
+                <td class="font-semibold text-gray-900">{{ p.name }}</td>
+                <td>
+                  <span class="score-pill" [ngClass]="getScoreClass(p.score)">{{ p.score }}</span>
+                </td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(p.status)">{{ p.status }}</span>
+                </td>
+                <td class="text-gray-400 text-sm">{{ p.lastScanAt ? formatTimeAgo(p.lastScanAt) : 'Never' }}</td>
+                <td>
+                  @if (p.trend === 'up') {
+                    <span class="trend-indicator trend-up">↑</span>
+                  } @else if (p.trend === 'down') {
+                    <span class="trend-indicator trend-down">↓</span>
+                  } @else {
+                    <span class="trend-indicator trend-flat">→</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center text-gray-400 py-8">No projects match this filter.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="table-wrapper">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>URL</th>
-            <th>Performance</th>
-            <th>LCP</th>
-            <th>CLS</th>
-            <th>Status</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="url-cell">example.com</td>
-            <td><span class="score score-good">95</span></td>
-            <td>1.2s</td>
-            <td>0.05</td>
-            <td><span class="badge badge-success">Passed</span></td>
-            <td class="date-cell">Apr 16, 2026</td>
-          </tr>
-          <tr>
-            <td class="url-cell">demo-app.io/dashboard</td>
-            <td><span class="score score-warning">72</span></td>
-            <td>2.8s</td>
-            <td>0.15</td>
-            <td><span class="badge badge-warning">Warning</span></td>
-            <td class="date-cell">Apr 15, 2026</td>
-          </tr>
-          <tr>
-            <td class="url-cell">shop.example.com</td>
-            <td><span class="score score-good">88</span></td>
-            <td>1.8s</td>
-            <td>0.08</td>
-            <td><span class="badge badge-success">Passed</span></td>
-            <td class="date-cell">Apr 15, 2026</td>
-          </tr>
-          <tr>
-            <td class="url-cell">blog.example.com/posts</td>
-            <td><span class="score score-bad">45</span></td>
-            <td>4.5s</td>
-            <td>0.32</td>
-            <td><span class="badge badge-danger">Failed</span></td>
-            <td class="date-cell">Apr 14, 2026</td>
-          </tr>
-        </tbody>
-      </table>
+
+    <!-- ========== 3. Alerts Center ========== -->
+    <div class="card alerts-card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <svg class="w-5 h-5 text-red-500 inline-block mr-1.5 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          Alerts
+        </h2>
+        @if (summary()!.alerts.length > 0) {
+          <span class="alert-count">{{ summary()!.alerts.length }}</span>
+        }
+      </div>
+
+      @if (summary()!.alerts.length === 0) {
+        <div class="empty-alerts">
+          <svg class="w-10 h-10 text-gray-200 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <p class="text-sm text-gray-400">All clear! No alerts at this time.</p>
+        </div>
+      } @else {
+        <div class="alerts-list">
+          @for (alert of summary()!.alerts; track alert.id) {
+            <div class="alert-item" [ngClass]="getSeverityClass(alert.severity)" (click)="goToProject(alert.projectId)">
+              <div class="alert-dot"></div>
+              <div class="alert-body">
+                <span class="alert-project">{{ alert.projectName }}</span>
+                <span class="alert-message">{{ alert.message }}</span>
+              </div>
+              <span class="alert-time">{{ formatTimeAgo(alert.date) }}</span>
+            </div>
+          }
+        </div>
+      }
     </div>
+
   </div>
+
+  <!-- ========== BOTTOM GRID: Trends + Activity ========== -->
+  <div class="bottom-grid mt-6">
+
+    <!-- ========== 5. Trends Across Projects ========== -->
+    <div class="card trend-card">
+      <div class="card-header">
+        <h2 class="card-title">Average Score Trend (14 days)</h2>
+      </div>
+      @if (summary()!.trends.length > 0) {
+        <div class="chart-container">
+          <canvas baseChart
+            [type]="'line'"
+            [data]="trendChartData()"
+            [options]="trendChartOptions">
+          </canvas>
+        </div>
+      } @else {
+        <div class="empty-alerts">
+          <p class="text-sm text-gray-400">Not enough data to display trends yet.</p>
+        </div>
+      }
+    </div>
+
+    <!-- ========== 4. Recent Activity ========== -->
+    <div class="card activity-card">
+      <div class="card-header">
+        <h2 class="card-title">Recent Activity</h2>
+      </div>
+      @if (summary()!.recentActivity.length === 0) {
+        <div class="empty-alerts">
+          <p class="text-sm text-gray-400">No recent activity recorded.</p>
+        </div>
+      } @else {
+        <div class="activity-timeline">
+          @for (a of summary()!.recentActivity; track a.id) {
+            <div class="timeline-item" (click)="goToProject(a.projectId)">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-project">{{ a.projectName }}</span>
+                <span class="timeline-action">{{ a.action }}</span>
+              </div>
+              <span class="timeline-time">{{ a.timeAgo }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+
+  }
 </div>
