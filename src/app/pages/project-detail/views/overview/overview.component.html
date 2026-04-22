@@ -300,6 +300,129 @@
       }
     </div>
 
+    <!-- Top Issues Found -->
+    @if (latestScan()?.issues?.length) {
+      <div class="card mt-6 border-l-4 border-red-500">
+        <div class="card-header pb-4 border-b border-gray-100 flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg text-gray-800">Top Issues Found</h3>
+              <p class="text-sm text-gray-500">Items that need your attention</p>
+            </div>
+          </div>
+          <span class="badge badge-error">{{ latestScan()?.issues?.length }} Issues</span>
+        </div>
+        <div class="flex flex-col mt-4">
+          @for (issue of latestScan()?.issues; track $index) {
+            <div class="border border-gray-100 rounded-lg p-4 mb-3 hover:border-gray-200 transition-colors bg-white">
+              <div class="flex items-start justify-between cursor-pointer" (click)="toggleIssue($index)">
+                <div class="flex items-start gap-4">
+                  <!-- Severity Badge -->
+                  <div class="mt-0.5">
+                    @if (issue.severity === 'critical') {
+                      <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide bg-red-100 text-red-700 border border-red-200">Critical</span>
+                    } @else if (issue.severity === 'high') {
+                      <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-700 border border-orange-200">High</span>
+                    } @else if (issue.severity === 'medium') {
+                      <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide bg-yellow-100 text-yellow-700 border border-yellow-200">Medium</span>
+                    } @else {
+                      <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide bg-blue-100 text-blue-700 border border-blue-200">Low</span>
+                    }
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-gray-800 select-none">{{ issue.title }}</h4>
+                    @if (issue.metric || issue.impact) {
+                      <div class="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
+                        @if (issue.metric) {
+                          <span class="font-medium bg-gray-50 px-2 py-0.5 rounded">{{ issue.metric }}</span>
+                        }
+                        @if (issue.impact) {
+                          <span>{{ issue.impact }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+                <!-- Toggle Icon -->
+                <div class="text-gray-400">
+                  <svg class="w-5 h-5 transition-transform duration-300" [class.rotate-180]="expandedIssues().has($index)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </div>
+              
+              <!-- Expanded Detail -->
+              <div class="overflow-hidden transition-all duration-300 ease-in-out" 
+                   [style.max-height]="expandedIssues().has($index) ? '200px' : '0'" 
+                   [style.opacity]="expandedIssues().has($index) ? '1' : '0'">
+                <div class="pt-4 mt-2 border-t border-dashed border-gray-100">
+                  <p class="text-sm text-gray-600 leading-relaxed">{{ issue.description }}</p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Recommendations -->
+    @if (latestScan()?.recommendations?.length) {
+      <div class="card mt-6">
+        <div class="card-header pb-4 border-b border-gray-100 flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg text-gray-800">Recommendations</h3>
+              <p class="text-sm text-gray-500">Steps to improve your site</p>
+            </div>
+          </div>
+          <!-- Priority Tabs -->
+          <div class="flex bg-gray-100 p-1 rounded-lg">
+            <button class="px-4 py-1.5 rounded-md text-sm font-semibold transition-colors" [class.bg-white]="activeRecTab() === 'High'" [class.shadow-sm]="activeRecTab() === 'High'" [class.text-gray-800]="activeRecTab() === 'High'" [class.text-gray-500]="activeRecTab() !== 'High'" (click)="setRecTab('High')">High</button>
+            <button class="px-4 py-1.5 rounded-md text-sm font-semibold transition-colors" [class.bg-white]="activeRecTab() === 'Medium'" [class.shadow-sm]="activeRecTab() === 'Medium'" [class.text-gray-800]="activeRecTab() === 'Medium'" [class.text-gray-500]="activeRecTab() !== 'Medium'" (click)="setRecTab('Medium')">Medium</button>
+            <button class="px-4 py-1.5 rounded-md text-sm font-semibold transition-colors" [class.bg-white]="activeRecTab() === 'Low'" [class.shadow-sm]="activeRecTab() === 'Low'" [class.text-gray-800]="activeRecTab() === 'Low'" [class.text-gray-500]="activeRecTab() !== 'Low'" (click)="setRecTab('Low')">Low</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          @for (rec of filteredRecommendations(); track $index) {
+            <div class="border border-gray-100 rounded-xl p-5 bg-gradient-to-br from-white to-gray-50 hover:shadow-soft transition-all group relative overflow-hidden">
+              <!-- Decorative background element -->
+              <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+              
+              <div class="relative z-10 flex flex-col h-full">
+                <div class="flex justify-between items-start gap-4">
+                  <h4 class="font-bold text-gray-800 leading-snug">{{ rec.title }}</h4>
+                  <button class="text-gray-400 hover:text-primary-600 focus:outline-none shrink-0 transition-colors" title="Copy Action" (click)="copyRecommendation(rec)">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  </button>
+                </div>
+                
+                <div class="mt-auto pt-4 flex items-center justify-between">
+                  @if (rec.expectedGain) {
+                    <div class="flex items-center gap-1.5 text-sm font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                      {{ rec.expectedGain }}
+                    </div>
+                  } @else {
+                     <div></div> <!-- Spacer -->
+                  }
+                  <span class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ rec.priority }} Priority</span>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="col-span-full py-8 text-center text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+              <p>No {{ activeRecTab() }} priority recommendations at this time.</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
   } @else {
     <!-- Loading Placeholder -->
     <div class="loading-placeholder">

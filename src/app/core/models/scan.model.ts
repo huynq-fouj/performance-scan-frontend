@@ -1,3 +1,17 @@
+export interface ScanIssue {
+  title: string;
+  description: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  metric?: string;
+  impact?: string;
+}
+
+export interface ScanRecommendation {
+  title: string;
+  expectedGain?: string;
+  priority: 'High' | 'Medium' | 'Low';
+}
+
 export interface ScanRecord {
   id: string;
   projectId: string;
@@ -27,7 +41,8 @@ export interface ScanRecord {
   requestCount?: number;
 
   screenshotUrl?: string;
-  recommendations: string[];
+  issues?: ScanIssue[];
+  recommendations: ScanRecommendation[];
   errorMessage?: string;
 
   // Populated project info (for global scans list)

@@ -1,4 +1,4 @@
-import { Component, inject, signal, DestroyRef, OnInit } from '@angular/core';
+import { Component, inject, signal, DestroyRef, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from '../../../../core/services/project.service';
@@ -32,6 +32,16 @@ export class OverviewComponent implements OnInit {
   // Device selection for new scans
   selectedDevice = signal<'mobile' | 'desktop'>('desktop');
 
+  // Issues and Recommendations UI state
+  expandedIssues = signal<Set<number>>(new Set());
+  activeRecTab = signal<'High' | 'Medium' | 'Low'>('High');
+
+  filteredRecommendations = computed(() => {
+    const scan = this.latestScan();
+    if (!scan || !scan.recommendations) return [];
+    return scan.recommendations.filter(r => r.priority === this.activeRecTab());
+  });
+
   ngOnInit() {
     this.projectService.currentProject$.pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -60,6 +70,26 @@ export class OverviewComponent implements OnInit {
 
   setDevice(device: 'mobile' | 'desktop') {
     this.selectedDevice.set(device);
+  }
+
+  toggleIssue(index: number) {
+    const current = new Set(this.expandedIssues());
+    if (current.has(index)) {
+      current.delete(index);
+    } else {
+      current.add(index);
+    }
+    this.expandedIssues.set(current);
+  }
+
+  setRecTab(tab: 'High' | 'Medium' | 'Low') {
+    this.activeRecTab.set(tab);
+  }
+
+  copyRecommendation(rec: any) {
+    navigator.clipboard.writeText(rec.title).then(() => {
+      this.toast.success('Recommendation copied to clipboard');
+    });
   }
 
   getScoreClass(score: number | undefined | null): string {
