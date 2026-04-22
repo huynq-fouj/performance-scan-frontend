@@ -10,7 +10,7 @@
       <span class="placeholder">No scans available</span>
     } @else if (selectedScan()) {
       <div class="selected-scan">
-        <span class="scan-date">{{ formatDate(selectedScan()?.startedAt) }}</span>
+        <span class="scan-date">{{ formatDate(selectedScan()?.startedAt || selectedScan()?.completedAt || selectedScan()?.createdAt) }}</span>
         <span class="scan-score-badge" [ngClass]="getScoreClass(selectedScan()?.performanceScore)">{{ selectedScan()?.performanceScore }}</span>
       </div>
     } @else {
@@ -28,7 +28,7 @@
           [class.is-selected]="s.id === value()" 
           (click)="selectOption(s.id)">
           <div class="option-content">
-            <span class="scan-date">{{ formatDate(s.startedAt) }}</span>
+            <span class="scan-date">{{ formatDate(s.startedAt || s.completedAt || s.createdAt) }}</span>
             <span class="scan-score-badge" [ngClass]="getScoreClass(s.performanceScore)">{{ s.performanceScore }}</span>
           </div>
           @if (s.id === value()) {
