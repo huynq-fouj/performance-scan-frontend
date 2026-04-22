@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpContext } from '@angular/common/http';
+import { CLEAR_CACHE } from '../tokens/cache.tokens';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { ScanRecord, CreateScanRequest, ScanCompareResponse } from '../models/scan.model';
@@ -14,7 +15,7 @@ export class ScanService {
 
   isScanning = signal<boolean>(false);
 
-  getScans(projectId: string, query?: { status?: string; page?: number; limit?: number; startDate?: string; endDate?: string }): Observable<ApiResponse<ScanRecord[]>> {
+  getScans(projectId: string, query?: { status?: string; page?: number; limit?: number; startDate?: string; endDate?: string }, forceRefresh = false): Observable<ApiResponse<ScanRecord[]>> {
     let params = new HttpParams();
     if (query) {
       if (query.status && query.status !== 'all') params = params.set('status', query.status);
@@ -23,7 +24,8 @@ export class ScanService {
       if (query.startDate) params = params.set('startDate', query.startDate);
       if (query.endDate) params = params.set('endDate', query.endDate);
     }
-    return this.http.get<ApiResponse<ScanRecord[]>>(`${this.apiUrl}/project/${projectId}`, { params });
+    const context = forceRefresh ? new HttpContext().set(CLEAR_CACHE, true) : undefined;
+    return this.http.get<ApiResponse<ScanRecord[]>>(`${this.apiUrl}/project/${projectId}`, { params, context });
   }
 
   getScan(id: string): Observable<ApiResponse<ScanRecord>> {

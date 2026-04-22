@@ -136,8 +136,8 @@ export class OverviewComponent implements OnInit {
     // We can use a simple effect or just subscribe to the signal indirectly
   }
 
-  loadLatestScan(projectId: string) {
-    this.scanService.getScans(projectId, { page: 1, limit: 30 }).subscribe(res => {
+  loadLatestScan(projectId: string, forceRefresh = false) {
+    this.scanService.getScans(projectId, { page: 1, limit: 30 }, forceRefresh).subscribe(res => {
       if (res.data && res.data.length > 0) {
         // Find latest success scan for detailed display
         const successScan = res.data.find(s => s.status === 'success');
@@ -245,7 +245,7 @@ export class OverviewComponent implements OnInit {
         this.scanService.importScan(p.id, jsonData).subscribe({
           next: () => {
             this.isImporting.set(false);
-            this.loadLatestScan(p.id);
+            this.loadLatestScan(p.id, true);
             this.toast.success('Lighthouse report imported successfully!');
           },
           error: (err) => {
