@@ -6,12 +6,13 @@ import { ProjectService } from '../../../../core/services/project.service';
 import { ScanService } from '../../../../core/services/scan.service';
 import { Project } from '../../../../core/models/project.model';
 import { ScanRecord } from '../../../../core/models/scan.model';
+import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
 import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-project-scans',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConfirmModalComponent],
   templateUrl: './scans.component.html',
   styleUrl: './scans.component.scss'
 })
@@ -37,6 +38,11 @@ export class ScansComponent implements OnInit, OnDestroy {
   isScanning = this.scanService.isScanning;
   private activeScanId = signal<string | null>(null);
   private pollInterval: any;
+
+  // Delete confirmation modal
+  showDeleteModal = signal(false);
+  deletingScanId = signal<string | null>(null);
+  isDeleting = signal(false);
 
   ngOnInit() {
     this.projectService.currentProject$.pipe(
@@ -152,18 +158,33 @@ export class ScansComponent implements OnInit, OnDestroy {
   }
 
   deleteScan(id: string) {
-    if (!confirm('Are you sure you want to delete this scan record? This action cannot be undone.')) {
-      return;
-    }
+    this.deletingScanId.set(id);
+    this.showDeleteModal.set(true);
+  }
 
+  confirmDelete() {
+    const id = this.deletingScanId();
+    if (!id) return;
+
+    this.isDeleting.set(true);
     this.scanService.deleteScan(id).subscribe({
       next: () => {
+        this.isDeleting.set(false);
+        this.showDeleteModal.set(false);
+        this.deletingScanId.set(null);
         this.loadScans();
       },
       error: (err) => {
         console.error('Failed to delete scan:', err);
+        this.isDeleting.set(false);
+        this.showDeleteModal.set(false);
       }
     });
+  }
+
+  cancelDelete() {
+    this.showDeleteModal.set(false);
+    this.deletingScanId.set(null);
   }
 
   onStatusFilterChange(value: string) {

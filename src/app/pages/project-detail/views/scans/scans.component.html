@@ -184,3 +184,14 @@
     }
   }
 </div>
+
+<app-confirm-modal
+  [visible]="showDeleteModal()"
+  title="Delete Scan Record"
+  message="This scan record and all its data will be permanently deleted. This action cannot be undone."
+  confirmText="Delete"
+  type="danger"
+  [loading]="isDeleting()"
+  (confirmed)="confirmDelete()"
+  (cancelled)="cancelDelete()">
+</app-confirm-modal>
