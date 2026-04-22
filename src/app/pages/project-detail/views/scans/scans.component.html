@@ -99,8 +99,8 @@
               <tr class="scan-row">
                 <!-- Date -->
                 <td class="td-date">
-                  <div class="date-primary">{{ scan.startedAt | date:'MMM dd, yyyy' }}</div>
-                  <div class="date-secondary">{{ scan.startedAt | date:'HH:mm:ss' }}</div>
+                  <div class="date-primary">{{ (scan.startedAt || scan.completedAt || scan.createdAt) | date:'MMM dd, yyyy' }}</div>
+                  <div class="date-secondary">{{ (scan.startedAt || scan.completedAt || scan.createdAt) | date:'HH:mm:ss' }}</div>
                 </td>
 
                 <!-- Score -->
