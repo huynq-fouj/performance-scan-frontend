@@ -1,0 +1,351 @@
+<div class="space-y-6" *ngIf="project() && scan()">
+  
+  <!-- 1. Executive Summary -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">Executive Summary</h2>
+        <p class="text-gray-500 mt-1">High-level performance overview for {{ project()?.name }}</p>
+      </div>
+      <div class="text-right">
+        <div class="text-sm text-gray-500">Scan Date</div>
+        <div class="font-medium text-gray-900">{{ scan()?.createdAt | date:'medium' }}</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Score & Status -->
+      <div class="bg-gray-50 rounded-lg p-5 flex items-center space-x-6">
+        <div class="relative w-24 h-24">
+          <svg viewBox="0 0 36 36" class="w-24 h-24">
+            <path class="text-gray-200" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path [class]="getScoreColorClass(scan()?.performanceScore || 0)" stroke-dasharray="100, 100" [attr.stroke-dasharray]="(scan()?.performanceScore || 0) + ', 100'" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center flex-col">
+            <span class="text-2xl font-bold" [class]="getScoreTextColorClass(scan()?.performanceScore || 0)">{{ scan()?.performanceScore || 0 }}</span>
+          </div>
+        </div>
+        <div>
+          <div class="text-sm text-gray-500 font-medium">Overall Status</div>
+          <div class="text-xl font-bold mt-1" [class]="getScoreTextColorClass(scan()?.performanceScore || 0)">{{ getStatusText(scan()?.performanceScore || 0) }}</div>
+          <a [href]="project()?.url" target="_blank" class="text-sm text-blue-600 hover:underline mt-2 inline-block truncate max-w-[150px]">{{ project()?.url }}</a>
+        </div>
+      </div>
+
+      <!-- Top Issues -->
+      <div class="bg-red-50 rounded-lg p-5">
+        <h3 class="font-semibold text-red-800 mb-3 flex items-center"><i class="ph ph-warning-circle mr-2 text-lg"></i> Top Issues</h3>
+        <ul class="space-y-2">
+          <li *ngFor="let issue of topIssues()" class="text-sm text-red-700 flex items-start">
+            <span class="mr-2 text-red-500">•</span>
+            <span>{{ issue.title }}</span>
+          </li>
+          <li *ngIf="topIssues().length === 0" class="text-sm text-green-700">No critical issues found.</li>
+        </ul>
+      </div>
+
+      <!-- Top Priorities -->
+      <div class="bg-blue-50 rounded-lg p-5">
+        <h3 class="font-semibold text-blue-800 mb-3 flex items-center"><i class="ph ph-lightning mr-2 text-lg"></i> Top Priorities</h3>
+        <ul class="space-y-2">
+          <li *ngFor="let rec of topRecommendations()" class="text-sm text-blue-700 flex items-start">
+            <span class="mr-2 text-blue-500">•</span>
+            <span>{{ rec.title }} <span *ngIf="rec.expectedGain" class="font-semibold">({{ rec.expectedGain }})</span></span>
+          </li>
+          <li *ngIf="topRecommendations().length === 0" class="text-sm text-blue-700">No high priorities.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Performance Metrics -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="text-lg font-bold text-gray-900 mb-4">2. Performance Metrics</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600">Metric</th>
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600">Value</th>
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-gray-100">
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">Performance Score</td>
+            <td class="py-3 px-4 text-sm text-gray-600">{{ scan()?.performanceScore || '-' }}</td>
+            <td class="py-3 px-4">
+               <span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getBadgeClass(scan()?.performanceScore || 0)">{{ getStatusText(scan()?.performanceScore || 0) }}</span>
+            </td>
+          </tr>
+          <tr class="border-b border-gray-100">
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">Accessibility</td>
+            <td class="py-3 px-4 text-sm text-gray-600">{{ scan()?.accessibilityScore || '-' }}</td>
+            <td class="py-3 px-4">
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getBadgeClass(scan()?.accessibilityScore || 0)">{{ getStatusText(scan()?.accessibilityScore || 0) }}</span>
+            </td>
+          </tr>
+          <tr class="border-b border-gray-100">
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">SEO</td>
+            <td class="py-3 px-4 text-sm text-gray-600">{{ scan()?.seoScore || '-' }}</td>
+            <td class="py-3 px-4">
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getBadgeClass(scan()?.seoScore || 0)">{{ getStatusText(scan()?.seoScore || 0) }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">Best Practices</td>
+            <td class="py-3 px-4 text-sm text-gray-600">{{ scan()?.bestPracticesScore || '-' }}</td>
+            <td class="py-3 px-4">
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getBadgeClass(scan()?.bestPracticesScore || 0)">{{ getStatusText(scan()?.bestPracticesScore || 0) }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3. Core Web Vitals -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="text-lg font-bold text-gray-900 mb-4">3. Core Web Vitals</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600">Metric</th>
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600">Current</th>
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600">Target</th>
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-gray-100">
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">First Contentful Paint (FCP)</td>
+            <td class="py-3 px-4 text-sm font-medium" [ngClass]="getMetricColorClass('fcp', scan()?.fcp)">{{ formatTime(scan()?.fcp) }}</td>
+            <td class="py-3 px-4 text-sm text-gray-500">&lt; 1.8s</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getMetricBadgeClass('fcp', scan()?.fcp)">{{ getMetricStatus('fcp', scan()?.fcp) }}</span></td>
+          </tr>
+          <tr class="border-b border-gray-100">
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">Largest Contentful Paint (LCP)</td>
+            <td class="py-3 px-4 text-sm font-medium" [ngClass]="getMetricColorClass('lcp', scan()?.lcp)">{{ formatTime(scan()?.lcp) }}</td>
+            <td class="py-3 px-4 text-sm text-gray-500">&lt; 2.5s</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getMetricBadgeClass('lcp', scan()?.lcp)">{{ getMetricStatus('lcp', scan()?.lcp) }}</span></td>
+          </tr>
+          <tr class="border-b border-gray-100">
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">Cumulative Layout Shift (CLS)</td>
+            <td class="py-3 px-4 text-sm font-medium" [ngClass]="getMetricColorClass('cls', scan()?.cls)">{{ scan()?.cls?.toFixed(3) || '-' }}</td>
+            <td class="py-3 px-4 text-sm text-gray-500">&lt; 0.1</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getMetricBadgeClass('cls', scan()?.cls)">{{ getMetricStatus('cls', scan()?.cls) }}</span></td>
+          </tr>
+          <tr class="border-b border-gray-100">
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">Interaction to Next Paint (INP)</td>
+            <td class="py-3 px-4 text-sm font-medium" [ngClass]="getMetricColorClass('inp', scan()?.inp)">{{ formatTime(scan()?.inp) }}</td>
+            <td class="py-3 px-4 text-sm text-gray-500">&lt; 200ms</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getMetricBadgeClass('inp', scan()?.inp)">{{ getMetricStatus('inp', scan()?.inp) }}</span></td>
+          </tr>
+          <tr class="border-b border-gray-100">
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">Total Blocking Time (TBT)</td>
+            <td class="py-3 px-4 text-sm font-medium" [ngClass]="getMetricColorClass('tbt', scan()?.tbt)">{{ formatTime(scan()?.tbt) }}</td>
+            <td class="py-3 px-4 text-sm text-gray-500">&lt; 200ms</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getMetricBadgeClass('tbt', scan()?.tbt)">{{ getMetricStatus('tbt', scan()?.tbt) }}</span></td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 text-sm font-medium text-gray-800">Speed Index</td>
+            <td class="py-3 px-4 text-sm font-medium" [ngClass]="getMetricColorClass('speedIndex', scan()?.speedIndex)">{{ formatTime(scan()?.speedIndex) }}</td>
+            <td class="py-3 px-4 text-sm text-gray-500">&lt; 3.4s</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium" [ngClass]="getMetricBadgeClass('speedIndex', scan()?.speedIndex)">{{ getMetricStatus('speedIndex', scan()?.speedIndex) }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. Issues Found -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="text-lg font-bold text-gray-900 mb-4">4. Issues Found</h3>
+    <div *ngIf="groupedIssues().length > 0; else noIssues">
+      <div *ngFor="let group of groupedIssues()" class="mb-6 last:mb-0">
+        <h4 class="text-sm font-bold uppercase tracking-wider mb-3 flex items-center" 
+            [ngClass]="{'text-red-700': group.severity === 'critical', 'text-orange-700': group.severity === 'high', 'text-yellow-700': group.severity === 'medium', 'text-blue-700': group.severity === 'low'}">
+          {{ group.severity }}
+          <span class="ml-2 bg-gray-100 text-gray-600 text-xs py-0.5 px-2 rounded-full">{{ group.items.length }}</span>
+        </h4>
+        <ul class="space-y-3">
+          <li *ngFor="let issue of group.items" class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div class="font-medium text-gray-900">{{ issue.title }}</div>
+            <div *ngIf="issue.description" class="text-sm text-gray-600 mt-1 line-clamp-2" [title]="issue.description">{{ issue.description }}</div>
+            <div *ngIf="issue.impact" class="text-xs font-medium mt-2 text-gray-500">Impact: {{ issue.impact }}</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <ng-template #noIssues>
+      <div class="text-center py-8 text-gray-500">No issues found in this scan. Great job!</div>
+    </ng-template>
+  </div>
+
+  <!-- 5. Recommendations -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="text-lg font-bold text-gray-900 mb-4">5. Recommendations</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-gray-200 bg-gray-50">
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600 rounded-tl-lg">Priority</th>
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600">Action</th>
+            <th class="py-3 px-4 text-sm font-semibold text-gray-600 rounded-tr-lg">Expected Gain</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rec of sortedRecommendations()" class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+            <td class="py-3 px-4">
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium" 
+                [ngClass]="{'bg-red-100 text-red-700': rec.priority === 'High', 'bg-yellow-100 text-yellow-700': rec.priority === 'Medium', 'bg-blue-100 text-blue-700': rec.priority === 'Low'}">
+                {{ rec.priority }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-sm font-medium text-gray-900">{{ rec.title }}</td>
+            <td class="py-3 px-4 text-sm font-semibold text-emerald-600">{{ rec.expectedGain || '-' }}</td>
+          </tr>
+          <tr *ngIf="sortedRecommendations().length === 0">
+            <td colspan="3" class="py-6 text-center text-gray-500 text-sm">No recommendations available.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6. Technical Breakdown -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="text-lg font-bold text-gray-900 mb-4">6. Technical Breakdown</h3>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div>
+        <h4 class="text-sm font-semibold text-gray-600 mb-3">Resource Sizes</h4>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600 flex items-center"><i class="ph ph-file-code text-yellow-500 mr-2 text-lg"></i> JS Total Size</span>
+            <span class="text-sm font-medium text-gray-900">{{ (scan()?.jsSizeKb || 0) | number:'1.0-0' }} KB</span>
+          </div>
+          <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-yellow-400 h-1.5 rounded-full" [style.width.%]="getPercent(scan()?.jsSizeKb, totalSize())"></div></div>
+          
+          <div class="flex items-center justify-between mt-4">
+            <span class="text-sm text-gray-600 flex items-center"><i class="ph ph-file-css text-blue-500 mr-2 text-lg"></i> CSS Size</span>
+            <span class="text-sm font-medium text-gray-900">{{ (scan()?.cssSizeKb || 0) | number:'1.0-0' }} KB</span>
+          </div>
+          <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-blue-400 h-1.5 rounded-full" [style.width.%]="getPercent(scan()?.cssSizeKb, totalSize())"></div></div>
+          
+          <div class="flex items-center justify-between mt-4">
+            <span class="text-sm text-gray-600 flex items-center"><i class="ph ph-image text-green-500 mr-2 text-lg"></i> Image Size</span>
+            <span class="text-sm font-medium text-gray-900">{{ (scan()?.imageSizeKb || 0) | number:'1.0-0' }} KB</span>
+          </div>
+          <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-green-400 h-1.5 rounded-full" [style.width.%]="getPercent(scan()?.imageSizeKb, totalSize())"></div></div>
+        </div>
+
+        <div class="mt-8">
+           <h4 class="text-sm font-semibold text-gray-600 mb-3">Network & Third-Party</h4>
+           <div class="grid grid-cols-2 gap-4">
+             <div class="bg-gray-50 rounded-lg p-4">
+               <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Requests</div>
+               <div class="text-xl font-bold text-gray-900">{{ scan()?.requestCount || 0 }}</div>
+             </div>
+             <div class="bg-gray-50 rounded-lg p-4">
+               <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">3rd Party Domains</div>
+               <div class="text-xl font-bold text-gray-900">{{ scan()?.thirdPartyDomains?.length || 0 }}</div>
+             </div>
+           </div>
+        </div>
+      </div>
+      
+      <div>
+        <h4 class="text-sm font-semibold text-gray-600 mb-3">Page Screenshot</h4>
+        <div class="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center aspect-video relative">
+           <img *ngIf="scan()?.screenshotUrl" [src]="scan()?.screenshotUrl" alt="Screenshot" class="object-cover w-full h-full">
+           <div *ngIf="!scan()?.screenshotUrl" class="text-gray-400 flex flex-col items-center">
+             <i class="ph ph-image text-3xl mb-2"></i>
+             <span class="text-sm">No screenshot available</span>
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Compare History -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6" *ngIf="previousScan()">
+    <h3 class="text-lg font-bold text-gray-900 mb-4">7. Compare History</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <div class="bg-gray-50 rounded-lg p-5 border border-gray-100">
+        <div class="text-sm text-gray-500 mb-1">Score Trend</div>
+        <div class="flex items-end justify-between mt-2">
+           <div>
+             <div class="text-xs text-gray-400">Previous</div>
+             <div class="text-lg font-medium text-gray-600">{{ previousScan()?.performanceScore || 0 }}</div>
+           </div>
+           <div class="mx-4 text-gray-300"><i class="ph ph-arrow-right font-bold"></i></div>
+           <div class="text-right">
+             <div class="text-xs text-gray-400">Current</div>
+             <div class="text-xl font-bold text-gray-900">{{ scan()?.performanceScore || 0 }}</div>
+           </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-200">
+           <div class="text-sm font-bold flex items-center" [ngClass]="getDiffClass((scan()?.performanceScore || 0) - (previousScan()?.performanceScore || 0))">
+              <i class="ph mr-1" [ngClass]="getDiffIconClass((scan()?.performanceScore || 0) - (previousScan()?.performanceScore || 0))"></i>
+              {{ getDiffText((scan()?.performanceScore || 0) - (previousScan()?.performanceScore || 0)) }} improvement
+           </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 rounded-lg p-5 border border-gray-100">
+        <div class="text-sm text-gray-500 mb-1">LCP Trend</div>
+        <div class="flex items-end justify-between mt-2">
+           <div>
+             <div class="text-xs text-gray-400">Previous</div>
+             <div class="text-lg font-medium text-gray-600">{{ formatTime(previousScan()?.lcp) }}</div>
+           </div>
+           <div class="mx-4 text-gray-300"><i class="ph ph-arrow-right font-bold"></i></div>
+           <div class="text-right">
+             <div class="text-xs text-gray-400">Current</div>
+             <div class="text-xl font-bold text-gray-900">{{ formatTime(scan()?.lcp) }}</div>
+           </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-200">
+           <!-- Note: For LCP, negative diff is good -->
+           <div class="text-sm font-bold flex items-center" [ngClass]="getInverseDiffClass((scan()?.lcp || 0) - (previousScan()?.lcp || 0))">
+              <i class="ph mr-1" [ngClass]="getInverseDiffIconClass((scan()?.lcp || 0) - (previousScan()?.lcp || 0))"></i>
+              {{ getInverseDiffText((scan()?.lcp || 0) - (previousScan()?.lcp || 0)) }} improvement
+           </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- 8. Appendix -->
+  <div class="bg-gray-50 rounded-xl border border-gray-200 p-6">
+    <h3 class="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">8. Appendix</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+      <div>
+        <div class="text-gray-500 mb-1 text-xs">Device Tested</div>
+        <div class="font-medium text-gray-800 capitalize">{{ scan()?.device || 'Desktop' }}</div>
+      </div>
+      <div>
+        <div class="text-gray-500 mb-1 text-xs">Browser</div>
+        <div class="font-medium text-gray-800">Chrome Headless</div>
+      </div>
+      <div>
+        <div class="text-gray-500 mb-1 text-xs">Network Profile</div>
+        <div class="font-medium text-gray-800">{{ scan()?.device === 'mobile' ? 'Slow 4G' : 'Desktop Fast' }}</div>
+      </div>
+      <div>
+        <div class="text-gray-500 mb-1 text-xs">Scan Duration</div>
+        <div class="font-medium text-gray-800">{{ getDuration(scan()?.startedAt, scan()?.completedAt) }}</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="!project() || !scan()" class="p-8 text-center bg-white rounded-xl shadow-sm border border-gray-100 mt-6">
+  <i class="ph ph-chart-bar text-4xl text-gray-300 mb-3"></i>
+  <h3 class="text-lg font-medium text-gray-900">No report available</h3>
+  <p class="text-gray-500 mt-1">Run a performance scan to generate a detailed report.</p>
+</div>
