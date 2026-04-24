@@ -43,3 +43,23 @@ export interface DashboardSummary {
   recentActivity: ActivityLog[];
   trends: TrendDataPoint[];
 }
+
+export interface AggregatedIssue {
+  title: string;
+  count: number;
+  severity: string;
+  affectedProjects: string[];
+}
+
+export interface ExecutiveReport {
+  averageScore: number;
+  healthDistribution: {
+    good: { count: number; percent: number };
+    average: { count: number; percent: number };
+    poor: { count: number; percent: number };
+  };
+  commonIssues: AggregatedIssue[];
+  topPerformers: { id: string; projectId: string; projectName: string; performanceScore: number }[];
+  needsAttention: { id: string; projectId: string; projectName: string; performanceScore: number }[];
+  totalScansAnalyzed: number;
+}
