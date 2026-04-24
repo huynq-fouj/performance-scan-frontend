@@ -29,6 +29,11 @@ export const routes: Routes = [
           import('./pages/global-scans/global-scans.component').then(m => m.GlobalScansComponent),
       },
       {
+        path: 'reports',
+        loadComponent: () =>
+          import('./pages/global-reports/global-reports.component').then(m => m.GlobalReportsComponent),
+      },
+      {
         path: 'projects/:id',
         loadComponent: () =>
           import('./pages/project-detail/project-detail-layout.component').then(m => m.ProjectDetailLayoutComponent),
