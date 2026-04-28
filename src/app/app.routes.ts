@@ -34,6 +34,11 @@ export const routes: Routes = [
           import('./pages/global-reports/global-reports.component').then(m => m.GlobalReportsComponent),
       },
       {
+        path: 'settings',
+        loadComponent: () =>
+          import('./pages/settings/settings.component').then(m => m.SettingsComponent),
+      },
+      {
         path: 'projects/:id',
         loadComponent: () =>
           import('./pages/project-detail/project-detail-layout.component').then(m => m.ProjectDetailLayoutComponent),

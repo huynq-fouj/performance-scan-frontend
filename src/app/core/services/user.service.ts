@@ -31,7 +31,23 @@ export class UserService {
     );
   }
 
+  updateProfile(data: { fullName: string; avatar?: string }): Observable<ApiResponse<User>> {
+    return this.http.patch<ApiResponse<User>>(`${this.apiUrl}/profile`, data).pipe(
+      tap(res => {
+        if (res.status === 'success' && res.data) {
+          // Update the user signal
+          this.currentUser.set(res.data);
+          
+          // Force invalidate cache since we updated the profile
+          sessionStorage.removeItem('api_cache_owner-info');
+        }
+      })
+    );
+  }
 
+  changePassword(data: any): Observable<ApiResponse<null>> {
+    return this.http.patch<ApiResponse<null>>(`${this.apiUrl}/password`, data);
+  }
   clearUser() {
     this.currentUser.set(null);
   }

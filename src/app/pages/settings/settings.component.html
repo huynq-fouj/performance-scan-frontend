@@ -1,0 +1,134 @@
+<div class="settings-page max-w-4xl mx-auto pb-12">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 m-0">Settings</h1>
+    <p class="text-gray-500 mt-1">Manage your account settings and security preferences</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Left Navigation/Tabs (Optional for future expansion) -->
+    <div class="md:col-span-1 hidden md:block space-y-1">
+      <a class="block px-4 py-2 text-sm font-medium bg-blue-50 text-blue-700 rounded-lg">Profile Settings</a>
+      <!-- <a class="block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">Security</a> -->
+    </div>
+
+    <!-- Right Content Area -->
+    <div class="md:col-span-2 space-y-8">
+      
+      <!-- Account Details Section -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+          <h2 class="text-lg font-bold text-gray-900">Account Details</h2>
+          <p class="text-sm text-gray-500">Update your personal information</p>
+        </div>
+        
+        <div class="p-6">
+          <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()" class="space-y-6">
+            <!-- Avatar Section -->
+            <div class="flex items-center gap-6">
+              <div class="relative w-20 h-20 rounded-full bg-blue-100 border-4 border-white shadow-md flex items-center justify-center overflow-hidden">
+                @if (user()?.avatar) {
+                  <img [src]="user()?.avatar" alt="Avatar" class="w-full h-full object-cover">
+                } @else {
+                  <span class="text-2xl font-bold text-blue-600">{{ user()?.fullName?.charAt(0) || 'U' }}</span>
+                }
+              </div>
+              <div>
+                <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 shadow-sm transition-colors cursor-not-allowed opacity-50" title="Coming soon">
+                  Change Avatar
+                </button>
+                <p class="text-xs text-gray-500 mt-2">JPG, GIF or PNG. 1MB max.</p>
+              </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="grid grid-cols-1 gap-6">
+              <div>
+                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input type="text" id="fullName" formControlName="fullName" 
+                  class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  [ngClass]="{'border-red-300': profileForm.get('fullName')?.invalid && profileForm.get('fullName')?.touched}">
+                @if (profileForm.get('fullName')?.invalid && profileForm.get('fullName')?.touched) {
+                  <p class="mt-1 text-sm text-red-500">Full name is required</p>
+                }
+              </div>
+
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input type="email" id="email" formControlName="email" 
+                  class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 cursor-not-allowed">
+                <p class="mt-1 text-xs text-gray-500">Email cannot be changed directly. Contact support if needed.</p>
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-4 border-t border-gray-100">
+              <button type="submit" [disabled]="profileForm.invalid || isProfileLoading()" 
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                @if (isProfileLoading()) {
+                  <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  Saving...
+                } @else {
+                  Save Changes
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Security Section -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+          <h2 class="text-lg font-bold text-gray-900">Security</h2>
+          <p class="text-sm text-gray-500">Update your password to keep your account secure</p>
+        </div>
+        
+        <div class="p-6">
+          <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="space-y-6">
+            
+            <div class="grid grid-cols-1 gap-6">
+              <div>
+                <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                <input type="password" id="currentPassword" formControlName="currentPassword" 
+                  class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  [ngClass]="{'border-red-300': passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched}">
+              </div>
+
+              <div>
+                <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                <input type="password" id="newPassword" formControlName="newPassword" 
+                  class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  [ngClass]="{'border-red-300': passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched}">
+                @if (passwordForm.get('newPassword')?.hasError('minlength') && passwordForm.get('newPassword')?.touched) {
+                  <p class="mt-1 text-sm text-red-500">Password must be at least 6 characters</p>
+                }
+              </div>
+
+              <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                <input type="password" id="confirmPassword" formControlName="confirmPassword" 
+                  class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  [ngClass]="{'border-red-300': (passwordForm.get('confirmPassword')?.invalid || passwordForm.hasError('mismatch')) && passwordForm.get('confirmPassword')?.touched}">
+                @if (passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched) {
+                  <p class="mt-1 text-sm text-red-500">Passwords do not match</p>
+                }
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-4 border-t border-gray-100">
+              <button type="submit" [disabled]="passwordForm.invalid || isPasswordLoading()" 
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                @if (isPasswordLoading()) {
+                  <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  Updating...
+                } @else {
+                  Update Password
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
