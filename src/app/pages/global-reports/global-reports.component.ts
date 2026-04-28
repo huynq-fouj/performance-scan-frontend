@@ -6,7 +6,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { ExecutiveReport } from '../../core/models/dashboard.model';
 import { CustomSelectComponent } from 'app/shared/components/custom-select/custom-select.component';
-
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 @Component({
   selector: 'app-global-reports',
   standalone: true,
@@ -27,6 +28,7 @@ export class GlobalReportsComponent implements OnInit {
   // Filters
   timeRange = signal<string>('30days');
   deviceFilter = signal<string>('all');
+  isExporting = signal<boolean>(false);
 
   timeRangeOptions = [
     { label: 'Last 7 Days', value: '7days' },
@@ -96,9 +98,35 @@ export class GlobalReportsComponent implements OnInit {
     this.loadAnalyticsData();
   }
 
-  exportReport() {
-    // In a real app, this would trigger a PDF generation or CSV download
-    alert('Exporting Executive Summary Report... (Mocked)');
+  async exportReport() {
+    if (!isPlatformBrowser(this.platformId) || this.isExporting()) return;
+
+    const element = document.getElementById('report-content');
+    if (!element) return;
+
+    this.isExporting.set(true);
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('Executive-Report.pdf');
+    } catch (error) {
+      console.error('Error generating PDF', error);
+      alert('Failed to generate PDF. Please try again.');
+    } finally {
+      this.isExporting.set(false);
+    }
   }
 
   goToProjectReport(projectId: string | undefined, scanId: string) {
